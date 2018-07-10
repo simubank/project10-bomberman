@@ -78,12 +78,13 @@ router.get('/customers/:customerId/spending/:category', function(req, res, next)
 	var parsed_body = JSON.parse(response.body);
 
 	for (var i = 0; i < parsed_body.result.length; i++) {
+	    var transaction = parsed_body.result[i];
 
-	    if (parsed_body.result[i].categoryTags.includes(req.params.category)) {
+	    if (transaction.categoryTags.includes(req.params.category)) {
 		// If the category tag is included
 
 	    
-		var transaction_amount = parsed_body.result[i].currencyAmount;
+		var transaction_amount = transaction.currencyAmount;
 		if (transaction_amount < 0) {
 		    credits = credits + (-1 * transaction_amount);
 		} else {
@@ -122,15 +123,19 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
 	var net_change = 0;
 	var parsed_body = JSON.parse(response.body);
 
+	var now_date = Date().now();
+	
 	for (var i = 0; i < parsed_body.result.length; i++) {
+	    var transaction = parsed_body.result[i];
+	    
 
-	    if (parsed_body.result[i].categoryTags.includes(req.params.category)) {
+	    if (transaction.categoryTags.includes(req.params.category)) {
 		// If the category tag is included
 
 		// TODO: Filter for dates
-		var transaction_date = Date(parsed_body.result[i].originationDate);
+		var transaction_date = Date(transaction.originationDate);
 		
-		var transaction_amount = parsed_body.result[i].currencyAmount;
+		var transaction_amount = transaction.currencyAmount;
 		if (transaction_amount < 0) {
 		    credits = credits + (-1 * transaction_amount);
 		} else {
