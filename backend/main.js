@@ -8,7 +8,7 @@ const PORT = 3000; // The port the server will listen on
 var express = require('express');
 var app = express();
 
-var routes = require('./router');
+var routes = require('./routes');
 app.use('/', routes);
 
 app.listen(PORT);
