@@ -133,20 +133,19 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
 		// If the category tag is included
 
 		// Filter for dates
-		// TODO: This specific conversion isn't working
 		var transaction_date = Date.parse(transaction.originationDate);
 
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
 
 		// TODO: Absolute value of the date for future transactions?
-		console.log(date_difference);
+		
 
-		if (date_difference > req.params.withinDays && date_difference > 0) {
+		if (date_difference > Number(req.params.days) || date_difference < 0) {
 		    // Date is more than <days> days ago
 		    continue;
 		}
-		
+
 		var transaction_amount = transaction.currencyAmount;
 		if (transaction_amount < 0) {
 		    credits = credits + (-1 * transaction_amount);
