@@ -123,7 +123,7 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
 	var net_change = 0;
 	var parsed_body = JSON.parse(response.body);
 
-	var now_date = Date().now();
+	var now_date = new Date();
 	
 	for (var i = 0; i < parsed_body.result.length; i++) {
 	    var transaction = parsed_body.result[i];
@@ -132,8 +132,20 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
 	    if (transaction.categoryTags.includes(req.params.category)) {
 		// If the category tag is included
 
-		// TODO: Filter for dates
-		var transaction_date = Date(transaction.originationDate);
+		// Filter for dates
+		// TODO: This specific conversion isn't working
+		var transaction_date = Date.parse(transaction.originationDate);
+
+		var date_difference = now_date - transaction_date;
+		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
+
+		// TODO: Absolute value of the date for future transactions?
+		console.log(date_difference);
+
+		if (date_difference > req.params.withinDays && date_difference > 0) {
+		    // Date is more than <days> days ago
+		    continue;
+		}
 		
 		var transaction_amount = transaction.currencyAmount;
 		if (transaction_amount < 0) {
