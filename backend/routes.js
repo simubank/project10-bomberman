@@ -53,6 +53,7 @@ router.get('/stats', function(req, res, next) {
 });
 
 router.get('/customers/:customerId', function(req, res, next) {
+    // TODO: Update this later
     res.sendStatus(404);
 });
 
@@ -101,8 +102,60 @@ router.get('/customers/:customerId/spending/:category', function(req, res, next)
     });
 });
 
+router.get('/customers/:customerId/spending/:category/withinDays/:days', function(req, res, next) {
+    // Calculates the spending done by the customer in a certain category within the past <days> number of days
+
+    // Request options
+    var opt = {
+	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
+	headers: {
+	    'Authorization': auth_key
+	}
+    };
+
+    
+    request(opt, function(error, response, body) {
+	// Response will be a list of the customer's transactions
+	// We then calculate the debits and credits
+	var debits = 0;
+	var credits = 0;
+	var net_change = 0;
+	var parsed_body = JSON.parse(response.body);
+
+	for (var i = 0; i < parsed_body.result.length; i++) {
+
+	    if (parsed_body.result[i].categoryTags.includes(req.params.category)) {
+		// If the category tag is included
+
+		// TODO: Filter for dates
+		var transaction_date = Date(parsed_body.result[i].originationDate);
+		
+		var transaction_amount = parsed_body.result[i].currencyAmount;
+		if (transaction_amount < 0) {
+		    credits = credits + (-1 * transaction_amount);
+		} else {
+		    debits = debits + transaction_amount;
+		}
+	    }
+	}
+	
+	net_change = debits - credits;
+
+	res.send({'result': {'debits': debits,
+			     'credits': credits,
+			     'net': net_change},
+		  "errorDetails" : null,
+		  "errorMsg": null});
+    });
+});
+
+
 router.get('/customers/:customerId/limits/:category', function(req, res, next) {
     // Returns the spending limits per category for the customer
+});
+
+router.post('/customers/:customerId/limits/:category', function(req, res, next) {
+    // Updates/sets the spending limit for the customer for a certain category
 });
 
 router.get('/', function(req, res, next) {
