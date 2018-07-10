@@ -8,6 +8,9 @@ const PORT = 3000; // The port the server will listen on
 var express = require('express');
 var app = express();
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 var routes = require('./routes');
 app.use('/', routes);
 
