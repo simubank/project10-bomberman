@@ -1,5 +1,4 @@
 import { StyleSheet, Platform, Dimensions } from 'react-native'
-import { Colors, Metrics, ApplicationStyles } from '../../../Themes/'
 const { height } = Dimensions.get('window')
 
 const horizontalMargin = 20

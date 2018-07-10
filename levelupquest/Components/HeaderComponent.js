@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from './Styles/HeaderComponentStyle'
 import _ from 'lodash'
 
-const logo = require('../Images/apple-icon.png')
+const logo = require('../Images/levelupquest_icon.png')
 
 class HeaderComponent extends Component {
   constructor(props) {
