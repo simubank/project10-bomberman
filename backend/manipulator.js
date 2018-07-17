@@ -3,6 +3,21 @@ var sample_data = require('./data');
 sample_data = JSON.parse(sample_data);
 sample_data = sample_data['result'];
 
+var filter_categories = ['Fast food'];
+var categories = {};
+
+// Initialize the structure
+for (var i = 0; i < filter_categories.length; i++) {
+    var category = filter_categories[i];
+
+    categories[category] = {
+	'debit_average': 0,
+	'credit_average': 0,
+	'debit_n': 0,
+	'credit_n': 0
+    };
+}
+
 function isDebit(transaction) {
     if (transaction.currencyAmount < 0) {
 	return false;
@@ -30,6 +45,20 @@ for (var i = 0; i < sample_data.length; i++) {
 	    overall_credit = overall_credit + transaction.currencyAmount;
 	    overall_credit_n = overall_credit_n + 1;
 	}
+
+	for (var k = 0; k < filter_categories.length; k++) {
+	    // Handle the filters
+	    category = filter_categories[k];
+	    if (transaction.categoryTags.includes(category)) {
+		if (isDebit(transaction)) {
+		    categories[category]['debit_average'] = categories[category]['debit_average'] + transaction.currencyAmount;
+		    categories[category]['debit_n'] = categories[category]['debit_n'] + 1;
+		} else {
+		    categories[category]['credit_average'] = categories[category]['credit_average'] + transaction.currencyAmount;
+		    categories[category]['credit_n'] = categories[category]['credit_n'] + 1;
+		}
+	    }
+	}
     }
 
 }
@@ -40,12 +69,21 @@ overall_debit = overall_debit / overall_debit_n;
 overall_credit = overall_credit * -1;
 overall_credit = overall_credit / overall_credit_n;
 
-console.log(overall_debit);
-console.log(overall_credit);
+// Calculate the filter averages
+for (var i = 0; i < filter_categories.length; i++) {
+    category = filter_categories[i];
+
+    categories[category]['debit_average'] = categories[category]['debit_average'] / categories[category]['debit_n'];
+
+    categories[category]['credit_average'] = categories[category]['credit_average'] / categories[category]['credit_n'];
+
+}
+
 
 module.exports = {
     'debit_average' : overall_debit,
-    'credit_average' : overall_credit
+    'credit_average' : overall_credit,
+    'category_filters' : categories
 
 };
 
