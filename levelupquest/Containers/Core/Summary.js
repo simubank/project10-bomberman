@@ -40,19 +40,25 @@ export default class Summary extends Component {
           name: 'Food',
           amount: 284.21,
           selected: false,
-          target: 200.0
+          target: 200.0,
+          current: 131.34,
+          status: 'UNDER'
         },
         {
           name: 'Entertainment',
           amount: 282.44,
           selected: false,
-          target: 100.0
+          target: 100.0,
+          current: 93.21,
+          status: 'NEAR'
         },
         {
           name: 'Retail',
           amount: 207.12,
           selected: false,
-          target: 150.0
+          target: 150.0,
+          current: 195.32,
+          status: 'ABOVE'
         }
       ]
     }
@@ -132,16 +138,31 @@ export default class Summary extends Component {
                   </Text>
                 </Body>
               </CardItem>
-              <CardItem bordered>
-                <Body>
-                  {this.state.categories.map((category, index) => (
-                    <View key={index} style={{ marginTop: 5, marginBottom: 5 }}>
-                      <Text>{index + 1}. {category.name}</Text>
-                      <Text>${category.amount.toFixed(2)} -> ${category.target.toFixed(2)}</Text>
-                    </View>
-                  ))}
-                </Body>
-              </CardItem>
+              <List>
+                {this.state.categories.map((category, index) => (
+                  <ListItem avatar key={index}>
+                    <Left>
+                      <Button
+                        rounded
+                        info={category.status === 'NEAR'}
+                        success={category.status === 'UNDER'}
+                        warning={category.status === 'ABOVE'}
+                      >
+                        <Text>{'   '}</Text>
+                      </Button>
+                    </Left>
+                    <Body>
+                      <Text style={{ marginBottom: 4, fontWeight: 'bold' }}>{category.name}</Text>
+                      <Text style={{ marginBottom: 4, fontSize: 14 }}>
+                        ${category.amount.toFixed(2)} {' > '} ${category.target.toFixed(2)}
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Text style={{ marginBottom: 4 }}>${category.current.toFixed(2)}</Text>
+                    </Right>
+                  </ListItem>
+                ))}
+              </List>
               <CardItem footer bordered>
                 <Text>TD Level Up</Text>
               </CardItem>
