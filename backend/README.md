@@ -18,3 +18,4 @@ POST /customers/:customerId/limits/:category
 
 GET /customers/:customerId/categories
 * Returns all the categories of transactions by a certain customer for transactions that have already passed
+* Functioning, untested
