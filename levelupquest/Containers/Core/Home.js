@@ -184,47 +184,49 @@ class Home extends Component {
           </Right>
         </HeaderComponent>
 
-        <View style={{paddingVertical:30}} />
+        <Content style={{ backgroundColor: '#f3f2f7' }}>
+          <View style={{paddingVertical:30}} />
 
-        <View style={{ margin:20 }}>
+          <View style={{ margin:20 }}>
 
-          <View style={{ flexDirection: 'row'}}>
-            <YAxis
-              data={yAxisData}
-              style={{ }}
-              contentInset={verticalContentInset}
-              svg={axesSvg}
-              />
+            <View style={{ flexDirection: 'row'}}>
+              <YAxis
+                data={yAxisData}
+                style={{ }}
+                contentInset={verticalContentInset}
+                svg={axesSvg}
+                />
 
-            <View style={{ flex: 1}}>
-            <BarChart
-              style={ { height: 200, marginLeft: 10 } }
-              data={ barData }
-              yAccessor={({ item }) => item.value}
-              xAccessor={ ({ item }) => item.date }
-              svg={{
-                  fill: 'green',
-              }}
-              contentInset={verticalContentInset}
-              { ...this.props }>
-                <Grid/>
-            </BarChart>
+              <View style={{ flex: 1}}>
+              <BarChart
+                style={ { height: 200, marginLeft: 10 } }
+                data={ barData }
+                yAccessor={({ item }) => item.value}
+                xAccessor={ ({ item }) => item.date }
+                svg={{
+                    fill: 'green',
+                }}
+                contentInset={verticalContentInset}
+                spacingInner={0.2}
+                { ...this.props }>
+                  <Grid/>
+              </BarChart>
+              </View>
             </View>
+
+          <XAxis
+            style={{ marginHorizontal: 0 }}
+            data={ xAxisData }
+            formatLabel={ (value, index) => index }
+            contentInset={{ left: 35, right: 18 }}
+            svg={{ fontSize: 10, fill: 'black' }}
+            spacingInner={0.2}
+          />
           </View>
 
-        <XAxis
-          style={{ marginHorizontal: 0 }}
-          data={ xAxisData }
-          formatLabel={ (value, index) => index }
-          contentInset={{ left: 35, right: 18 }}
-          svg={{ fontSize: 10, fill: 'black' }}
-        />
-        </View>
-
-        <View style={{paddingVertical:30}} />
+          <View style={{paddingVertical:30}} />
 
 
-        <Content style={{ backgroundColor: '#f3f2f7' }}>
           <List>
             { this.state.userLevel === 'STAFF' &&
               adminOptions.map((option, index) => (
