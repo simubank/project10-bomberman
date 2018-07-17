@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Image, Alert, StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
+import * as Progress from 'react-native-progress'
+
 import {
   Container,
   Header,
@@ -35,6 +37,8 @@ export default class Summary extends Component {
       title: 'Vacation',
       amount: 2000.0,
       date: 'Dec 04 2018',
+      saved: 600.0,
+      percentage: 0.3,
       categories: [
         {
           name: 'Food',
@@ -136,6 +140,9 @@ export default class Summary extends Component {
                   <Text style={{ marginTop: 5, marginBottom: 5 }}>
                     Date: { this.state.date }
                   </Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>
+                    Saved: ${ this.state.saved.toFixed(2) }
+                  </Text>
                 </Body>
               </CardItem>
               <List>
@@ -164,7 +171,15 @@ export default class Summary extends Component {
                 ))}
               </List>
               <CardItem footer bordered>
-                <Text>TD Level Up</Text>
+                <Left>
+                  <Text>Progress: { this.state.percentage * 100 }%</Text>
+                </Left>
+                <Right>
+                  <Progress.Bar progress={this.state.percentage} width={180} height={10} />
+                </Right>
+                {/* <Progress.Pie progress={0.4} size={50} />
+                <Progress.Circle size={30} indeterminate={true} />
+                <Progress.CircleSnail color={['red', 'green', 'blue']} /> */}
               </CardItem>
             </Card>
           </Content>
