@@ -3,7 +3,7 @@ var sample_data = require('./data');
 sample_data = JSON.parse(sample_data);
 sample_data = sample_data['result'];
 
-var filter_categories = ['Fast food'];
+var filter_categories = ['Fast food', 'Salary', 'Rent'];
 var categories = {};
 
 // Initialize the structure
@@ -75,7 +75,7 @@ for (var i = 0; i < filter_categories.length; i++) {
 
     categories[category]['debit_average'] = categories[category]['debit_average'] / categories[category]['debit_n'];
 
-    categories[category]['credit_average'] = categories[category]['credit_average'] / categories[category]['credit_n'];
+    categories[category]['credit_average'] = categories[category]['credit_average'] / categories[category]['credit_n'] * -1;
 
 }
 
