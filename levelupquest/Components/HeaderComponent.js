@@ -24,7 +24,7 @@ class HeaderComponent extends Component {
         <Left style={styles.left}>
           {this.props.goBack && (
             <Button transparent style={styles.backButton} onPress={() => this.goBack()}>
-              <Icon name="arrow-back" style={styles.backIcon}  />
+              <Icon name="arrow-back" style={styles.backIcon} />
             </Button>
           )}
         </Left>
