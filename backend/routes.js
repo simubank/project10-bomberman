@@ -180,7 +180,6 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
     });
 });
 
-
 router.get('/customers/:customerId/limits/:category', function(req, res, next) {
     // Returns the spending limits per category for the customer
 });
