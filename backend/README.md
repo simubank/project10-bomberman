@@ -37,6 +37,15 @@ GET /customers/:customerId/info
 * Returns the information on the customer, basically straight copied from the API
 * Functioning
 
+GET /cashback/:accountId
+* Returns the amount of cashback's the user has received in total
+* TBD
+
+POST /cashback/:accountId
+* Sends a cashback to the account :accountId
+* The cashback amount is set in a dictionary sent with the request in the 'amount' key
+* TBD
+
 ## Uses the Simulants API
 
 GET /customers/

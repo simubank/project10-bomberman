@@ -406,6 +406,69 @@ router.get('/customers/:customerId/info', function(req, res, next) {
 });
 
 
+router.post('/cashback/:accountId', function(req, res, next) {
+
+    // Get the amount of money we need
+    var parsed_body = JSON.parse(req.body);
+
+    // TODO: Error check
+    
+    var money_needed = parsed_body.amount;
+
+    // Options for the request to generate money for our cashback
+    // account
+    var optGenerateMoney = {
+	url: "https://dev.botsfinancial.com/api/transfers",
+	headers: {
+	    'Authorization': auth_key
+	},
+	body: JSON.stringify({"balance": money_needed})
+    };
+    
+    
+
+    // Request options for the determine what our account # is request
+    var optAccountNumber = {
+	url: "https://dev.botsfinancial.com/api/transfers",
+	headers: {
+	    'Authorization': auth_key
+	}
+    };
+
+
+    
+
+    request.get(optAccountNumber, function(errorNumber, responseNumber, bodyNumber) {
+	var parsed_app_account_number = JSON.parse(responseNumber.body).results.id;
+
+	request.patch(optGenerateMoney, function(errorGenerate, responseGenerate, bodyGenerate) {
+
+	    // Now that we've generated the money, we have to do a transfer
+	    
+	    // Request options for the transfer request
+	    var optTransfer = {
+		url: "https://dev.botsfinancial.com/api/transfers",
+		headers: {
+		    'Authorization': auth_key
+		},
+		body: JSON.stringify({amount: money_needed,
+				      currency: 'CAD',
+				      fromAccountID: parsed_app_account_number,
+				      receipt: null, // TODO: What is this supposed to do?
+				      toAccountID: req.params.accountId
+				     })
+	    };
+
+	    request.post(optTransfer, function(errorTransfer, responseTransfer, bodyTransfer) {
+
+	    });
+	});
+	
+    });
+    
+});
+
+
 // Simulants API calls
 router.get('/customers', function(req, res, next) {
     // Returns all the customers
@@ -432,6 +495,7 @@ router.get('/customers', function(req, res, next) {
     });
     
 });
+
 
 router.get('/transactions', function(req, res, next) {
     // Returns all the transactions
