@@ -300,10 +300,22 @@ router.get('/customers/:customerId/spending/withinDays/:days', function(req, res
 
 router.get('/customers/:customerId/limits/:category', function(req, res, next) {
     // Returns the spending limits per category for the customer
+
+    res.send({'result': [],
+	      "errorDetails" : null,
+	      "errorMsg": null,
+	      "statusCode": 501});
+    
 });
 
 router.post('/customers/:customerId/limits/:category', function(req, res, next) {
     // Updates/sets the spending limit for the customer for a certain category
+    
+    res.send({'result': [],
+	      "errorDetails" : null,
+	      "errorMsg": null,
+	      "statusCode": 501});
+    
 });
 
 router.get('/customers/:customerId/categories', function(req, res, next) {
