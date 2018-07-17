@@ -439,6 +439,10 @@ router.get('/customers/transactions', function(req, res, next) {
     // All the transactions of all the customers
     var all_transactions = [];
 
+    // A list of promises each representing a list of transactions
+    // for each user
+    var customer_promises = [];
+
     // Request options
     var opt = {
 	url: "https://dev.botsfinancial.com/api/simulants/",
@@ -462,43 +466,38 @@ router.get('/customers/transactions', function(req, res, next) {
 	    };
 	    
 	    return new Promise((resolve, reject) => {
-		request(transOpt, function(inerror, inresponse, body) {
+		request(transOpt, function(inerror, inresponse, inbody) {
 		    
-		    var parsed_body = JSON.parse(response.body);
+		    var inparsed_body = JSON.parse(inresponse.body);
 		    // TODO: Error check
 		    
 		    // Set the promise's value to the list of transactions for the customer
-		    console.log("A");
-		    Promise.resolve(parsed_body.result);
+		    resolve(inparsed_body.result);
 		});
 	    });
 	}
 	
 	for (var i = 0; i < parsed_body.result.length; i++) {
 	    var customer = parsed_body.result[i];
-	    // All the transactions of the customer
-	    var customer_transactions = getCustomerTransactions(customer.id).then((result) => {
+	    
+	    // Add the promise representing
+	    // all the transactions of the customer
+	    customer_promises.push(getCustomerTransactions(customer.id).then((result) => {
 		console.log(result);
 		return result;
-	    });
-	    console.log(customer_transactions);
-	    console.log(customer.id);
-	    console.log(customer_transactions.length);
-	    console.log("-------");
-	    
+	    }));
 
-	    // Add all transactions to the full list of transactions
-	    // TODO: Is there a nicer way to do this?
-	    for (var j = 0; j < customer_transactions.length; j++) {
-		all_transactions.push(customer_transactions[j]);
-	    }
-	    
 	}
 
-	res.send({'result': all_transactions,
-		  "errorDetails" : null,
-		  "errorMsg": null,
-		  "statusCode" : 200});
+	// We now process all the Promises
+	Promise.all(customer_promises).then(function(values) {
+	    console.log(values);
+	});
+
+	// res.send({'result': all_transactions,
+	// 	  "errorDetails" : null,
+	// 	  "errorMsg": null,
+	// 	  "statusCode" : 200});
     }); // End response
 
 });
