@@ -240,7 +240,18 @@ router.get('/customers/:customerId/categories', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-    res.status(200).send(calculated_averages);
+    res.send({'result': calculated_averages,
+	      "errorDetails" : null,
+	      "errorMsg": null});
+    
+});
+
+
+
+// Catch all other requests, return a 404
+// DO NOT PUT ANY OTHER ROUTES AFTER THIS POINT
+router.get('*', function(req, res, next) {
+    res.sendStatus(404);
 });
 
 module.exports = router;
