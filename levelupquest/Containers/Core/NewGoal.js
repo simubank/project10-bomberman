@@ -27,8 +27,8 @@ import {
   Item,
   Input,
   Label,
-  Footer
-  // DatePicker
+  Footer,
+  DatePicker
 } from 'native-base'
 
 @inject('firebaseStore')
@@ -76,7 +76,7 @@ export default class NewGoal extends Component {
   displayResults() {
     Alert.alert(
       'Goal',
-      'Goal: ' + this.state.goal + '\nAmount: ' + this.state.amount + '\nDeadline: ' + this.state.deadline
+      'Goal: ' + this.state.goal + '\nAmount: ' + this.state.amount + '\nDeadline: ' + this.state.deadline.toString().substr(4, 12)
     )
 
     this.goNext()
@@ -113,25 +113,23 @@ export default class NewGoal extends Component {
                 <Label>Amount</Label>
                 <Input onChangeText={newAmount => this.setState({ amount: newAmount })} />
               </Item>
-              {/* <Item floatingLabel>
-                <Label>Deadline</Label>
-                <Input onChangeText={newDeadline => this.setState({ deadline: newDeadline })} />
-              </Item> */}
-              {/* <DatePicker
-                defaultDate={new Date(2018, 4, 4)}
-                minimumDate={new Date(2018, 1, 1)}
-                maximumDate={new Date(2018, 12, 31)}
-                locale={'en'}
-                timeZoneOffsetInMinutes={undefined}
-                modalTransparent={false}
-                animationType={'fade'}
-                androidMode={'default'}
-                placeHolderText="Select Date"
-                textStyle={{ color: 'green' }}
-                placeHolderTextStyle={{ color: '#d3d3d3' }}
-                onDateChange={this.setDate}
-              />
-              <Text>Date: {this.state.deadline.toString().substr(4, 12)}</Text> */}
+              <View style={{ margin: 20 }}>
+                <DatePicker
+                  defaultDate={new Date(2018, 4, 4)}
+                  minimumDate={new Date(2018, 1, 1)}
+                  maximumDate={new Date(2018, 12, 31)}
+                  locale={'en'}
+                  timeZoneOffsetInMinutes={undefined}
+                  modalTransparent={false}
+                  animationType={'fade'}
+                  androidMode={'default'}
+                  placeHolderText="Select Date"
+                  textStyle={{ color: 'green' }}
+                  placeHolderTextStyle={{ color: '#d3d3d3' }}
+                  onDateChange={this.setDate}
+                />
+                <Text>Date: {this.state.deadline.toString().substr(4, 12)}</Text>
+              </View>
             </Form>
           </Content>
           <Footer style={{ position: 'relative', top: 5 }}>
