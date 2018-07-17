@@ -250,6 +250,34 @@ router.get('/', function(req, res, next) {
 });
 
 
+router.get('/customers/:customerId/info', function(req, res, next) {
+    // Returns info on the customer
+
+    // Request options
+    var opt = {
+	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId,
+	headers: {
+	    'Authorization': auth_key
+	}
+    };
+
+    request(opt, function(error, response, body) {
+	// Response will be the customers information and transactions
+	// the first element of the list will be their personal info
+	var parsed_body = JSON.parse(response.body);
+
+
+	// TODO: Error check to ensure it is a valid id
+	
+	
+	res.send({'result': parsed_body.result[0],
+		  "errorDetails" : null,
+		  "errorMsg": null,
+		  "statusCode" : 200});
+    });
+    
+});
+
 
 // Catch all other requests, return a 404
 // DO NOT PUT ANY OTHER ROUTES AFTER THIS POINT
