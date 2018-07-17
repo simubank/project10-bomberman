@@ -4,6 +4,12 @@ var router = express.Router();
 const request = require('request');
 const auth_key = require('./authkey');
 
+// Get the sample data
+var sample_data = require('./data');
+sample_data = JSON.parse(sample_data);
+sample_data = sample_data['result'];
+
+
 // The calculated averages for the various demographics
 var calculated_averages = [];
 
