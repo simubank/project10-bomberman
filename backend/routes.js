@@ -427,7 +427,11 @@ router.get('/customers/:customerId/info', function(req, res, next) {
 	var parsed_body = JSON.parse(response.body);
 
 
-	// TODO: Error check to ensure it is a valid id
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
 	
 	
 	res.send({'result': parsed_body.result[0],
@@ -493,6 +497,15 @@ router.post('/cashback/:accountId', function(req, res, next) {
 	    };
 
 	    request.post(optTransfer, function(errorTransfer, responseTransfer, bodyTransfer) {
+
+		var parsed_bodyTransfer = JSON.parse(bodyTransfer);
+		
+		if (parsed_bodyTransfer.statusCode != 200) {
+		    // Error in processing
+		    res.send(parsed_body);
+		    return;
+		}
+
 
 	    });
 	});
