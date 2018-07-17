@@ -74,12 +74,15 @@ export default class NewGoal extends Component {
   }
 
   displayResults() {
-    Alert.alert(
-      'Goal',
-      'Goal: ' + this.state.title + '\nAmount: ' + this.state.amount + '\nDeadline: ' + this.state.deadline.toString().substr(4, 12)
-    )
+    Toast.show({
+      text: 'Goal: ' + this.state.title + '\nAmount: ' + this.state.amount + '\nDeadline: ' + this.state.deadline.toString().substr(4, 12),
+      buttonText: 'Okay',
+      duration: 2000
+    })
 
-    this.goNext()
+    setTimeout(() => {
+      this.goNext()
+    }, 500)
   }
 
   render() {

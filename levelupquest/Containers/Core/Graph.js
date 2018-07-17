@@ -1,4 +1,4 @@
-import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer } from 'native-base'
+import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer, Toast } from 'native-base'
 import React, { Component } from 'react'
 import { Dimensions, StatusBar, StyleSheet, View, Alert } from 'react-native'
 import { connect } from 'react-redux'
@@ -110,9 +110,15 @@ export default class Graph extends Component {
   }
 
   displayResults() {
-    Alert.alert('Graph', 'Summary')
+    Toast.show({
+      text: 'Graph',
+      buttonText: 'Okay',
+      duration: 2000
+    })
 
-    this.goNext()
+    setTimeout(() => {
+      this.goNext()
+    }, 500)
   }
 
   render() {

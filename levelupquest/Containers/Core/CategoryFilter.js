@@ -119,9 +119,15 @@ export default class CategoryFilter extends Component {
       return filter.selected
     })
 
-    Alert.alert('Category Filter', 'Categories: ' + categories.length + '\nFilters: ' + filters.length)
+    Toast.show({
+      text: 'Categories: ' + categories.length + '\nFilters: ' + filters.length,
+      buttonText: 'Okay',
+      duration: 2000
+    })
 
-    this.goNext()
+    setTimeout(() => {
+      this.goNext()
+    }, 500)
   }
 
   render() {

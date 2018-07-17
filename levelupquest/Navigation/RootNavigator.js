@@ -3,7 +3,6 @@ import { addNavigationHelpers, StackNavigator, NavigationActions } from 'react-n
 import Home from '../Containers/Core/Home'
 
 import NewGoal from '../Containers/Core/NewGoal'
-import Progress from '../Containers/Core/Progress'
 import Rewards from '../Containers/Core/Rewards'
 import Settings from '../Containers/Core/Settings'
 
@@ -21,9 +20,6 @@ export const AppNavigator = StackNavigator(
     },
     NewGoal: {
       screen: NewGoal
-    },
-    Progress: {
-      screen: Progress
     },
     Rewards: {
       screen: Rewards

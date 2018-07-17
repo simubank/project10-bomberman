@@ -24,7 +24,7 @@ const menuOptions = [
     name: 'Progress',
     icon: 'ios-cart-outline',
     iconSet: 'Ionicons',
-    screen: 'Progress',
+    screen: 'Summary',
     color: '#b3b300'
   },
   {
@@ -59,26 +59,6 @@ export default class Home extends Component {
       userSelectModalVisible: true,
       userLevel: ''
     }
-  }
-
-  setUserLevel(userLevel) {
-    this.state.userLevel = userLevel
-
-    if (this.state.userLevel === 'STAFF') {
-      this.props.firebaseStore.pushNotificationCustomerNeedsHelp()
-      console.log('Staff level set')
-    } else if (this.state.userLevel === 'CUSTOMER') {
-      this.props.firebaseStore.pushNotificationAdminRespondingToHelp()
-      this.props.firebaseStore.updateCustomerStatus('2001', 'ONLINE')
-      console.log('Customer level set')
-    } else {
-      this.props.firebaseStore.pushNotificationCustomerNeedsHelp()
-      this.props.firebaseStore.pushNotificationAdminRespondingToHelp()
-    }
-    this.state.pushListenersCreated = true
-    this.state.userSelectModalVisible = false
-
-    this.setState({})
   }
 
   _renderIcon({ icon, iconSet, color }, size = 50) {

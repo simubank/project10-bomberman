@@ -34,7 +34,27 @@ export default class Summary extends Component {
     this.state = {
       title: 'Vacation',
       amount: 2000.0,
-      date: 'Dec 04 2018'
+      date: 'Dec 04 2018',
+      categories: [
+        {
+          name: 'Food',
+          amount: 284.21,
+          selected: false,
+          target: 200.0
+        },
+        {
+          name: 'Entertainment',
+          amount: 282.44,
+          selected: false,
+          target: 100.0
+        },
+        {
+          name: 'Retail',
+          amount: 207.12,
+          selected: false,
+          target: 150.0
+        }
+      ]
     }
 
     this.initData()
@@ -54,6 +74,26 @@ export default class Summary extends Component {
 
   goBack() {
     this.props.navigation.pop()
+  }
+
+  goHome() {
+    this.props.navigation.navigate('Home')
+  }
+
+  goNext() {
+    this.props.navigation.navigate('Home')
+  }
+
+  displayResults() {
+    Toast.show({
+      text: 'Summary',
+      buttonText: 'Okay',
+      duration: 2000
+    })
+
+    setTimeout(() => {
+      this.goNext()
+    }, 500)
   }
 
   render() {
@@ -94,9 +134,12 @@ export default class Summary extends Component {
               </CardItem>
               <CardItem bordered>
                 <Body>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>
-                    Category 1: Retail – $100.00
-                  </Text>
+                  {this.state.categories.map((category, index) => (
+                    <View key={index} style={{ marginTop: 5, marginBottom: 5 }}>
+                      <Text>{index + 1}. {category.name}</Text>
+                      <Text>${category.amount.toFixed(2)} -> ${category.target.toFixed(2)}</Text>
+                    </View>
+                  ))}
                 </Body>
               </CardItem>
               <CardItem footer bordered>
