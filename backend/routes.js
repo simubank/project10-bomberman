@@ -482,22 +482,19 @@ router.get('/customers/transactions', function(req, res, next) {
 	    
 	    // Add the promise representing
 	    // all the transactions of the customer
-	    customer_promises.push(getCustomerTransactions(customer.id).then((result) => {
-		console.log(result);
-		return result;
-	    }));
-
+	    customer_promises.push(getCustomerTransactions(customer.id));
 	}
 
-	// We now process all the Promises
+	// We now wait for all the Promises to finish processing
+	// and send them
 	Promise.all(customer_promises).then(function(values) {
-	    console.log(values);
+	    res.send({'result': values,
+		      "errorDetails" : null,
+		      "errorMsg": null,
+		      "statusCode" : 200});
 	});
 
-	// res.send({'result': all_transactions,
-	// 	  "errorDetails" : null,
-	// 	  "errorMsg": null,
-	// 	  "statusCode" : 200});
+	
     }); // End response
 
 });
