@@ -577,6 +577,11 @@ router.get('/transactions', function(req, res, next) {
 	    
 	    return new Promise((resolve, reject) => {
 		request(transOpt, function(inerror, inresponse, inbody) {
+
+		    if (inresponse == null || inresponse == undefined || inerror != null) {
+			resolve([]); // TODO: Fix this
+			return;
+		    }
 		    
 		    var inparsed_body = JSON.parse(inresponse.body);
 		    // TODO: Error check
@@ -593,6 +598,12 @@ router.get('/transactions', function(req, res, next) {
 	    // Add the promise representing
 	    // all the transactions of the customer
 	    customer_promises.push(getCustomerTransactions(customer.id));
+
+	    // TODO: Sample mode, comment out for full results
+	    if (i == 200) {
+		break;
+	    }
+	    
 	}
 
 	// We now wait for all the Promises to finish processing
