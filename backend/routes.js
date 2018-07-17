@@ -433,7 +433,7 @@ router.get('/customers', function(req, res, next) {
     
 });
 
-router.get('/customers/transactions', function(req, res, next) {
+router.get('/transactions', function(req, res, next) {
     // Returns all the transactions
 
     // All the transactions of all the customers

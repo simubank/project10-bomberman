@@ -37,14 +37,13 @@ GET /customers/:customerId/info
 * Returns the information on the customer, basically straight copied from the API
 * Functioning
 
----
 ## Uses the Simulants API
 
 GET /customers/
 * Get all customers
 * TBD
 
-GET /customers/transactions
+GET /transactions
 * Get all the transactions for all customers
 * TBD
 
