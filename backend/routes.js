@@ -74,6 +74,12 @@ router.get('/customers/:customerId/spending/category/:category', function(req, r
 	var net_change = 0;
 	var parsed_body = JSON.parse(response.body);
 
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
+
 	// Filter for dates that have passed
 	var now_date = new Date();
 
@@ -134,6 +140,12 @@ router.get('/customers/:customerId/spending/category/:category/withinDays/:days'
 	var credits = 0;
 	var net_change = 0;
 	var parsed_body = JSON.parse(response.body);
+
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
 
 	var now_date = new Date();
 	
@@ -197,6 +209,12 @@ router.get('/customers/:customerId/spending', function(req, res, next) {
 	var net_change = 0;
 	var parsed_body = JSON.parse(response.body);
 
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
+
 	var now_date = new Date();
 	
 	for (var i = 0; i < parsed_body.result.length; i++) {
@@ -255,6 +273,12 @@ router.get('/customers/:customerId/spending/withinDays/:days', function(req, res
 	var credits = 0;
 	var net_change = 0;
 	var parsed_body = JSON.parse(response.body);
+
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
 
 	var now_date = new Date();
 	
@@ -318,6 +342,9 @@ router.post('/customers/:customerId/limits/:category', function(req, res, next) 
 router.get('/customers/:customerId/spending/categories', function(req, res, next) {
     // Returns all the categories of transactions by a certain customer for transactions that have passed
 
+    // Fails on customer 433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_3037469e-356e-4cad-a50a-6ec8e7752d12
+    // Account ID? TODO
+    
     // Request options
     var opt = {
 	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
@@ -331,6 +358,12 @@ router.get('/customers/:customerId/spending/categories', function(req, res, next
 	// We then get the unique categories
 	var transaction_categories = [];
 	var parsed_body = JSON.parse(response.body);
+
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
 
 	var now_date = new Date();
 	
