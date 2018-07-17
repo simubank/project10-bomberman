@@ -75,10 +75,9 @@ export default class Summary extends Component {
   async initData() {
     try {
       await this.props.firebaseStore.getCustomers()
-
-      console.log(this.props.firebaseStore.customers)
+      // console.log(this.props.firebaseStore.customers)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
 
@@ -177,9 +176,6 @@ export default class Summary extends Component {
                 <Right>
                   <Progress.Bar progress={this.state.percentage} width={180} height={10} />
                 </Right>
-                {/* <Progress.Pie progress={0.4} size={50} />
-                <Progress.Circle size={30} indeterminate={true} />
-                <Progress.CircleSnail color={['red', 'green', 'blue']} /> */}
               </CardItem>
             </Card>
           </Content>

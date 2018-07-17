@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Image, StyleSheet, View, Alert } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import _ from 'lodash'
+import axios from 'axios'
+
 import {
   Container,
   Header,
@@ -86,18 +88,42 @@ export default class CategoryFilter extends Component {
 
     this.initData()
 
+    this.getCategoryData()
+
     this.goBack = this.goBack.bind(this)
   }
 
   async initData() {
     try {
       await this.props.firebaseStore.getCustomers()
-
-      console.log(this.props.firebaseStore.customers)
+      // console.log(this.props.firebaseStore.customers)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
+
+  getCategoryData() {
+    const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_6c8434d3-9d00-45d9-83d6-5c87cc97cdd8'
+    const url = 'http://localhost:3000/customers/' + customerID + '/spending/categories'
+
+    axios
+      .get(url)
+      .then(res => {
+        console.log('success')
+        console.log(res)
+      })
+      .catch(res => {
+        console.log('error')
+        console.log(res)
+      })
+  }
+
+  // getCategoryAmount() {
+  //   const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_6c8434d3-9d00-45d9-83d6-5c87cc97cdd8'
+  //   const category = 'Category'
+  //   const days = 3
+  //   const url = 'http://localhost:3000/customers/' + customerID + '/spending/category/' + category + '/withinDays/' + days
+  // }
 
   goBack() {
     this.props.navigation.pop()

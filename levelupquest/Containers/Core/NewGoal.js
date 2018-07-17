@@ -54,10 +54,9 @@ export default class NewGoal extends Component {
   async initData() {
     try {
       await this.props.firebaseStore.getCustomers()
-
-      console.log(this.props.firebaseStore.customers)
+      // console.log(this.props.firebaseStore.customers)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
 
