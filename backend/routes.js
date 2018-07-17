@@ -113,7 +113,8 @@ router.get('/customers/:customerId/spending/:category', function(req, res, next)
 			     'credits': credits,
 			     'net': net_change},
 		  "errorDetails" : null,
-		  "errorMsg": null});
+		  "errorMsg": null,
+		  "statusCode": 200});
     });
 });
 
@@ -174,7 +175,8 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
 			     'credits': credits,
 			     'net': net_change},
 		  "errorDetails" : null,
-		  "errorMsg": null});
+		  "errorMsg": null,
+		  "statusCode": 200});
     });
 });
 
@@ -234,7 +236,8 @@ router.get('/customers/:customerId/categories', function(req, res, next) {
 
 	res.send({'result': transaction_categories,
 		  "errorDetails" : null,
-		  "errorMsg": null});
+		  "errorMsg": null,
+		  "statusCode" : 200});
     });
     
 });
@@ -242,7 +245,8 @@ router.get('/customers/:customerId/categories', function(req, res, next) {
 router.get('/', function(req, res, next) {
     res.send({'result': calculated_averages,
 	      "errorDetails" : null,
-	      "errorMsg": null});
+	      "errorMsg": null,
+	      "statusCode": 200});
     
 });
 
@@ -251,7 +255,10 @@ router.get('/', function(req, res, next) {
 // Catch all other requests, return a 404
 // DO NOT PUT ANY OTHER ROUTES AFTER THIS POINT
 router.get('*', function(req, res, next) {
-    res.sendStatus(404);
+    res.send({'result': [],
+	      "errorDetails" : null,
+	      "errorMsg": null,
+	      "statusCode": 404});
 });
 
 module.exports = router;
