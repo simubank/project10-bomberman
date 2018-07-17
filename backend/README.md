@@ -1,7 +1,7 @@
 
 
 GET /customers/:customerId/spending/:category
- * The amount of spending by the customer within the category overall
+ * The amount of spending by the customer within the category overall for transactions that have already passed
  * Functioning, untested
 
 GET /customers/:customerId/spending/:category/withinDays/:days
@@ -15,3 +15,6 @@ GET /customers/:customerId/limits/:category
 POST /customers/:customerId/limits/:category
  * Updates/sets the spending limit for the customer for a certain category
  * TBD
+
+GET /customers/:customerId/categories
+* Returns all the categories of transactions by a certain customer for transactions that have already passed
