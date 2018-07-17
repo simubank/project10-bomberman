@@ -180,6 +180,65 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
     });
 });
 
+router.get('/customers/:customerId/spending/withinDays/:days', function(req, res, next) {
+    // Calculates the spending done by the customer in a certain category within the past <days> number of days
+
+    // Request options
+    var opt = {
+	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
+	headers: {
+	    'Authorization': auth_key
+	}
+    };
+
+    
+    request(opt, function(error, response, body) {
+	// Response will be a list of the customer's transactions
+	// We then calculate the debits and credits
+	var debits = 0;
+	var credits = 0;
+	var net_change = 0;
+	var parsed_body = JSON.parse(response.body);
+
+	var now_date = new Date();
+	
+	for (var i = 0; i < parsed_body.result.length; i++) {
+	    var transaction = parsed_body.result[i];
+	    
+
+	    // Filter for dates
+	    var transaction_date = Date.parse(transaction.originationDate);
+	    
+	    var date_difference = now_date - transaction_date;
+	    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
+	    
+	    
+	    
+	    if (date_difference > Number(req.params.days) || date_difference < 0) {
+		    // Date is more than <days> days ago
+		continue;
+	    }
+	    
+	    var transaction_amount = transaction.currencyAmount;
+	    if (transaction_amount < 0) {
+		credits = credits + (-1 * transaction_amount);
+	    } else {
+		debits = debits + transaction_amount;
+	    }
+	}
+	
+	net_change = debits - credits;
+
+	res.send({'result': {'debits': debits,
+			     'credits': credits,
+			     'net': net_change},
+		  "errorDetails" : null,
+		  "errorMsg": null,
+		  "statusCode": 200});
+    });
+});
+
+
 router.get('/customers/:customerId/limits/:category', function(req, res, next) {
     // Returns the spending limits per category for the customer
 });
