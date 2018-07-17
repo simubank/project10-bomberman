@@ -1,54 +1,13 @@
 import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer } from 'native-base'
 import React, { Component } from 'react'
-import { Dimensions, Image, View, StatusBar } from 'react-native'
+import { Dimensions, StatusBar, StyleSheet, View, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import Modal from 'react-native-modal'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { inject, observer } from 'mobx-react'
 import { BarChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 
-// Styles
-import styles from './Styles/HomeScreenStyle'
 import HeaderComponent from '../../Components/HeaderComponent'
-
-const adminOptions = [
-  {
-    name: 'Customer List',
-    icon: 'ios-people-outline',
-    iconSet: 'Ionicons',
-    screen: 'CustomerList',
-    color: 'red'
-  }
-]
-
-const workingOptions = [
-  {
-    name: 'Shopping Cart',
-    icon: 'ios-cart-outline',
-    iconSet: 'Ionicons',
-    screen: 'ShoppingCart',
-    color: '#b3b300'
-  },
-  {
-    name: 'Scan Barcode',
-    icon: 'ios-barcode-outline',
-    iconSet: 'Ionicons',
-    screen: 'CaptureScreen',
-    color: 'green'
-  },
-  {
-    name: 'Capture Product',
-    icon: 'ios-camera-outline',
-    iconSet: 'Ionicons',
-    screen: 'CaptureProduct',
-    color: 'blue'
-  }
-]
-
-const horizontalMargin = 20
-const slideWidth = 280
-const sliderWidth = Dimensions.get('window').width
-const itemWidth = slideWidth + horizontalMargin * 2
 
 const yAxisData = [ 14, 1, 100, 95, 94, 24, 8, 85, 91, 35, 53, 53, 78 ]
 const xAxisData = [
@@ -128,7 +87,7 @@ const axesSvg = { fontSize: 10, fill: 'grey' };
 const verticalContentInset = { top: 10, bottom: 10 }
 
 @inject('firebaseStore')
-class Home extends Component {
+export default class Graph extends Component {
   constructor(props) {
     super(props)
 
@@ -138,40 +97,22 @@ class Home extends Component {
     }
   }
 
-  setUserLevel(userLevel) {
-    this.state.userLevel = userLevel
-
-    if (this.state.userLevel === 'STAFF') {
-      this.props.firebaseStore.pushNotificationCustomerNeedsHelp()
-      console.log('Staff level set')
-    } else if (this.state.userLevel === 'CUSTOMER') {
-      this.props.firebaseStore.pushNotificationAdminRespondingToHelp()
-      this.props.firebaseStore.updateCustomerStatus('2001', 'ONLINE')
-      console.log('Customer level set')
-    } else {
-      this.props.firebaseStore.pushNotificationCustomerNeedsHelp()
-      this.props.firebaseStore.pushNotificationAdminRespondingToHelp()
-    }
-    this.state.pushListenersCreated = true
-    this.state.userSelectModalVisible = false
-
-    this.setState({})
+  goBack() {
+    this.props.navigation.pop()
   }
 
-  _renderIcon({ icon, iconSet, color }, size = 50) {
-    switch (iconSet) {
-      case 'Entypo':
-        return <Entypo name={icon} size={size} color="green" />
-      case 'SimpleLineIcons':
-        return <SimpleLineIcons name={icon} size={size} color="green" />
-      case 'FontAwesome':
-        return <FontAwesome name={icon} size={size} color="green" />
-      case 'Feather':
-        return <Feather name={icon} size={size} color="green" />
-      case 'Ionicons':
-      default:
-        return <Ionicons name={icon} size={size} color={color} />
-    }
+  goHome() {
+    this.props.navigation.navigate('Home')
+  }
+
+  goNext() {
+    this.props.navigation.navigate('Summary')
+  }
+
+  displayResults() {
+    Alert.alert('Graph', 'Summary')
+
+    this.goNext()
   }
 
   render() {
@@ -225,72 +166,24 @@ class Home extends Component {
           </View>
 
           <View style={{paddingVertical:30}} />
-
-
-          <List>
-            { this.state.userLevel === 'STAFF' &&
-              adminOptions.map((option, index) => (
-              <ListItem
-                last
-                key={index}
-                style={{ flexDirection: 'column', backgroundColor: '#fff' }}
-                onPress={() => this.props.navigation.navigate(option.screen)}
-              >
-                <Left style={styles.iconWrapper}>
-                  <View style={styles.iconWrapper}>{this._renderIcon(option)}</View>
-                </Left>
-                <Body>
-                  <Text>{option.name}</Text>
-                </Body>
-              </ListItem>
-            ))}
-
-            { workingOptions.map((option, index) => (
-              <ListItem
-                last
-                key={index}
-                style={{ flexDirection: 'column', backgroundColor: '#fff' }}
-                onPress={() => this.props.navigation.navigate(option.screen)}
-              >
-                <Left style={styles.iconWrapper}>
-                  <View style={styles.iconWrapper}>{this._renderIcon(option)}</View>
-                </Left>
-                <Body>
-                  <Text>{option.name}</Text>
-                </Body>
-              </ListItem>
-            ))}
-            <ListItem itemDivider />
-          </List>
-
-          <Modal
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-            onBackdropPress={ () => { this.state.customerInfoVisible = false } }
-            onSwipe={() => { this.state.customerInfoVisible = false }}
-            swipeDirection='down'
-            backdropColor={'black'}
-            backdropOpacity={0.9}
-            isVisible={this.state.userSelectModalVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.')
-            }}>
-
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Button success block onPress={ () => { this.setUserLevel('STAFF') }}>
-                <Text>Staff</Text>
-              </Button>
-              <View style={{paddingVertical:20}} />
-              <Button success block onPress={ () => { this.setUserLevel('CUSTOMER') }}>
-                <Text>Customer</Text>
-              </Button>
-            </View>
-          </Modal>
         </Content>
+        <Footer style={{ position: 'relative', top: 5 }}>
+          <Button full success style={styles.fullBtn} onPress={() => this.displayResults()}>
+            <Text style={styles.fullBtnTxt}>CONTINUE</Text>
+          </Button>
+        </Footer>
       </Container>
     )
   }
 }
-export default Home
+
+const styles = StyleSheet.create({
+  fullBtn: {
+    height: 50,
+    width: '100%'
+  },
+  fullBtnTxt: {
+    fontSize: 18,
+    letterSpacing: 1
+  }
+})

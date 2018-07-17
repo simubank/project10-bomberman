@@ -38,7 +38,7 @@ export default class NewGoal extends Component {
     super(props)
 
     this.state = {
-      goal: '',
+      title: '',
       amount: 0,
       deadline: new Date()
     }
@@ -76,7 +76,7 @@ export default class NewGoal extends Component {
   displayResults() {
     Alert.alert(
       'Goal',
-      'Goal: ' + this.state.goal + '\nAmount: ' + this.state.amount + '\nDeadline: ' + this.state.deadline.toString().substr(4, 12)
+      'Goal: ' + this.state.title + '\nAmount: ' + this.state.amount + '\nDeadline: ' + this.state.deadline.toString().substr(4, 12)
     )
 
     this.goNext()
@@ -107,7 +107,7 @@ export default class NewGoal extends Component {
             <Form>
               <Item floatingLabel>
                 <Label>Goal</Label>
-                <Input onChangeText={newGoal => this.setState({ goal: newGoal })} />
+                <Input onChangeText={newTitle => this.setState({ title: newTitle })} />
               </Item>
               <Item floatingLabel>
                 <Label>Amount</Label>

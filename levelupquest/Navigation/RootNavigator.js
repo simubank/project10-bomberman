@@ -9,6 +9,7 @@ import Settings from '../Containers/Core/Settings'
 
 import CategoryFilter from '../Containers/Core/CategoryFilter'
 import Graph from '../Containers/Core/Graph'
+import Summary from '../Containers/Core/Summary'
 
 import { observer } from 'mobx-react'
 
@@ -35,6 +36,9 @@ export const AppNavigator = StackNavigator(
     },
     Graph: {
       screen: Graph
+    },
+    Summary: {
+      screen: Summary
     }
   },
   {

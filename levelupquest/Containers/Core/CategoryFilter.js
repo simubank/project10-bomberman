@@ -67,16 +67,19 @@ export default class CategoryFilter extends Component {
           name: 'Age'
         },
         {
-          name: 'Location'
-        },
-        {
           name: 'Gender'
         },
         {
           name: 'Occupation'
         },
         {
+          name: 'Relationship Status'
+        },
+        {
           name: 'Habitation'
+        },
+        {
+          name: 'Municipality'
         }
       ]
     }
@@ -104,6 +107,10 @@ export default class CategoryFilter extends Component {
     this.props.navigation.navigate('Home')
   }
 
+  goNext() {
+    this.props.navigation.navigate('Graph')
+  }
+
   displayResults() {
     const categories = _.filter(this.state.categories, category => {
       return category.selected
@@ -111,12 +118,10 @@ export default class CategoryFilter extends Component {
     const filters = _.filter(this.state.filters, filter => {
       return filter.selected
     })
-    console.log(categories)
-    console.log(filters)
 
     Alert.alert('Category Filter', 'Categories: ' + categories.length + '\nFilters: ' + filters.length)
 
-    this.goHome()
+    this.goNext()
   }
 
   render() {
