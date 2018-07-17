@@ -211,7 +211,7 @@ router.get('/customers/:customerId/categories', function(req, res, next) {
 	    
 	    for (var j = 0; j < transaction.categoryTags.length; j++) {
 		var transaction_category = transaction.categoryTags[j];
-		if (transaction_categories.includes(transaction_category)) {
+		if (!transaction_categories.includes(transaction_category)) {
 		    // If the category tag is not yet accounted for
 		    
 		    // Filter for dates
