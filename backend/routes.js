@@ -52,12 +52,9 @@ router.get('/stats', function(req, res, next) {
     
 });
 
-router.get('/customers/:customerId', function(req, res, next) {
-    // TODO: Update this later
-    res.sendStatus(404);
-});
 
-router.get('/customers/:customerId/spending/:category', function(req, res, next) {
+
+router.get('/customers/:customerId/spending/category/:category', function(req, res, next) {
     // Calculates the overall spending done by the customer in a certain category for transactions that have already passed
 
     // Request options
@@ -118,7 +115,7 @@ router.get('/customers/:customerId/spending/:category', function(req, res, next)
     });
 });
 
-router.get('/customers/:customerId/spending/:category/withinDays/:days', function(req, res, next) {
+router.get('/customers/:customerId/spending/category/:category/withinDays/:days', function(req, res, next) {
     // Calculates the spending done by the customer in a certain category within the past <days> number of days
 
     // Request options
@@ -409,12 +406,115 @@ router.get('/customers/:customerId/info', function(req, res, next) {
 });
 
 
+// Simulants API calls
+router.get('/customers', function(req, res, next) {
+    // Returns all the customers
+
+    // Request options
+    var opt = {
+	url: "https://dev.botsfinancial.com/api/simulants/",
+	headers: {
+	    'Authorization': auth_key
+	}
+    };
+
+    request(opt, function(error, response, body) {
+	// Response will be the customers information and transactions
+	// the first element of the list will be their personal info
+	var parsed_body = JSON.parse(response.body);
+
+
+	
+	res.send({'result': parsed_body.result,
+		  "errorDetails" : null,
+		  "errorMsg": null,
+		  "statusCode" : 200});
+    });
+    
+});
+
+router.get('/customers/transactions', function(req, res, next) {
+    // Returns all the transactions
+
+    // All the transactions of all the customers
+    var all_transactions = [];
+
+    // Request options
+    var opt = {
+	url: "https://dev.botsfinancial.com/api/simulants/",
+	headers: {
+	    'Authorization': auth_key
+	}
+    };
+
+    request(opt, function(error, response, body) {
+	// Response will be the customers information and transactions
+	// the first element of the list will be their personal info
+	var parsed_body = JSON.parse(response.body);
+	
+	function getCustomerTransactions(customerId) {
+	    // Returns a promise whose value is the list of transactions for customerId
+	    var transOpt = {
+		url: "https://dev.botsfinancial.com/api/simulants/" + customerId + "/simulatedtransactions",
+		headers: {
+		    'Authorization': auth_key
+		}
+	    };
+	    
+	    return new Promise((resolve, reject) => {
+		request(transOpt, function(inerror, inresponse, body) {
+		    
+		    var parsed_body = JSON.parse(response.body);
+		    // TODO: Error check
+		    
+		    // Set the promise's value to the list of transactions for the customer
+		    console.log("A");
+		    Promise.resolve(parsed_body.result);
+		});
+	    });
+	}
+	
+	for (var i = 0; i < parsed_body.result.length; i++) {
+	    var customer = parsed_body.result[i];
+	    // All the transactions of the customer
+	    var customer_transactions = getCustomerTransactions(customer.id).then((result) => {
+		console.log(result);
+		return result;
+	    });
+	    console.log(customer_transactions);
+	    console.log(customer.id);
+	    console.log(customer_transactions.length);
+	    console.log("-------");
+	    
+
+	    // Add all transactions to the full list of transactions
+	    // TODO: Is there a nicer way to do this?
+	    for (var j = 0; j < customer_transactions.length; j++) {
+		all_transactions.push(customer_transactions[j]);
+	    }
+	    
+	}
+
+	res.send({'result': all_transactions,
+		  "errorDetails" : null,
+		  "errorMsg": null,
+		  "statusCode" : 200});
+    }); // End response
+
+});
+
+// Debug follow up routes
+router.get('/customers/:customerId', function(req, res, next) {
+    // TODO: Update this later
+    res.sendStatus(404);
+});
+
 // Catch all other requests, return a 404
 // DO NOT PUT ANY OTHER ROUTES AFTER THIS POINT
 router.get('*', function(req, res, next) {
     res.send({'result': [],
 	      "errorDetails" : null,
-	      "errorMsg": null,
+	      "errorMsg": "Not Found",
 	      "statusCode": 404});
 });
 
