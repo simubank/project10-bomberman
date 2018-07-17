@@ -62,19 +62,7 @@ export default class Home extends Component {
   }
 
   _renderIcon({ icon, iconSet, color }, size = 50) {
-    switch (iconSet) {
-      case 'Entypo':
-        return <Entypo name={icon} size={size} color="green" />
-      case 'SimpleLineIcons':
-        return <SimpleLineIcons name={icon} size={size} color="green" />
-      case 'FontAwesome':
-        return <FontAwesome name={icon} size={size} color="green" />
-      case 'Feather':
-        return <Feather name={icon} size={size} color="green" />
-      case 'Ionicons':
-      default:
-        return <Ionicons name={icon} size={size} color={color} />
-    }
+    return <Ionicons name={icon} size={size} color={color} />
   }
 
   render() {
