@@ -1,4 +1,7 @@
+API Documentation
+===
 
+## Uses only the Bank API
 
 GET /customers/:customerId/spending/:category
  * The amount of spending by the customer within the category overall for transactions that have already passed
@@ -33,3 +36,12 @@ GET /customers/:customerId/categories
 GET /customers/:customerId/info
 * Returns the information on the customer, basically straight copied from the API
 * Functioning
+
+---
+## Uses the Simulants API
+
+GET /metrics/...
+* TBD
+
+## Implementation Details
+* Express with Node.js
