@@ -180,8 +180,8 @@ router.get('/customers/:customerId/spending/:category/withinDays/:days', functio
     });
 });
 
-router.get('/customers/:customerId/spending/withinDays/:days', function(req, res, next) {
-    // Calculates the spending done by the customer in a certain category within the past <days> number of days
+router.get('/customers/:customerId/spending', function(req, res, next) {
+    // Calculates the spending done by the customer
 
     // Request options
     var opt = {
