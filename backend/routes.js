@@ -315,7 +315,7 @@ router.post('/customers/:customerId/limits/:category', function(req, res, next) 
     
 });
 
-router.get('/customers/:customerId/categories', function(req, res, next) {
+router.get('/customers/:customerId/spending/categories', function(req, res, next) {
     // Returns all the categories of transactions by a certain customer for transactions that have passed
 
     // Request options

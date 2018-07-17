@@ -29,7 +29,7 @@ POST /customers/:customerId/limits/:category
  * Updates/sets the spending limit for the customer for a certain category
  * TBD
 
-GET /customers/:customerId/categories
+GET /customers/:customerId/spending/categories
 * Returns all the categories of transactions by a certain customer for transactions that have already passed
 * Functioning, untested
 
