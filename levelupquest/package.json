@@ -11,7 +11,7 @@
     "precommit": "npm run eslint-check && npm run lint"
   },
   "dependencies": {
-    "@ptomasroos/react-native-multi-slider": "^0.0.14",
+    "@ptomasroos/react-native-multi-slider": "0.0.14",
     "axios": "^0.18.0",
     "currency-formatter": "^1.4.2",
     "decimal.js": "^10.0.1",
