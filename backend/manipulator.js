@@ -19,7 +19,7 @@ for (var i = 0; i < filter_categories.length; i++) {
 }
 
 function isDebit(transaction) {
-    if (transaction.currencyAmount < 0) {
+    if (transaction.currencyAmount > 0) {
 	return false;
     } else {
 	return true;
@@ -37,6 +37,13 @@ for (var i = 0; i < sample_data.length; i++) {
     for (var j = 0; j < user_array.length; j++) {
 	// Iterate over each transaction for the user
 	var transaction = user_array[j];
+
+	if (transaction.type == "CreditCardTransaction") {
+	    if (transaction.categoryTags.includes('Salary')) {
+		console.log("AAAAAAAAAAA");
+	    }
+	    transaction.currencyAmount = transaction.currencyAmount * -1;
+	}
 
 	if (isDebit(transaction)) {
 	    overall_debit = overall_debit + transaction.currencyAmount;
