@@ -11,17 +11,10 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider'
 import HeaderComponent from '../../Components/HeaderComponent'
 
 
-const horizontalMargin = 20
-const slideWidth = 280
-const sliderWidth = Dimensions.get('window').width
-const itemWidth = slideWidth + horizontalMargin * 2
-
-
 const randomColor = () => ('#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '000000').slice(0, 7)
 
 const yAxisData = [ 14, 1, 100, 95, 94, 24, 8 ]
 const xAxisLabels = [ 'Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks' ]
-
 
 const axesSvg = { fontSize: 10, fill: 'grey' };
 const verticalContentInset = { top: 10, bottom: 10 }
@@ -37,7 +30,7 @@ export default class Graph extends Component {
       selectedCategoryIndex: 0,
       selectedCategoryValue: [],
       barData: this.setData(),
-      showBarGraph: true,
+      showSlider: false,
       graphMin: 0,
       graphMax: 0,
       originalTotalSpending: 0,
@@ -124,11 +117,11 @@ export default class Graph extends Component {
   }
 
   selectGraphCategory = (value, index) => {
-    // console.log(this.state.barData)
-    // console.log(value, index)
-    // let selectedCategoryValue = [value]
-    let selectedCategoryValue = [this.state.barData[0].data[index].value]
+    if(!this.state.showSlider) {
+      this.setState({ showSlider: true })
+    }
 
+    let selectedCategoryValue = [this.state.barData[0].data[index].value]
     let sliderLabel = xAxisLabels[index]
 
     this.setState({ selectedCategoryIndex: index })
@@ -178,33 +171,30 @@ export default class Graph extends Component {
           </View>
 
           <View style={{ margin:20 }}>
+            <View style={{ flexDirection: 'row'}}>
+              <YAxis
+                data={ [this.state.graphMin, this.state.graphMax] }
+                style={{ }}
+                contentInset={verticalContentInset}
+                svg={axesSvg}
+                />
 
-            { this.state.showBarGraph &&
-              <View style={{ flexDirection: 'row'}}>
-                <YAxis
-                  data={ [this.state.graphMin, this.state.graphMax] }
-                  style={{ }}
+              <View style={{ flex: 1}}>
+                <BarChart
+                  style={ { height: 200, marginLeft: 10 } }
+                  data={ this.state.barData }
+                  yAccessor={({ item }) => item.value }
+                  svg={{
+                      fill: 'green',
+                  }}
                   contentInset={verticalContentInset}
-                  svg={axesSvg}
-                  />
-
-                <View style={{ flex: 1}}>
-                  <BarChart
-                    style={ { height: 200, marginLeft: 10 } }
-                    data={ this.state.barData }
-                    yAccessor={({ item }) => item.value }
-                    svg={{
-                        fill: 'green',
-                    }}
-                    contentInset={verticalContentInset}
-                    spacingInner={0.2}
-                    yMin={this.state.graphMin}
-                    yMax={this.state.graphMax}>
-                      <Grid/>
-                  </BarChart>
-                </View>
+                  spacingInner={0.2}
+                  yMin={this.state.graphMin}
+                  yMax={this.state.graphMax}>
+                    <Grid/>
+                </BarChart>
+              </View>
             </View>
-            }
 
             <XAxis
               style={{ marginHorizontal: 0 }}
@@ -217,29 +207,31 @@ export default class Graph extends Component {
 
             <View style={{paddingVertical:30}} />
 
-            <View style={{alignItems:'center'}}>
-              <Text>{this.state.sliderLabel}</Text>
-              <Text>{this.state.selectedCategoryValue[0]}</Text>
-              <View style={{paddingVertical:20}} />
+            { this.state.showSlider &&
+              <View style={{alignItems:'center'}}>
+                <Text>{this.state.sliderLabel}</Text>
+                <Text>{this.state.selectedCategoryValue[0]}</Text>
+                <View style={{paddingVertical:20}} />
 
-              <MultiSlider
-                selectedStyle={{
-                  backgroundColor: 'green'
-                }}
-                unselectedStyle={{
-                  backgroundColor: 'silver'
-                }}
-                trackStyle={{
-                  height: 3,
-                  backgroundColor: 'green'
-                }}
-                values={this.state.selectedCategoryValue}
-                min={0}
-                max={this.state.graphMax}
-                step={1}
-                onValuesChangeFinish={value => this.onSliderChange(value)}
-              />
-            </View>
+                <MultiSlider
+                  selectedStyle={{
+                    backgroundColor: 'green'
+                  }}
+                  unselectedStyle={{
+                    backgroundColor: 'silver'
+                  }}
+                  trackStyle={{
+                    height: 3,
+                    backgroundColor: 'green'
+                  }}
+                  values={this.state.selectedCategoryValue}
+                  min={0}
+                  max={this.state.graphMax}
+                  step={1}
+                  onValuesChangeFinish={value => this.onSliderChange(value)}
+                />
+              </View>
+            }
           </View>
 
           <View style={{paddingVertical:30}} />

@@ -2,30 +2,12 @@ import React, { Component } from 'react'
 import { Image, Alert, StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import * as Progress from 'react-native-progress'
-
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  H1,
-  H2,
-  H3,
-  List,
-  ListItem,
-  Title,
-  Fab,
-  Toast,
-  Root
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
+  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root
 } from 'native-base'
+
+import MakeItRainComponent from '../../Components/MakeItRainComponent'
+
 
 @inject('firebaseStore')
 @observer
@@ -64,7 +46,8 @@ export default class Summary extends Component {
           current: 195.32,
           status: 'ABOVE'
         }
-      ]
+      ],
+      rain: false,
     }
 
     this.initData()
@@ -127,6 +110,11 @@ export default class Summary extends Component {
             </Right>
           </Header>
           <Content padder>
+
+          {this.state.rain &&
+            <MakeItRainComponent />
+          }
+
             <Card>
               <CardItem header bordered>
                 <Text>{ this.state.title }</Text>
@@ -178,6 +166,13 @@ export default class Summary extends Component {
                 </Right>
               </CardItem>
             </Card>
+
+
+            <View style={{paddingVertical:30}}/>
+
+            <Button danger onPress={() => this.setState({ rain: !this.state.rain })}>
+              <Text>Psst... Lily Press Me</Text>
+            </Button>
           </Content>
         </Container>
       </Root>
