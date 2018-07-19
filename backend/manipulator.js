@@ -71,18 +71,18 @@ for (var i = 0; i < sample_data.length; i++) {
 }
 
 // Calculate the actual averages
-overall_debit = overall_debit / overall_debit_n;
+overall_debit = Math.abs(overall_debit / overall_debit_n);
 
-overall_credit = overall_credit * -1;
+overall_credit = Math.abs(overall_credit);
 overall_credit = overall_credit / overall_credit_n;
 
 // Calculate the filter averages
 for (var i = 0; i < filter_categories.length; i++) {
     category = filter_categories[i];
 
-    categories[category]['debit_average'] = categories[category]['debit_average'] / categories[category]['debit_n'];
+    categories[category]['debit_average'] = Math.abs(categories[category]['debit_average'] / categories[category]['debit_n']);
 
-    categories[category]['credit_average'] = categories[category]['credit_average'] / categories[category]['credit_n'] * -1;
+    categories[category]['credit_average'] = Math.abs(categories[category]['credit_average'] / categories[category]['credit_n']);
 
 }
 
