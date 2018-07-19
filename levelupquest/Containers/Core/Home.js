@@ -15,14 +15,14 @@ import HeaderComponent from '../../Components/HeaderComponent'
 const menuOptions = [
   {
     name: 'New Goal',
-    icon: 'ios-locate-outline',
+    icon: 'ios-calendar-outline',
     iconSet: 'Ionicons',
     screen: 'NewGoal',
     color: 'red'
   },
   {
     name: 'Progress',
-    icon: 'ios-calendar-outline',
+    icon: 'ios-trending-up-outline',
     iconSet: 'Ionicons',
     screen: 'Summary',
     color: '#b3b300'
@@ -36,7 +36,7 @@ const menuOptions = [
   },
   {
     name: 'Settings',
-    icon: 'ios-trending-up-outline',
+    icon: 'ios-settings-outline',
     iconSet: 'Ionicons',
     screen: 'Settings',
     color: 'blue'
