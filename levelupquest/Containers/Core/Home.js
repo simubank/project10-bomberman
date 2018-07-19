@@ -15,35 +15,35 @@ import HeaderComponent from '../../Components/HeaderComponent'
 const menuOptions = [
   {
     name: 'New Goal',
-    icon: 'ios-people-outline',
+    icon: 'ios-locate-outline',
     iconSet: 'Ionicons',
     screen: 'NewGoal',
     color: 'red'
   },
   {
     name: 'Progress',
-    icon: 'ios-cart-outline',
+    icon: 'ios-calendar-outline',
     iconSet: 'Ionicons',
     screen: 'Summary',
     color: '#b3b300'
   },
   {
     name: 'Rewards',
-    icon: 'ios-barcode-outline',
+    icon: 'ios-trophy-outline',
     iconSet: 'Ionicons',
     screen: 'Rewards',
     color: 'green'
   },
   {
     name: 'Settings',
-    icon: 'ios-camera-outline',
+    icon: 'ios-trending-up-outline',
     iconSet: 'Ionicons',
     screen: 'Settings',
     color: 'blue'
   },
   {
     name: 'Graph',
-    icon: 'ios-star-outline',
+    icon: 'ios-stats-outline',
     iconSet: 'Ionicons',
     screen: 'Graph',
     color: 'purple'
@@ -62,7 +62,7 @@ export default class Home extends Component {
   }
 
   _renderIcon({ icon, iconSet, color }, size = 50) {
-    return <Ionicons name={icon} size={size} color={color} />
+    return <Ionicons name={icon} size={size} color='green' />
   }
 
   render() {
@@ -90,7 +90,7 @@ export default class Home extends Component {
                   <View style={styles.iconWrapper}>{this._renderIcon(option)}</View>
                 </Left>
                 <Body>
-                  <Text>{option.name}</Text>
+                  <Text style={{color: '#333333'}}>{option.name}</Text>
                 </Body>
               </ListItem>
             ))}
