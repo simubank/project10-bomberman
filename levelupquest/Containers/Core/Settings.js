@@ -1,29 +1,12 @@
 import React, { Component } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  H1,
-  H2,
-  H3,
-  List,
-  ListItem,
-  Title,
-  Fab,
-  Toast,
-  Root
-} from 'native-base'
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
+  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast,
+  Root } from 'native-base'
+
+import HeaderComponent from '../../Components/HeaderComponent'
+
 
 @inject('firebaseStore')
 @observer
@@ -34,8 +17,6 @@ export default class Settings extends Component {
     this.state = {}
 
     this.initData()
-
-    this.goBack = this.goBack.bind(this)
   }
 
   async initData() {
@@ -48,31 +29,15 @@ export default class Settings extends Component {
     }
   }
 
-  goBack() {
-    this.props.navigation.pop()
-  }
-
   render() {
     const customers = this.props.firebaseStore.customers
+    const goBack = () => this.props.navigation.goBack()
 
     return (
       <Root>
         <Container>
-          <Header>
-            <Left>
-              <Button transparent>
-                <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={() => this.goBack()} />
-              </Button>
-            </Left>
-            <Body>
-              <Title style={{ color: '#404040' }}>Customer List</Title>
-            </Body>
-            <Right>
-              <Button transparent>
-                <Icon name="menu" />
-              </Button>
-            </Right>
-          </Header>
+          <HeaderComponent goBack={goBack} title="Settings" />
+
           <Content>
             <List>
               {customers.map((customer, index) => (

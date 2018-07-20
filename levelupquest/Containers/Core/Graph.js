@@ -7,12 +7,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { inject, observer } from 'mobx-react'
 import { BarChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
+import { NavigationActions, StackActions } from 'react-navigation'
 
-// import HeaderComponent from '../../Components/HeaderComponent'
+import HeaderComponent from '../../Components/HeaderComponent'
+
 
 const randomColor = () => ('#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '000000').slice(0, 7)
 
-const yAxisData = [14, 1, 100, 95, 94, 24, 8]
+const xAxisData = [14, 1, 100, 95, 94, 24, 8]
 const xAxisLabels = ['Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks']
 
 const axesSvg = { fontSize: 10, fill: 'grey' }
@@ -22,8 +24,13 @@ const verticalContentInset = { top: 10, bottom: 10 }
 export default class Graph extends Component {
   constructor(props) {
     super(props)
+    let params = this.props.navigation.state.params
 
     this.state = {
+      // title: params.title,
+      // amount: params.amount,
+      // deadline: params.deadline,
+
       sliderLabel: 'Select a category',
       selectedCategoryIndex: 0,
       selectedCategoryValue: [],
@@ -39,16 +46,17 @@ export default class Graph extends Component {
     this.setGraphMaxAndSum(this.state.barData)
   }
 
-  goBack() {
-    this.props.navigation.pop()
-  }
-
-  goHome() {
-    this.props.navigation.navigate('Home')
-  }
-
-  goNext() {
-    this.props.navigation.navigate('Summary')
+  confirmGoalCreate() {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          key: 'Home',
+          routeName: 'Home'
+        })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
   }
 
   setData() {
@@ -157,21 +165,7 @@ export default class Graph extends Component {
 
     return (
       <Container>
-        <Header>
-          <Left>
-            <Button transparent>
-              <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={() => this.goBack()} />
-            </Button>
-          </Left>
-          <Body>
-            <Title style={{ color: '#404040' }}>Graph</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
-          </Right>
-        </Header>
+        <HeaderComponent goBack={goBack} title="Graph" />
 
         <Content style={{ backgroundColor: '#f3f2f7' }}>
           <View style={{alignItems:'center', paddingVertical:30}}>
@@ -207,9 +201,9 @@ export default class Graph extends Component {
 
             <XAxis
               style={{ marginHorizontal: 0 }}
-              data={ yAxisData }
-              formatLabel={ (value, index) => index }
-              contentInset={{ left: 35, right: 20 }}
+              data={ xAxisData }
+              formatLabel={ (value, index) => index+1 }
+              contentInset={{ left: 48, right: 20 }}
               svg={{ fontSize: 10, fill: 'black' }}
               spacingInner={0.2}
             />

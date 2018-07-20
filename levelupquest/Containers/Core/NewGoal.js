@@ -1,35 +1,12 @@
 import React, { Component } from 'react'
 import { Image, StyleSheet, View, Alert } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  H1,
-  H2,
-  H3,
-  List,
-  ListItem,
-  Title,
-  Fab,
-  Toast,
-  Root,
-  Form,
-  Item,
-  Input,
-  Label,
-  Footer,
-  DatePicker
-} from 'native-base'
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
+  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root,
+  Form, Item, Input, Label, Footer, DatePicker } from 'native-base'
+
+import HeaderComponent from '../../Components/HeaderComponent'
+
 
 @inject('firebaseStore')
 @observer
@@ -44,11 +21,6 @@ export default class NewGoal extends Component {
     }
 
     this.initData()
-
-    this.goBack = this.goBack.bind(this)
-    this.goNext = this.goNext.bind(this)
-    this.setDate = this.setDate.bind(this)
-    this.displayResults = this.displayResults.bind(this)
   }
 
   async initData() {
@@ -60,12 +32,17 @@ export default class NewGoal extends Component {
     }
   }
 
-  goBack() {
-    this.props.navigation.pop()
-  }
-
   goNext() {
-    this.props.navigation.navigate('CategoryFilter')
+    let params = {
+      title: this.state.title,
+      amount: this.state.amount,
+      deadline: this.state.deadline
+    }
+
+    this.props.navigation.navigate({
+      routeName: 'CategoryFilter',
+      params: params
+    })
   }
 
   setDate(newDate) {
@@ -79,32 +56,17 @@ export default class NewGoal extends Component {
       duration: 2000
     })
 
-    setTimeout(() => {
-      this.goNext()
-    }, 500)
+    this.goNext()
   }
 
   render() {
     // const customers = this.props.firebaseStore.customers
+    const goBack = () => this.props.navigation.goBack()
 
     return (
       <Root>
         <Container>
-          <Header>
-            <Left>
-              <Button transparent>
-                <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={() => this.goBack()} />
-              </Button>
-            </Left>
-            <Body>
-              <Title style={{ color: '#404040' }}>New Goal</Title>
-            </Body>
-            <Right>
-              <Button transparent>
-                <Icon name="menu" />
-              </Button>
-            </Right>
-          </Header>
+          <HeaderComponent goBack={goBack} title="New Goal" />
           <Content>
             <Form>
               <Item floatingLabel>

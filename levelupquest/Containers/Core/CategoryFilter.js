@@ -3,38 +3,19 @@ import { Image, StyleSheet, View, Alert } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import _ from 'lodash'
 import axios from 'axios'
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
+  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root,
+  CheckBox, Footer } from 'native-base'
 
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  H1,
-  H2,
-  H3,
-  List,
-  ListItem,
-  Title,
-  Fab,
-  Toast,
-  Root,
-  CheckBox,
-  Footer
-} from 'native-base'
+import HeaderComponent from '../../Components/HeaderComponent'
+
 
 @inject('firebaseStore')
 @observer
 export default class CategoryFilter extends Component {
   constructor(props) {
     super(props)
+    let params = this.props.navigation.state.params
 
     this.state = {
       categoriesConstant: [
@@ -83,12 +64,13 @@ export default class CategoryFilter extends Component {
         {
           name: 'Municipality'
         }
-      ]
+      ],
+      title: params.title,
+      amount: params.amount,
+      deadline: params.deadline
     }
 
     this.initData()
-
-    this.goBack = this.goBack.bind(this)
   }
 
   async initData() {
@@ -99,16 +81,18 @@ export default class CategoryFilter extends Component {
     }
   }
 
-  goBack() {
-    this.props.navigation.pop()
-  }
-
-  goHome() {
-    this.props.navigation.navigate('Home')
-  }
-
   goNext() {
-    this.props.navigation.navigate('Graph')
+    let params = {
+      title: this.state.title,
+      amount: this.state.amount,
+      deadline: this.state.deadline
+      //TODO: send the object returned by the API call
+    }
+
+    this.props.navigation.navigate({
+      routeName: 'Graph',
+      params: params
+    })
   }
 
   displayResults() {
@@ -134,24 +118,13 @@ export default class CategoryFilter extends Component {
     const categories = this.props.firebaseStore.categories
     console.log(categories)
 
+    const goBack = () => this.props.navigation.goBack()
+
     return (
       <Root>
         <Container>
-          <Header>
-            <Left>
-              <Button transparent>
-                <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={this.goBack} />
-              </Button>
-            </Left>
-            <Body>
-              <Title style={{ color: '#404040' }}>Category Filter</Title>
-            </Body>
-            <Right>
-              <Button transparent>
-                <Icon name="menu" />
-              </Button>
-            </Right>
-          </Header>
+          <HeaderComponent goBack={goBack} title="Filter Categories" />
+
           <Content style={{ marginTop: 16, marginBottom: 16 }}>
             <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
             <List style={{ marginBottom: 32 }}>

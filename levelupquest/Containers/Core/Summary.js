@@ -7,6 +7,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
 } from 'native-base'
 
 import MakeItRainComponent from '../../Components/MakeItRainComponent'
+import HeaderComponent from '../../Components/HeaderComponent'
 
 
 @inject('firebaseStore')
@@ -51,8 +52,6 @@ export default class Summary extends Component {
     }
 
     this.initData()
-
-    this.goBack = this.goBack.bind(this)
   }
 
   async initData() {
@@ -62,10 +61,6 @@ export default class Summary extends Component {
     } catch (error) {
       // console.log(error)
     }
-  }
-
-  goBack() {
-    this.props.navigation.pop()
   }
 
   goHome() {
@@ -90,25 +85,13 @@ export default class Summary extends Component {
 
   render() {
     // const customers = this.props.firebaseStore.customers
+    const goBack = () => this.props.navigation.goBack()
 
     return (
       <Root>
         <Container>
-          <Header>
-            <Left>
-              <Button transparent>
-                <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={() => this.goBack()} />
-              </Button>
-            </Left>
-            <Body>
-              <Title style={{ color: '#404040' }}>Summary</Title>
-            </Body>
-            <Right>
-              <Button transparent>
-                <Icon name="menu" />
-              </Button>
-            </Right>
-          </Header>
+          <HeaderComponent goBack={goBack} title="Summary" />
+
           <Content padder>
             <Card>
               <CardItem header bordered>
