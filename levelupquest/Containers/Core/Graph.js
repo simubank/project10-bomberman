@@ -1,4 +1,4 @@
-import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer, Toast } from 'native-base'
+import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer, Toast, Icon, Title } from 'native-base'
 import React, { Component } from 'react'
 import { Dimensions, StatusBar, StyleSheet, View, Alert } from 'react-native'
 import { connect } from 'react-redux'
@@ -7,29 +7,35 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { inject, observer } from 'mobx-react'
 import { BarChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
+import { NavigationActions, StackActions } from 'react-navigation'
 
 import HeaderComponent from '../../Components/HeaderComponent'
+import footerStyles from './Styles/FooterStyle'
 
 
 const randomColor = () => ('#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '000000').slice(0, 7)
 
-const yAxisData = [ 14, 1, 100, 95, 94, 24, 8 ]
-const xAxisLabels = [ 'Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks' ]
+const xAxisData = [14, 1, 100, 95, 94, 24, 8]
+const xAxisLabels = ['Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks']
 
-const axesSvg = { fontSize: 10, fill: 'grey' };
+const axesSvg = { fontSize: 10, fill: 'grey' }
 const verticalContentInset = { top: 10, bottom: 10 }
 
-
-@inject('firebaseStore')
+@inject('levelUpStore')
 export default class Graph extends Component {
   constructor(props) {
     super(props)
+    let params = this.props.navigation.state.params
 
     this.state = {
+      // title: params.title,
+      // amount: params.amount,
+      // deadline: params.deadline,
+
       sliderLabel: 'Select a category',
       selectedCategoryIndex: 0,
       selectedCategoryValue: [],
-      barData: this.setData(),
+      barData: this.setBarData(),
       showSlider: false,
       graphMin: 0,
       graphMax: 0,
@@ -41,20 +47,21 @@ export default class Graph extends Component {
     this.setGraphMaxAndSum(this.state.barData)
   }
 
-  goBack() {
-    this.props.navigation.pop()
+  confirmGoalCreate() {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          key: 'Home',
+          routeName: 'Home'
+        })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
   }
 
-  goHome() {
-    this.props.navigation.navigate('Home')
-  }
-
-  goNext() {
-    this.props.navigation.navigate('Summary')
-  }
-
-  setData() {
-    let userData = [ 14, 1, 150, 95, 94, 24, 8 ]
+  setBarData() {
+    let userData = [ 14, 37, 150, 95, 94, 24, 8 ]
       .map((value, index) => ({
         value,
         svg: {
@@ -149,20 +156,15 @@ export default class Graph extends Component {
       duration: 2000
     })
 
-    setTimeout(() => {
-      this.goNext()
-    }, 500)
+    this.confirmGoalCreate()
   }
 
   render() {
+    const { goBack } = this.props.navigation
+
     return (
       <Container>
-        <HeaderComponent>
-          <StatusBar translucent={true} backgroundColor="transparent" />
-          <Right>
-            <Text adjustsFontSizeToFit numberOfLines={1}>{ this.state.userLevel }</Text>
-          </Right>
-        </HeaderComponent>
+        <HeaderComponent goBack={goBack} title="Graph" />
 
         <Content style={{ backgroundColor: '#f3f2f7' }}>
           <View style={{alignItems:'center', paddingVertical:30}}>
@@ -198,9 +200,9 @@ export default class Graph extends Component {
 
             <XAxis
               style={{ marginHorizontal: 0 }}
-              data={ yAxisData }
-              formatLabel={ (value, index) => index }
-              contentInset={{ left: 35, right: 20 }}
+              data={ xAxisData }
+              formatLabel={ (value, index) => index+1 }
+              contentInset={{ left: 48, right: 20 }}
               svg={{ fontSize: 10, fill: 'black' }}
               spacingInner={0.2}
             />
@@ -227,33 +229,20 @@ export default class Graph extends Component {
                   values={this.state.selectedCategoryValue}
                   min={0}
                   max={this.state.graphMax}
-                  step={1}
+                  step={5}
                   onValuesChangeFinish={value => this.onSliderChange(value)}
                 />
               </View>
             }
           </View>
 
-          <View style={{paddingVertical:30}} />
-
         </Content>
-        <Footer style={{ position: 'relative', top: 5 }}>
-          <Button full success style={styles.fullBtn} onPress={() => this.displayResults()}>
-            <Text style={styles.fullBtnTxt}>CONTINUE</Text>
+        <Footer style={footerStyles.footer}>
+          <Button full success style={footerStyles.fullBtn} onPress={() => this.displayResults()}>
+            <Text style={footerStyles.fullBtnTxt}>CONTINUE</Text>
           </Button>
         </Footer>
       </Container>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  fullBtn: {
-    height: 50,
-    width: '100%'
-  },
-  fullBtnTxt: {
-    fontSize: 18,
-    letterSpacing: 1
-  }
-})

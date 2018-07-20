@@ -12,6 +12,7 @@ import { inject, observer } from 'mobx-react'
 import styles from './Styles/HomeScreenStyle'
 import HeaderComponent from '../../Components/HeaderComponent'
 
+
 const menuOptions = [
   {
     name: 'New Goal',
@@ -50,7 +51,7 @@ const menuOptions = [
   }
 ]
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 export default class Home extends Component {
   constructor(props) {
     super(props)
@@ -62,7 +63,7 @@ export default class Home extends Component {
   }
 
   _renderIcon({ icon, iconSet, color }, size = 50) {
-    return <Ionicons name={icon} size={size} color='green' />
+    return <Ionicons name={icon} size={size} color="green" />
   }
 
   render() {
@@ -90,7 +91,7 @@ export default class Home extends Component {
                   <View style={styles.iconWrapper}>{this._renderIcon(option)}</View>
                 </Left>
                 <Body>
-                  <Text style={{color: '#333333'}}>{option.name}</Text>
+                  <Text style={{ color: '#333333' }}>{option.name}</Text>
                 </Body>
               </ListItem>
             ))}

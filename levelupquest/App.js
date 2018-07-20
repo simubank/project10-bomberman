@@ -8,7 +8,7 @@ import { createReduxBoundAddListener } from 'react-navigation-redux-helpers'
 
 import { RootNavigator } from './Navigation/RootNavigator'
 import { NavigationStore } from './mobx/NavigationStore'
-import firebaseStore from './mobx/FirebaseStore'
+import levelUpStore from './mobx/LevelUpStore'
 
 import { observer, Provider } from 'mobx-react'
 
@@ -25,7 +25,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Root>
-        <Provider store={this.store} firebaseStore={firebaseStore}>
+        <Provider store={this.store} levelUpStore={levelUpStore}>
           <RootNavigator
             navigation={{
               dispatch: this.store.dispatch,

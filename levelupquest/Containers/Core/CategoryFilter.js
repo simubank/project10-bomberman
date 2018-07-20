@@ -3,248 +3,217 @@ import { Image, StyleSheet, View, Alert } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import _ from 'lodash'
 import axios from 'axios'
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
+  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root,
+  CheckBox, Footer } from 'native-base'
 
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  H1,
-  H2,
-  H3,
-  List,
-  ListItem,
-  Title,
-  Fab,
-  Toast,
-  Root,
-  CheckBox,
-  Footer
-} from 'native-base'
+import HeaderComponent from '../../Components/HeaderComponent'
+import footerStyles from './Styles/FooterStyle'
 
-@inject('firebaseStore')
+
+const CATEGORIES = [
+  {
+    name: 'Rent',
+    amount: 649.0,
+    selected: false
+  },
+  {
+    name: 'Food',
+    amount: 284.21,
+    selected: false
+  },
+  {
+    name: 'Entertainment',
+    amount: 282.44,
+    selected: false
+  },
+  {
+    name: 'Retail',
+    amount: 207.12,
+    selected: false
+  },
+  {
+    name: 'Insurance',
+    amount: 100.0,
+    selected: false
+  }
+]
+
+const FILTERS = [
+  {
+    name: 'Age'
+  },
+  {
+    name: 'Gender'
+  },
+  {
+    name: 'Occupation'
+  },
+  {
+    name: 'Relationship Status'
+  },
+  {
+    name: 'Habitation'
+  },
+  {
+    name: 'Municipality'
+  }
+]
+
+@inject('levelUpStore')
 @observer
 export default class CategoryFilter extends Component {
   constructor(props) {
     super(props)
+    let params = this.props.navigation.state.params
 
     this.state = {
-      categories: [
-        {
-          name: 'Rent',
-          amount: 649.0,
-          selected: false
-        },
-        {
-          name: 'Food',
-          amount: 284.21,
-          selected: false
-        },
-        {
-          name: 'Entertainment',
-          amount: 282.44,
-          selected: false
-        },
-        {
-          name: 'Retail',
-          amount: 207.12,
-          selected: false
-        },
-        {
-          name: 'Insurance',
-          amount: 100.0,
-          selected: false
-        }
-      ],
-      filters: [
-        {
-          name: 'Age'
-        },
-        {
-          name: 'Gender'
-        },
-        {
-          name: 'Occupation'
-        },
-        {
-          name: 'Relationship Status'
-        },
-        {
-          name: 'Habitation'
-        },
-        {
-          name: 'Municipality'
-        }
-      ]
+      title: params.title,
+      amount: params.amount,
+      deadline: params.deadline,
+      categories: [],
+      filters: FILTERS
     }
 
-    this.initData()
-
-    this.getCategoryData()
-
-    this.goBack = this.goBack.bind(this)
+    this.populateCategories()
   }
 
-  async initData() {
+  async populateCategories() {
+    let categories
+
     try {
-      await this.props.firebaseStore.getCustomers()
-      // console.log(this.props.firebaseStore.customers)
+      categories = await this.props.levelUpStore.getCategoryList()
     } catch (error) {
-      // console.log(error)
+
+      // // If network error, still populate hard coded info
+      categories = CATEGORIES
+      this.setState({ categories })
+
+      console.error(error)
     }
-  }
-
-  getCategoryData() {
-    const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_6c8434d3-9d00-45d9-83d6-5c87cc97cdd8'
-    const url = 'http://localhost:3000/customers/' + customerID + '/spending/categories'
-
-    axios
-      .get(url)
-      .then(res => {
-        console.log('success')
-        console.log(res)
-      })
-      .catch(res => {
-        console.log('error')
-        console.log(res)
-      })
-  }
-
-  // getCategoryAmount() {
-  //   const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_6c8434d3-9d00-45d9-83d6-5c87cc97cdd8'
-  //   const category = 'Category'
-  //   const days = 3
-  //   const url = 'http://localhost:3000/customers/' + customerID + '/spending/category/' + category + '/withinDays/' + days
-  // }
-
-  goBack() {
-    this.props.navigation.pop()
-  }
-
-  goHome() {
-    this.props.navigation.navigate('Home')
   }
 
   goNext() {
-    this.props.navigation.navigate('Graph')
+    let params = {
+      title: this.state.title,
+      amount: this.state.amount,
+      deadline: this.state.deadline
+      //TODO: send the object returned by the API call
+    }
+
+    this.props.navigation.navigate({
+      routeName: 'Graph',
+      params: params
+    })
   }
 
   displayResults() {
-    const categories = _.filter(this.state.categories, category => {
+    let selectedCategories = _.filter(CATEGORIES, category => {
       return category.selected
     })
-    const filters = _.filter(this.state.filters, filter => {
+    let selectedFilters = _.filter(FILTERS, filter => {
       return filter.selected
     })
 
     Toast.show({
-      text: 'Categories: ' + categories.length + '\nFilters: ' + filters.length,
+      text: 'Categories: ' + selectedCategories.length + '\nFilters: ' + selectedFilters.length,
       buttonText: 'Okay',
       duration: 2000
     })
 
-    setTimeout(() => {
-      this.goNext()
-    }, 500)
+    this.goNext()
   }
 
   render() {
-    // const customers = this.props.firebaseStore.customers
+    // let categories = this.props.levelUpStore.categories
+    // console.log(categories)
+
+    const goBack = () => this.props.navigation.goBack()
 
     return (
-      <Root>
-        <Container>
-          <Header>
-            <Left>
-              <Button transparent>
-                <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={this.goBack} />
-              </Button>
-            </Left>
-            <Body>
-              <Title style={{ color: '#404040' }}>Category Filter</Title>
-            </Body>
-            <Right>
-              <Button transparent>
-                <Icon name="menu" />
-              </Button>
-            </Right>
-          </Header>
-          <Content style={{ marginTop: 16, marginBottom: 16 }}>
-            <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
-            <List style={{ marginBottom: 32 }}>
-              {this.state.categories.map((category, index) => (
-                <ListItem key={index}>
+      <Container>
+        <HeaderComponent goBack={goBack} title="Filter Categories" />
+
+        <Content>
+          <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
+
+          <List style={{ marginBottom: 32 }}>
+            {
+              this.state.categories.map((category, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  button
+                  onPress={() => {
+                    let modified = this.state.categories
+                    modified[index].selected = !modified[index].selected
+
+                    this.setState({ categories: modified })
+                  }}>
                   <CheckBox
                     checked={category.selected}
                     onPress={() => {
                       let modified = this.state.categories
                       modified[index].selected = !category.selected
 
-                      this.setState({
-                        categories: modified
-                      })
-                    }}
-                  />
+                      this.setState({ categories: modified })
+                    }}/>
                   <Body>
                     <Text>
                       {index + 1}. {category.name}
                     </Text>
                   </Body>
-                  <Right>
+                  <Right style={{ flex: 1 }}>
                     <Text>${category.amount.toFixed(2)}</Text>
                   </Right>
                 </ListItem>
-              ))}
-            </List>
+              )})
+          }
 
-            <H3 style={{ margin: 16 }}>Choose filters to apply:</H3>
-            <List style={{ marginBottom: 32 }}>
-              {this.state.filters.map((filter, index) => (
-                <ListItem key={index}>
+          </List>
+
+          <H3 style={{ margin: 16 }}>Choose filters to apply:</H3>
+
+          <List style={{ marginBottom: 32 }}>
+            {
+              FILTERS.map((filter, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  button
+                  onPress={() => {
+                    let modified = this.state.filters
+                    modified[index].selected = !modified[index].selected
+
+                    this.setState({ filters: modified })
+                  }}>
                   <CheckBox
                     checked={filter.selected}
                     onPress={() => {
                       let modified = this.state.filters
                       modified[index].selected = !filter.selected
 
-                      this.setState({
-                        filters: modified
-                      })
-                    }}
-                  />
+                      this.setState({ filters: modified })
+                    }}/>
                   <Body>
                     <Text>{filter.name}</Text>
                   </Body>
                 </ListItem>
-              ))}
-            </List>
-          </Content>
-          <Footer style={{ position: 'relative', top: 5 }}>
-            <Button full success style={styles.fullBtn} onPress={() => this.displayResults()}>
-              <Text style={styles.fullBtnTxt}>CONTINUE</Text>
-            </Button>
-          </Footer>
-        </Container>
-      </Root>
+              )})
+            }
+          </List>
+        </Content>
+
+        <Footer style={footerStyles.footer}>
+          <Button full success style={footerStyles.fullBtn} onPress={() => this.displayResults()}>
+            <Text style={footerStyles.fullBtnTxt}>CONTINUE</Text>
+          </Button>
+        </Footer>
+      </Container>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  fullBtn: {
-    height: 50,
-    width: '100%'
-  },
-  fullBtnTxt: {
-    fontSize: 18,
-    letterSpacing: 1
-  }
+
 })
