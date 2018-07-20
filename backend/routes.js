@@ -660,14 +660,11 @@ router.get('/transactions/withinDays/:days', function(req, res, next) {
 		// Filter for dates
 
 		var transaction_date = Date.parse(transaction.postDate);
-		//var transaction_date = new Date(transaction.postDate);
-		//Date.parse(transaction.originationDate);
 		
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
 		
 		
-		console.log(date_difference);
 		
 		if (date_difference > Number(req.params.days) || date_difference < 0) {
 		    // Date is more than <days> days ago
