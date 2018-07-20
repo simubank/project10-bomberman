@@ -8,7 +8,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
 import HeaderComponent from '../../Components/HeaderComponent'
 
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 @observer
 export default class Settings extends Component {
   constructor(props) {
@@ -21,16 +21,16 @@ export default class Settings extends Component {
 
   async initData() {
     try {
-      await this.props.firebaseStore.getCustomers()
+      await this.props.levelUpStore.getCustomers()
 
-      console.log(this.props.firebaseStore.customers)
+      console.log(this.props.levelUpStore.customers)
     } catch (error) {
       console.log(error)
     }
   }
 
   render() {
-    const customers = this.props.firebaseStore.customers
+    const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (

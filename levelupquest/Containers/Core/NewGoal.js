@@ -8,7 +8,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
 import HeaderComponent from '../../Components/HeaderComponent'
 
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 @observer
 export default class NewGoal extends Component {
   constructor(props) {
@@ -18,17 +18,6 @@ export default class NewGoal extends Component {
       title: '',
       amount: 0,
       deadline: new Date()
-    }
-
-    this.initData()
-  }
-
-  async initData() {
-    try {
-      await this.props.firebaseStore.getCustomers()
-      // console.log(this.props.firebaseStore.customers)
-    } catch (error) {
-      // console.log(error)
     }
   }
 
@@ -60,13 +49,14 @@ export default class NewGoal extends Component {
   }
 
   render() {
-    // const customers = this.props.firebaseStore.customers
+    // const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (
       <Root>
         <Container>
           <HeaderComponent goBack={goBack} title="New Goal" />
+
           <Content>
             <Form>
               <Item floatingLabel>
@@ -77,6 +67,7 @@ export default class NewGoal extends Component {
                 <Label>Amount</Label>
                 <Input onChangeText={newAmount => this.setState({ amount: newAmount })} />
               </Item>
+
               <View style={{ margin: 20 }}>
                 <DatePicker
                   defaultDate={new Date(2018, 4, 4)}
@@ -94,8 +85,10 @@ export default class NewGoal extends Component {
                 />
                 <Text>Date: {this.state.deadline.toString().substr(4, 12)}</Text>
               </View>
+
             </Form>
           </Content>
+
           <Footer style={{ position: 'relative', top: 5 }}>
             <Button full success style={styles.fullBtn} onPress={() => this.displayResults()}>
               <Text style={styles.fullBtnTxt}>CONTINUE</Text>

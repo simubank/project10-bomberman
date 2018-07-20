@@ -10,7 +10,7 @@ import MakeItRainComponent from '../../Components/MakeItRainComponent'
 import HeaderComponent from '../../Components/HeaderComponent'
 
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 @observer
 export default class Summary extends Component {
   constructor(props) {
@@ -56,8 +56,8 @@ export default class Summary extends Component {
 
   async initData() {
     try {
-      await this.props.firebaseStore.getCustomers()
-      // console.log(this.props.firebaseStore.customers)
+      await this.props.levelUpStore.getCustomers()
+      // console.log(this.props.levelUpStore.customers)
     } catch (error) {
       // console.log(error)
     }
@@ -84,7 +84,7 @@ export default class Summary extends Component {
   }
 
   render() {
-    // const customers = this.props.firebaseStore.customers
+    // const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (

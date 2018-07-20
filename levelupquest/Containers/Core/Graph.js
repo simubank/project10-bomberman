@@ -20,7 +20,7 @@ const xAxisLabels = ['Food', 'Entertainment', 'Clothing', 'Transportation', 'Loa
 const axesSvg = { fontSize: 10, fill: 'grey' }
 const verticalContentInset = { top: 10, bottom: 10 }
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 export default class Graph extends Component {
   constructor(props) {
     super(props)
@@ -34,7 +34,7 @@ export default class Graph extends Component {
       sliderLabel: 'Select a category',
       selectedCategoryIndex: 0,
       selectedCategoryValue: [],
-      barData: this.setData(),
+      barData: this.setBarData(),
       showSlider: false,
       graphMin: 0,
       graphMax: 0,
@@ -59,8 +59,8 @@ export default class Graph extends Component {
     this.props.navigation.dispatch(resetAction)
   }
 
-  setData() {
-    let userData = [ 14, 1, 150, 95, 94, 24, 8 ]
+  setBarData() {
+    let userData = [ 14, 37, 150, 95, 94, 24, 8 ]
       .map((value, index) => ({
         value,
         svg: {
@@ -155,9 +155,7 @@ export default class Graph extends Component {
       duration: 2000
     })
 
-    setTimeout(() => {
-      this.goNext()
-    }, 500)
+    this.confirmGoalCreate()
   }
 
   render() {
@@ -230,14 +228,12 @@ export default class Graph extends Component {
                   values={this.state.selectedCategoryValue}
                   min={0}
                   max={this.state.graphMax}
-                  step={1}
+                  step={5}
                   onValuesChangeFinish={value => this.onSliderChange(value)}
                 />
               </View>
             }
           </View>
-
-          <View style={{paddingVertical:30}} />
 
         </Content>
         <Footer style={{ position: 'relative', top: 5 }}>

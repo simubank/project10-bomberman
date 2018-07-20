@@ -50,7 +50,7 @@ const menuOptions = [
   }
 ]
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 export default class Home extends Component {
   constructor(props) {
     super(props)

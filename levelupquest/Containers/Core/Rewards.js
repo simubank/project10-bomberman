@@ -8,7 +8,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
 import HeaderComponent from '../../Components/HeaderComponent'
 
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 @observer
 export default class Rewards extends Component {
   constructor(props) {
@@ -21,9 +21,9 @@ export default class Rewards extends Component {
 
   async initData() {
     try {
-      await this.props.firebaseStore.getCustomers()
+      await this.props.levelUpStore.getCustomers()
 
-      console.log(this.props.firebaseStore.customers)
+      console.log(this.props.levelUpStore.customers)
     } catch (error) {
       console.log(error)
     }

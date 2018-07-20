@@ -10,7 +10,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
 import HeaderComponent from '../../Components/HeaderComponent'
 
 
-@inject('firebaseStore')
+@inject('levelUpStore')
 @observer
 export default class CategoryFilter extends Component {
   constructor(props) {
@@ -70,12 +70,12 @@ export default class CategoryFilter extends Component {
       deadline: params.deadline
     }
 
-    this.initData()
+    this.populateCategories()
   }
 
-  async initData() {
+  async populateCategories() {
     try {
-      await this.props.firebaseStore.getCategoryList()
+      await this.props.levelUpStore.getCategoryList()
     } catch (error) {
       console.error(error)
     }
@@ -109,13 +109,11 @@ export default class CategoryFilter extends Component {
       duration: 2000
     })
 
-    setTimeout(() => {
-      this.goNext()
-    }, 500)
+    this.goNext()
   }
 
   render() {
-    const categories = this.props.firebaseStore.categories
+    const categories = this.props.levelUpStore.categories
     console.log(categories)
 
     const goBack = () => this.props.navigation.goBack()
