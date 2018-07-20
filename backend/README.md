@@ -61,6 +61,7 @@ GET /metrics/...
 
 GET /transactions/withinDays/:days
 * Returns a sample of the transactions that occurred within <days> days
+* Does not flatten the arrays (ie. returns an array of arrays, with each sub array being one user's transactions)
 
 ## Implementation Details
 * Express with Node.js

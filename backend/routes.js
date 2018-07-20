@@ -653,6 +653,7 @@ router.get('/transactions/withinDays/:days', function(req, res, next) {
 
 	for (var i = 0; i < parsed_body.result.length; i++) {
 	    // One user's transactions as an array
+	    var users_transactions = [];
 	    for (var j = 0; j < parsed_body.result[i].length; j++) {
 		// Iterate over the user's transactions
 		var transaction = parsed_body.result[i][j];
@@ -671,9 +672,11 @@ router.get('/transactions/withinDays/:days', function(req, res, next) {
 		    continue;
 		}
 		
-		ret_transactions.push(transaction);
+		users_transactions.push(transaction);
 		
 	    }
+
+	    ret_transactions.push(users_transactions);
 	}
 	
 
