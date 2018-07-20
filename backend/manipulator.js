@@ -1,3 +1,8 @@
+
+// Get the config data
+var conf = require('./config');
+const PORT = conf['PORT'];
+
 // Get the sample data
 var sample_data = require('./data');
 sample_data = JSON.parse(sample_data);
@@ -26,6 +31,7 @@ for (var i = 0; i < filter_categories.length; i++) {
 }
 
 // Initialize ages structure
+// Ages are bunched into blocks of five
 for (var i = 0; i < 100; i=i + 5) {
     ages[i.toString()] = {};
 
@@ -39,6 +45,34 @@ for (var i = 0; i < 100; i=i + 5) {
 	    'credit_n': 0
 	};
     }
+}
+
+// Initialize genders structure
+genders['Male'] = {};
+genders['Female'] = {};
+genders['Other'] = {};
+for (var j = 0; j < filter_categories.length; j++) {
+    category = filter_categories[j];
+    genders['Male'][category] = {
+	'debit_average': 0,
+	'credit_average': 0,
+	'debit_n': 0,
+	'credit_n': 0
+    };
+
+    genders['Female'][category] = {
+	'debit_average': 0,
+	'credit_average': 0,
+	'debit_n': 0,
+	'credit_n': 0
+    };
+
+    genders['Other'][category] = {
+	'debit_average': 0,
+	'credit_average': 0,
+	'debit_n': 0,
+	'credit_n': 0
+    };
 }
 
 function isDebit(transaction) {
@@ -74,7 +108,7 @@ for (var i = 0; i < sample_data.length; i++) {
 	}
 
 	for (var k = 0; k < filter_categories.length; k++) {
-	    // Handle the filters
+	    // Handle the overall filters
 	    category = filter_categories[k];
 	    if (transaction.categoryTags.includes(category)) {
 		if (isDebit(transaction)) {
@@ -86,6 +120,45 @@ for (var i = 0; i < sample_data.length; i++) {
 		}
 	    }
 	}
+
+	// Handle the age filters
+	for (var a = 0; a < 100; a=a + 5) {
+	    for (var k = 0; k < filter_categories.length; k++) {
+		// Handle the overall filters
+		category = filter_categories[k];
+		if (transaction.categoryTags.includes(category)) {
+		    if (isDebit(transaction)) {
+			ages[a][category]['debit_average'] = ages[a][category]['debit_average'] + transaction.currencyAmount;
+			ages[a][category]['debit_n'] = ages[a][category]['debit_n'] + 1;
+		    } else {
+			ages[a][category]['credit_average'] = ages[a][category]['credit_average'] + transaction.currencyAmount;
+			ages[a][category]['credit_n'] = ages[a][category]['credit_n'] + 1;
+		    }
+		}
+	    }
+	}
+
+	// Handle the gender filters
+	var gender_keys = Object.keys(genders);
+	for (var a = 0; a < gender_keys.length; a++) {
+	    var chosen_key = gender_keys[a];
+
+	    for (var k = 0; k < filter_categories.length; k++) {
+		// Handle the overall filters
+		category = filter_categories[k];
+		if (transaction.categoryTags.includes(category)) {
+		    if (isDebit(transaction)) {
+			genders[chosen_key][category]['debit_average'] = genders[chosen_key][category]['debit_average'] + transaction.currencyAmount;
+			genders[chosen_key][category]['debit_n'] = genders[chosen_key][category]['debit_n'] + 1;
+		    } else {
+			genders[chosen_key][category]['credit_average'] = genders[chosen_key][category]['credit_average'] + transaction.currencyAmount;
+			genders[chosen_key][category]['credit_n'] = genders[chosen_key][category]['credit_n'] + 1;
+		    }
+		}
+	    }
+	    
+	}
+	
     }
 
 }

@@ -8,34 +8,14 @@ var router = express.Router();
 const request = require('request');
 const auth_key = require('./authkey');
 
-// Get the sample data
-var sample_data = require('./data');
-sample_data = JSON.parse(sample_data);
-sample_data = sample_data['result'];
+// Get the averages data
+var averages;
+//var averages = require('./manipulator');
 
 
-
-// The calculated averages for the various demographics
-var calculated_averages = [];
 
 // A list of all occupations represented
 var occupation_list = [];
-
-// Recalculates all the averages in calculated_averages
-function recalculate_averages() {
-    calculated_averages = [];
-
-    var total = 0;
-    var n = 0;
-    
-    return calculated_averages;
-}
-
-// Gets the average from calculated_averages according
-// to the dictionary <filters>
-function get_average(filters) {
-    return 0;
-}
 
 router.get('/stats', function(req, res, next) {
     // 
@@ -704,4 +684,5 @@ router.get('*', function(req, res, next) {
 
 module.exports = router;
 
-recalculate_averages();
+// To allow us to make a request to the server for data
+averages = require('./manipulator');
