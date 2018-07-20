@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
 import { Image, Alert, StyleSheet, View, Dimensions } from 'react-native'
 
-import moneyFront from '../Images/money20-front.png';
-import moneyBack from '../Images/money20-back.png';
-import * as Animatable from 'react-native-animatable';
+import moneyFront20 from '../Images/money20-front.png'
+import moneyBack20 from '../Images/money20-back.png'
+import moneyFront10 from '../Images/money10-front.png'
+import moneyBack10 from '../Images/money10-back.png'
+import moneyFront5 from '../Images/money5-front.png'
+import moneyBack5 from '../Images/money5-back.png'
 
-const MONEY_DIMENSIONS = { width: 200, height: 52 };
-const SCREEN_DIMENSIONS = Dimensions.get('window');
-const WIGGLE_ROOM = 50;
+import * as Animatable from 'react-native-animatable'
+
+const MONEY_DIMENSIONS = { width: 200, height: 52 }
+const SCREEN_DIMENSIONS = Dimensions.get('window')
+const WIGGLE_ROOM = 50
 
 const FlippingImage = ({ back = false, delay, duration = 1000, source, style = {} }) => (
   <Animatable.Image
@@ -92,9 +97,54 @@ const MakeItRain = ({ children }) => (
 );
 
 class MakeItRainComponent extends Component {
-  // constructor(props) {
-  //   super(props)
-  // }
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      moneyFrontCounter: 1,
+      moneyBackCounter: 1,
+    }
+  }
+
+  getBillFront = () => {
+    let moneyFrontCounter = this.state.moneyFrontCounter
+
+    if (moneyFrontCounter === 1) {
+      moneyFrontCounter++
+      this.state.moneyFrontCounter = moneyFrontCounter
+      return moneyFront10
+    }
+    else if (moneyFrontCounter === 2) {
+      moneyFrontCounter++
+      this.state.moneyFrontCounter = moneyFrontCounter
+      return moneyFront20
+    }
+    else {
+      moneyFrontCounter = 1
+      this.state.moneyFrontCounter = moneyFrontCounter
+      return moneyFront5
+    }
+  }
+
+  getBillBack = () => {
+    let moneyBackCounter = this.state.moneyBackCounter
+
+    if (moneyBackCounter === 1) {
+      moneyBackCounter++
+      this.state.moneyBackCounter = moneyBackCounter
+      return moneyFront10
+    }
+    else if (moneyBackCounter === 2) {
+      moneyBackCounter++
+      this.state.moneyBackCounter = moneyBackCounter
+      return moneyFront20
+    }
+    else {
+      moneyBackCounter = 1
+      this.state.moneyBackCounter = moneyBackCounter
+      return moneyFront5
+    }
+  }
 
   render() {
     return (
@@ -113,9 +163,9 @@ class MakeItRainComponent extends Component {
               }}
             >
               <Swinging amplitude={MONEY_DIMENSIONS.width / 5} delay={randomize(3000)}>
-                <FlippingImage source={moneyFront} delay={flipDelay} />
+                <FlippingImage source={this.getBillFront()} delay={flipDelay} />
                 <FlippingImage
-                  source={moneyBack}
+                  source={this.getBillBack()}
                   delay={flipDelay}
                   back
                   style={{ position: 'absolute' }}

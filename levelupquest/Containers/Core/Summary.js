@@ -110,14 +110,13 @@ export default class Summary extends Component {
             </Right>
           </Header>
           <Content padder>
-            {this.state.rain && <MakeItRainComponent />}
-
             <Card>
               <CardItem header bordered>
                 <Text>{this.state.title}</Text>
               </CardItem>
               <CardItem bordered>
                 <Body>
+                  {this.state.rain && <MakeItRainComponent />}
                   <Text style={{ marginTop: 5, marginBottom: 5 }}>Amount: ${this.state.amount.toFixed(2)}</Text>
                   <Text style={{ marginTop: 5, marginBottom: 5 }}>Date: {this.state.date}</Text>
                   <Text style={{ marginTop: 5, marginBottom: 5 }}>Saved: ${this.state.saved.toFixed(2)}</Text>
