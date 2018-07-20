@@ -110,26 +110,17 @@ export default class Summary extends Component {
             </Right>
           </Header>
           <Content padder>
-
-          {this.state.rain &&
-            <MakeItRainComponent />
-          }
+            {this.state.rain && <MakeItRainComponent />}
 
             <Card>
               <CardItem header bordered>
-                <Text>{ this.state.title }</Text>
+                <Text>{this.state.title}</Text>
               </CardItem>
               <CardItem bordered>
                 <Body>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>
-                    Amount: ${ this.state.amount.toFixed(2) }
-                  </Text>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>
-                    Date: { this.state.date }
-                  </Text>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>
-                    Saved: ${ this.state.saved.toFixed(2) }
-                  </Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Amount: ${this.state.amount.toFixed(2)}</Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Date: {this.state.date}</Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Saved: ${this.state.saved.toFixed(2)}</Text>
                 </Body>
               </CardItem>
               <List>
@@ -159,7 +150,7 @@ export default class Summary extends Component {
               </List>
               <CardItem footer bordered>
                 <Left>
-                  <Text>Progress: { this.state.percentage * 100 }%</Text>
+                  <Text>Progress: {this.state.percentage * 100}%</Text>
                 </Left>
                 <Right>
                   <Progress.Bar progress={this.state.percentage} width={180} height={10} />
@@ -167,8 +158,7 @@ export default class Summary extends Component {
               </CardItem>
             </Card>
 
-
-            <View style={{paddingVertical:30}}/>
+            <View style={{ paddingVertical: 30 }} />
 
             <Button danger onPress={() => this.setState({ rain: !this.state.rain })}>
               <Text>Psst... Lily Press Me</Text>

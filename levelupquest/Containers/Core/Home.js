@@ -62,7 +62,7 @@ export default class Home extends Component {
   }
 
   _renderIcon({ icon, iconSet, color }, size = 50) {
-    return <Ionicons name={icon} size={size} color='green' />
+    return <Ionicons name={icon} size={size} color="green" />
   }
 
   render() {
@@ -90,7 +90,7 @@ export default class Home extends Component {
                   <View style={styles.iconWrapper}>{this._renderIcon(option)}</View>
                 </Left>
                 <Body>
-                  <Text style={{color: '#333333'}}>{option.name}</Text>
+                  <Text style={{ color: '#333333' }}>{option.name}</Text>
                 </Body>
               </ListItem>
             ))}

@@ -37,7 +37,7 @@ export default class CategoryFilter extends Component {
     super(props)
 
     this.state = {
-      categories: [
+      categoriesConstant: [
         {
           name: 'Rent',
           amount: 649.0,
@@ -88,42 +88,16 @@ export default class CategoryFilter extends Component {
 
     this.initData()
 
-    this.getCategoryData()
-
     this.goBack = this.goBack.bind(this)
   }
 
   async initData() {
     try {
-      await this.props.firebaseStore.getCustomers()
-      // console.log(this.props.firebaseStore.customers)
+      await this.props.firebaseStore.getCategoryList()
     } catch (error) {
-      // console.log(error)
+      console.error(error)
     }
   }
-
-  getCategoryData() {
-    const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_6c8434d3-9d00-45d9-83d6-5c87cc97cdd8'
-    const url = 'http://localhost:3000/customers/' + customerID + '/spending/categories'
-
-    axios
-      .get(url)
-      .then(res => {
-        console.log('success')
-        console.log(res)
-      })
-      .catch(res => {
-        console.log('error')
-        console.log(res)
-      })
-  }
-
-  // getCategoryAmount() {
-  //   const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_6c8434d3-9d00-45d9-83d6-5c87cc97cdd8'
-  //   const category = 'Category'
-  //   const days = 3
-  //   const url = 'http://localhost:3000/customers/' + customerID + '/spending/category/' + category + '/withinDays/' + days
-  // }
 
   goBack() {
     this.props.navigation.pop()
@@ -157,7 +131,8 @@ export default class CategoryFilter extends Component {
   }
 
   render() {
-    // const customers = this.props.firebaseStore.customers
+    const categories = this.props.firebaseStore.categories
+    console.log(categories)
 
     return (
       <Root>
@@ -180,7 +155,7 @@ export default class CategoryFilter extends Component {
           <Content style={{ marginTop: 16, marginBottom: 16 }}>
             <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
             <List style={{ marginBottom: 32 }}>
-              {this.state.categories.map((category, index) => (
+              {categories.map((category, index) => (
                 <ListItem key={index}>
                   <CheckBox
                     checked={category.selected}
@@ -198,7 +173,7 @@ export default class CategoryFilter extends Component {
                       {index + 1}. {category.name}
                     </Text>
                   </Body>
-                  <Right>
+                  <Right style={{ flex: 1 }}>
                     <Text>${category.amount.toFixed(2)}</Text>
                   </Right>
                 </ListItem>
