@@ -10,6 +10,33 @@ import MakeItRainComponent from '../../Components/MakeItRainComponent'
 import HeaderComponent from '../../Components/HeaderComponent'
 
 
+const TEST_CATEGORIES = [
+  {
+    name: 'Food',
+    amount: 284.21,
+    selected: false,
+    target: 200.0,
+    current: 131.34,
+    status: 'UNDER'
+  },
+  {
+    name: 'Entertainment',
+    amount: 282.44,
+    selected: false,
+    target: 100.0,
+    current: 93.21,
+    status: 'NEAR'
+  },
+  {
+    name: 'Retail',
+    amount: 207.12,
+    selected: false,
+    target: 150.0,
+    current: 195.32,
+    status: 'ABOVE'
+  }
+]
+
 @inject('levelUpStore')
 @observer
 export default class Summary extends Component {
@@ -22,33 +49,9 @@ export default class Summary extends Component {
       date: 'Dec 04 2018',
       saved: 600.0,
       percentage: 0.3,
-      categories: [
-        {
-          name: 'Food',
-          amount: 284.21,
-          selected: false,
-          target: 200.0,
-          current: 131.34,
-          status: 'UNDER'
-        },
-        {
-          name: 'Entertainment',
-          amount: 282.44,
-          selected: false,
-          target: 100.0,
-          current: 93.21,
-          status: 'NEAR'
-        },
-        {
-          name: 'Retail',
-          amount: 207.12,
-          selected: false,
-          target: 150.0,
-          current: 195.32,
-          status: 'ABOVE'
-        }
-      ],
+      categories: TEST_CATEGORIES,
       rain: false,
+      fabActive: true,
     }
 
     this.initData()
@@ -63,28 +66,24 @@ export default class Summary extends Component {
     }
   }
 
-  goHome() {
-    this.props.navigation.navigate('Home')
+  onFastForwardClicked() {
+    console.log('FAST FORWARDDDDDD')
+    /*TODO: FAST FORWARDDDDDD
+        - generate mock data for category spending values
+        - calculate total saved over the period of time
+    */
   }
 
-  goNext() {
-    this.props.navigation.navigate('Home')
-  }
-
-  displayResults() {
-    Toast.show({
-      text: 'Summary',
-      buttonText: 'Okay',
-      duration: 2000
-    })
-
-    setTimeout(() => {
-      this.goNext()
-    }, 500)
+  onDepositSavingsClicked() {
+    console.log('HERE COMES THE MONEYYYYY')
+    /*TODO:
+        - total savings = 0
+        - update progress bar
+        - rain money
+    */
   }
 
   render() {
-    // const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (
@@ -146,6 +145,22 @@ export default class Summary extends Component {
               <Text>Psst... Lily Press Me</Text>
             </Button>
           </Content>
+
+          <Fab
+            active={this.state.active}
+            direction="up"
+            containerStyle={{ }}
+            style={{ backgroundColor: 'turquoise' }}
+            position="bottomRight"
+            onPress={() => this.setState({ active: !this.state.active })}>
+            <Icon name="md-add" />
+            <Button style={{ backgroundColor: 'green' }} onPress={() => this.onDepositSavingsClicked()}>
+              <Icon name="logo-usd" />
+            </Button>
+            <Button style={{ backgroundColor: 'orange' }} onPress={() => this.onFastForwardClicked()}>
+              <Icon name="ios-fastforward" />
+            </Button>
+          </Fab>
         </Container>
       </Root>
     )

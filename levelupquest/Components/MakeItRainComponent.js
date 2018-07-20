@@ -12,7 +12,7 @@ import * as Animatable from 'react-native-animatable'
 
 const MONEY_DIMENSIONS = { width: 200, height: 52 }
 const SCREEN_DIMENSIONS = Dimensions.get('window')
-const WIGGLE_ROOM = 50
+const WIGGLE_ROOM = 100
 
 const FlippingImage = ({ back = false, delay, duration = 1000, source, style = {} }) => (
   <Animatable.Image
