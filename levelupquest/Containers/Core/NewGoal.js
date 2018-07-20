@@ -6,6 +6,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
   Form, Item, Input, Label, Footer, DatePicker } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
+import footerStyles from './Styles/FooterStyle'
 
 
 @inject('levelUpStore')
@@ -89,9 +90,9 @@ export default class NewGoal extends Component {
             </Form>
           </Content>
 
-          <Footer style={{ position: 'relative', top: 5 }}>
-            <Button full success style={styles.fullBtn} onPress={() => this.displayResults()}>
-              <Text style={styles.fullBtnTxt}>CONTINUE</Text>
+          <Footer style={footerStyles.footer}>
+            <Button full success style={footerStyles.fullBtn} onPress={() => this.displayResults()}>
+              <Text style={footerStyles.fullBtnTxt}>CONTINUE</Text>
             </Button>
           </Footer>
         </Container>
@@ -99,14 +100,3 @@ export default class NewGoal extends Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  fullBtn: {
-    height: 50,
-    width: '100%'
-  },
-  fullBtnTxt: {
-    fontSize: 18,
-    letterSpacing: 1
-  }
-})

@@ -8,6 +8,8 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
   CheckBox, Footer } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
+import footerStyles from './Styles/FooterStyle'
+
 
 const CATEGORIES = [
   {
@@ -129,98 +131,89 @@ export default class CategoryFilter extends Component {
     const goBack = () => this.props.navigation.goBack()
 
     return (
-      <Root>
-        <Container>
-          <HeaderComponent goBack={goBack} title="Filter Categories" />
+      <Container>
+        <HeaderComponent goBack={goBack} title="Filter Categories" />
 
-          <Content style={{ marginTop: 16, marginBottom: 16 }}>
-            <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
+        <Content>
+          <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
 
-            <List style={{ marginBottom: 32 }}>
-              {
-                this.state.categories.map((category, index) => {
-                return (
-                  <ListItem
-                    key={index}
-                    button
+          <List style={{ marginBottom: 32 }}>
+            {
+              this.state.categories.map((category, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  button
+                  onPress={() => {
+                    let modified = this.state.categories
+                    modified[index].selected = !modified[index].selected
+
+                    this.setState({ categories: modified })
+                  }}>
+                  <CheckBox
+                    checked={category.selected}
                     onPress={() => {
                       let modified = this.state.categories
-                      modified[index].selected = !modified[index].selected
+                      modified[index].selected = !category.selected
 
                       this.setState({ categories: modified })
-                    }}>
-                    <CheckBox
-                      checked={category.selected}
-                      onPress={() => {
-                        let modified = this.state.categories
-                        modified[index].selected = !category.selected
+                    }}/>
+                  <Body>
+                    <Text>
+                      {index + 1}. {category.name}
+                    </Text>
+                  </Body>
+                  <Right style={{ flex: 1 }}>
+                    <Text>${category.amount.toFixed(2)}</Text>
+                  </Right>
+                </ListItem>
+              )})
+          }
 
-                        this.setState({ categories: modified })
-                      }}/>
-                    <Body>
-                      <Text>
-                        {index + 1}. {category.name}
-                      </Text>
-                    </Body>
-                    <Right style={{ flex: 1 }}>
-                      <Text>${category.amount.toFixed(2)}</Text>
-                    </Right>
-                  </ListItem>
-                )})
-            }
+          </List>
 
-            </List>
+          <H3 style={{ margin: 16 }}>Choose filters to apply:</H3>
 
-            <H3 style={{ margin: 16 }}>Choose filters to apply:</H3>
+          <List style={{ marginBottom: 32 }}>
+            {
+              FILTERS.map((filter, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  button
+                  onPress={() => {
+                    let modified = this.state.filters
+                    modified[index].selected = !modified[index].selected
 
-            <List style={{ marginBottom: 32 }}>
-              {
-                FILTERS.map((filter, index) => {
-                return (
-                  <ListItem
-                    key={index}
-                    button
+                    this.setState({ filters: modified })
+                  }}>
+                  <CheckBox
+                    checked={filter.selected}
                     onPress={() => {
                       let modified = this.state.filters
-                      modified[index].selected = !modified[index].selected
+                      modified[index].selected = !filter.selected
 
                       this.setState({ filters: modified })
-                    }}>
-                    <CheckBox
-                      checked={filter.selected}
-                      onPress={() => {
-                        let modified = this.state.filters
-                        modified[index].selected = !filter.selected
+                    }}/>
+                  <Body>
+                    <Text>{filter.name}</Text>
+                  </Body>
+                </ListItem>
+              )})
+            }
+          </List>
+        </Content>
 
-                        this.setState({ filters: modified })
-                      }}/>
-                    <Body>
-                      <Text>{filter.name}</Text>
-                    </Body>
-                  </ListItem>
-                )})
-              }
-            </List>
-
-          </Content>
-          <Footer style={{ position: 'relative', top: 5 }}>
-            <Button full success style={styles.fullBtn} onPress={() => this.displayResults()}>
-              <Text style={styles.fullBtnTxt}>CONTINUE</Text>
-            </Button>
-          </Footer>
-        </Container>
-      </Root>
+        <Footer style={footerStyles.footer}>
+          <Button full success style={footerStyles.fullBtn} onPress={() => this.displayResults()}>
+            <Text style={footerStyles.fullBtnTxt}>CONTINUE</Text>
+          </Button>
+        </Footer>
+      </Container>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  fullBtn: {
-    height: 50,
-    width: '100%'
-  },
-  fullBtnTxt: {
-    fontSize: 18,
-    letterSpacing: 1
-  }
+
 })

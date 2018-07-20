@@ -30,7 +30,7 @@ export default class Rewards extends Component {
   }
 
   render() {
-    const customers = this.props.firebaseStore.customers
+    const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (
@@ -78,5 +78,3 @@ export default class Rewards extends Component {
     )
   }
 }
-
-const styles = StyleSheet.create({})
