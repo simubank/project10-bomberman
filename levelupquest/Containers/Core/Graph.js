@@ -1,4 +1,4 @@
-import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer, Toast } from 'native-base'
+import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer, Toast, Icon, Title } from 'native-base'
 import React, { Component } from 'react'
 import { Dimensions, StatusBar, StyleSheet, View, Alert } from 'react-native'
 import { connect } from 'react-redux'
@@ -8,17 +8,15 @@ import { inject, observer } from 'mobx-react'
 import { BarChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
 
-import HeaderComponent from '../../Components/HeaderComponent'
-
+// import HeaderComponent from '../../Components/HeaderComponent'
 
 const randomColor = () => ('#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '000000').slice(0, 7)
 
-const yAxisData = [ 14, 1, 100, 95, 94, 24, 8 ]
-const xAxisLabels = [ 'Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks' ]
+const yAxisData = [14, 1, 100, 95, 94, 24, 8]
+const xAxisLabels = ['Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks']
 
-const axesSvg = { fontSize: 10, fill: 'grey' };
+const axesSvg = { fontSize: 10, fill: 'grey' }
 const verticalContentInset = { top: 10, bottom: 10 }
-
 
 @inject('firebaseStore')
 export default class Graph extends Component {
@@ -157,12 +155,21 @@ export default class Graph extends Component {
   render() {
     return (
       <Container>
-        <HeaderComponent>
-          <StatusBar translucent={true} backgroundColor="transparent" />
+        <Header>
+          <Left>
+            <Button transparent>
+              <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={this.goBack} />
+            </Button>
+          </Left>
+          <Body>
+            <Title style={{ color: '#404040' }}>Graph</Title>
+          </Body>
           <Right>
-            <Text adjustsFontSizeToFit numberOfLines={1}>{ this.state.userLevel }</Text>
+            <Button transparent>
+              <Icon name="menu" />
+            </Button>
           </Right>
-        </HeaderComponent>
+        </Header>
 
         <Content style={{ backgroundColor: '#f3f2f7' }}>
           <View style={{alignItems:'center', paddingVertical:30}}>
