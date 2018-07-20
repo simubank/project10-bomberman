@@ -61,7 +61,7 @@ export default class Settings extends Component {
           <Header>
             <Left>
               <Button transparent>
-                <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={this.goBack} />
+                <Icon style={{ fontSize: 24, marginLeft: 8 }} name="arrow-back" onPress={() => this.goBack()} />
               </Button>
             </Left>
             <Body>
