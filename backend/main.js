@@ -2,8 +2,9 @@
 
 // The auth key for the LevelUp Quest API
 var auth_key = require('./authkey.js');
-const PORT = 4527; // The port the server will listen on
-//
+
+var conf = require('./config');
+const PORT = conf['PORT'];
 
 var express = require('express');
 var app = express();

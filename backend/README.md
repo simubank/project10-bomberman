@@ -59,5 +59,8 @@ GET /transactions
 GET /metrics/...
 * TBD
 
+GET /transactions/withinDays/:days
+* Returns a sample of the transactions that occurred within <days> days
+
 ## Implementation Details
 * Express with Node.js

@@ -1,3 +1,7 @@
+
+var conf = require('./config');
+const PORT = conf['PORT'];
+
 var express = require('express');
 var router = express.Router();
 
@@ -8,6 +12,7 @@ const auth_key = require('./authkey');
 var sample_data = require('./data');
 sample_data = JSON.parse(sample_data);
 sample_data = sample_data['result'];
+
 
 
 // The calculated averages for the various demographics
@@ -96,7 +101,7 @@ router.get('/customers/:customerId/spending/category/:category', function(req, r
 		// If the category tag is included
 
 		// Filter for dates
-		var transaction_date = Date.parse(transaction.originationDate);
+		var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -163,7 +168,7 @@ router.get('/customers/:customerId/spending/category/:category/withinDays/:days'
 		// If the category tag is included
 
 		// Filter for dates
-		var transaction_date = Date.parse(transaction.originationDate);
+		var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -228,7 +233,7 @@ router.get('/customers/:customerId/spending', function(req, res, next) {
 	    
 
 	    // Filter for dates
-	    var transaction_date = Date.parse(transaction.originationDate);
+	    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 	    
 	    var date_difference = now_date - transaction_date;
 	    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -293,7 +298,7 @@ router.get('/customers/:customerId/spending/withinDays/:days', function(req, res
 	    
 
 	    // Filter for dates
-	    var transaction_date = Date.parse(transaction.originationDate);
+	    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 	    
 	    var date_difference = now_date - transaction_date;
 	    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -382,7 +387,7 @@ router.get('/customers/:customerId/spending/categories', function(req, res, next
 		    // If the category tag is not yet accounted for
 		    
 		    // Filter for dates
-		    var transaction_date = Date.parse(transaction.originationDate);
+		    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 		    
 		    var date_difference = now_date - transaction_date;
 		    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -606,7 +611,7 @@ router.get('/transactions', function(req, res, next) {
 	    customer_promises.push(getCustomerTransactions(customer.id));
 
 	    // TODO: Sample mode, comment out for full results
-	    if (i == 200) {
+	    if (i == conf['sample_size']) {
 		break;
 	    }
 	    
@@ -624,6 +629,62 @@ router.get('/transactions', function(req, res, next) {
 	
     }); // End response
 
+});
+
+router.get('/transactions/withinDays/:days', function(req, res, next) {
+    // Returns a sample of the transactions that occurred within <days> days
+    // Used to generate the metrics
+    request.get('http://localhost:' + PORT.toString() + '/transactions', function(error, response, body) {
+	// Response will be an array of arrays, with each sub array
+	// representing a customer's transactions
+	// We filter for the transactions that occur within the
+	// right timeframe
+	
+	var parsed_body = JSON.parse(response.body);
+
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
+
+	var now_date = new Date();
+	var ret_transactions = [];
+
+	for (var i = 0; i < parsed_body.result.length; i++) {
+	    // One user's transactions as an array
+	    for (var j = 0; j < parsed_body.result[i].length; j++) {
+		// Iterate over the user's transactions
+		var transaction = parsed_body.result[i][j];
+
+		// Filter for dates
+
+		var transaction_date = Date.parse(transaction.postDate);
+		//var transaction_date = new Date(transaction.postDate);
+		//Date.parse(transaction.originationDate);
+		
+		var date_difference = now_date - transaction_date;
+		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
+		
+		
+		console.log(date_difference);
+		
+		if (date_difference > Number(req.params.days) || date_difference < 0) {
+		    // Date is more than <days> days ago
+		    continue;
+		}
+		
+		ret_transactions.push(transaction);
+		
+	    }
+	}
+	
+
+	res.send({'result': ret_transactions,
+		  "errorDetails" : null,
+		  "errorMsg": null,
+		  "statusCode": 200});
+    });
 });
 
 // Debug follow up routes

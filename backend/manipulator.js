@@ -3,10 +3,17 @@ var sample_data = require('./data');
 sample_data = JSON.parse(sample_data);
 sample_data = sample_data['result'];
 
-var filter_categories = ['Fast food', 'Salary', 'Rent'];
-var categories = {};
+// Get the customer's data
+var customers_data = require('./customers');
+customers_data = JSON.parse(customers_data);
+customers_data = customers_data['result'][0];
 
-// Initialize the structure
+var filter_categories = ['Fast food', 'Salary', 'Rent', 'Utility bill', 'eTransfer', 'Tax', 'Insurance', 'Mortgage'];
+var categories = {}; // Overall spending per each filter
+var ages = {}; // Spending per each filter, age dependant
+var genders = {}; // Spending per each filter, gender dependant
+
+// Initialize the categories structure
 for (var i = 0; i < filter_categories.length; i++) {
     var category = filter_categories[i];
 
@@ -16,6 +23,22 @@ for (var i = 0; i < filter_categories.length; i++) {
 	'debit_n': 0,
 	'credit_n': 0
     };
+}
+
+// Initialize ages structure
+for (var i = 0; i < 100; i=i + 5) {
+    ages[i.toString()] = {};
+
+    for (var j = 0; j < filter_categories.length; j++) {
+	category = filter_categories[j];
+
+	ages[i.toString()][category] = {
+	    'debit_average': 0,
+	    'credit_average': 0,
+	    'debit_n': 0,
+	    'credit_n': 0
+	};
+    }
 }
 
 function isDebit(transaction) {
@@ -39,9 +62,6 @@ for (var i = 0; i < sample_data.length; i++) {
 	var transaction = user_array[j];
 
 	if (transaction.type == "CreditCardTransaction") {
-	    if (transaction.categoryTags.includes('Salary')) {
-		console.log("AAAAAAAAAAA");
-	    }
 	    transaction.currencyAmount = transaction.currencyAmount * -1;
 	}
 
@@ -76,7 +96,7 @@ overall_debit = Math.abs(overall_debit / overall_debit_n);
 overall_credit = Math.abs(overall_credit);
 overall_credit = overall_credit / overall_credit_n;
 
-// Calculate the filter averages
+// Calculate the overall filter averages
 for (var i = 0; i < filter_categories.length; i++) {
     category = filter_categories[i];
 
@@ -90,7 +110,9 @@ for (var i = 0; i < filter_categories.length; i++) {
 module.exports = {
     'debit_average' : overall_debit,
     'credit_average' : overall_credit,
-    'category_filters' : categories
+    'category_filters' : categories,
+    'ages' : ages,
+    'genders' : genders
 
 };
 
