@@ -12,10 +12,9 @@ const auth_key = require('./authkey');
 var averages;
 //var averages = require('./manipulator');
 
-
-
-// A list of all occupations represented
-var occupation_list = [];
+// Get the common functions
+var common_functions = require('./comm');
+var convert_age = common_functions['convert_age'];
 
 router.get('/stats', function(req, res, next) {
     // 

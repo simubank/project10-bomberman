@@ -11,12 +11,27 @@ sample_data = sample_data['result'];
 // Get the customer's data
 var customers_data = require('./customers');
 customers_data = JSON.parse(customers_data);
-customers_data = customers_data['result'][0];
+
+// This gives us an array of dicts
+customers_data = customers_data['result'];
+
+// What we need is a dict, we assemble that
+var customers_dict = {};
+for (var i = 0; i < customers_data.length; i++) {
+    var customer = customers_data[i];
+
+    customers_dict[customer.id] = customer;
+}
+
 
 var filter_categories = ['Fast food', 'Salary', 'Rent', 'Utility bill', 'eTransfer', 'Tax', 'Insurance', 'Mortgage'];
 var categories = {}; // Overall spending per each filter
 var ages = {}; // Spending per each filter, age dependant
 var genders = {}; // Spending per each filter, gender dependant
+
+// Get the common functions
+var common_functions = require('./comm');
+var convert_age = common_functions['convert_age'];
 
 // Initialize the categories structure
 for (var i = 0; i < filter_categories.length; i++) {
@@ -121,44 +136,42 @@ for (var i = 0; i < sample_data.length; i++) {
 	    }
 	}
 
+	// The user associated with the transaction
+	var transaction_user = customers_dict[transaction.customerId];
+	var user_age = convert_age(transaction_user.age);
+	var user_gender = transaction_user.gender;
+
 	// Handle the age filters
-	for (var a = 0; a < 100; a=a + 5) {
-	    for (var k = 0; k < filter_categories.length; k++) {
-		// Handle the overall filters
-		category = filter_categories[k];
-		if (transaction.categoryTags.includes(category)) {
-		    if (isDebit(transaction)) {
-			ages[a][category]['debit_average'] = ages[a][category]['debit_average'] + transaction.currencyAmount;
-			ages[a][category]['debit_n'] = ages[a][category]['debit_n'] + 1;
-		    } else {
-			ages[a][category]['credit_average'] = ages[a][category]['credit_average'] + transaction.currencyAmount;
-			ages[a][category]['credit_n'] = ages[a][category]['credit_n'] + 1;
-		    }
+	for (var k = 0; k < filter_categories.length; k++) {
+	    // Handle the overall filters
+	    category = filter_categories[k];
+	    if (transaction.categoryTags.includes(category)) {
+		if (isDebit(transaction)) {
+		    ages[user_age][category]['debit_average'] = ages[user_age][category]['debit_average'] + transaction.currencyAmount;
+		    ages[user_age][category]['debit_n'] = ages[user_age][category]['debit_n'] + 1;
+		} else {
+		    ages[user_age][category]['credit_average'] = ages[user_age][category]['credit_average'] + transaction.currencyAmount;
+		    ages[user_age][category]['credit_n'] = ages[user_age][category]['credit_n'] + 1;
 		}
 	    }
 	}
 
 	// Handle the gender filters
-	var gender_keys = Object.keys(genders);
-	for (var a = 0; a < gender_keys.length; a++) {
-	    var chosen_key = gender_keys[a];
-
-	    for (var k = 0; k < filter_categories.length; k++) {
-		// Handle the overall filters
-		category = filter_categories[k];
-		if (transaction.categoryTags.includes(category)) {
-		    if (isDebit(transaction)) {
-			genders[chosen_key][category]['debit_average'] = genders[chosen_key][category]['debit_average'] + transaction.currencyAmount;
-			genders[chosen_key][category]['debit_n'] = genders[chosen_key][category]['debit_n'] + 1;
+	for (var k = 0; k < filter_categories.length; k++) {
+	    // Handle the overall filters
+	    category = filter_categories[k];
+	    if (transaction.categoryTags.includes(category)) {
+		if (isDebit(transaction)) {
+		    genders[user_gender][category]['debit_average'] = genders[user_gender][category]['debit_average'] + transaction.currencyAmount;
+		    genders[user_gender][category]['debit_n'] = genders[user_gender][category]['debit_n'] + 1;
 		    } else {
-			genders[chosen_key][category]['credit_average'] = genders[chosen_key][category]['credit_average'] + transaction.currencyAmount;
-			genders[chosen_key][category]['credit_n'] = genders[chosen_key][category]['credit_n'] + 1;
+			genders[user_gender][category]['credit_average'] = genders[user_gender][category]['credit_average'] + transaction.currencyAmount;
+			genders[user_gender][category]['credit_n'] = genders[user_gender][category]['credit_n'] + 1;
 		    }
-		}
 	    }
 	    
-	}
-	
+    }
+    
     }
 
 }
@@ -189,4 +202,3 @@ module.exports = {
 
 };
 
-console.log(module.exports);
