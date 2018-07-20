@@ -9,6 +9,54 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
 
 import HeaderComponent from '../../Components/HeaderComponent'
 
+const CATEGORIES = [
+  {
+    name: 'Rent',
+    amount: 649.0,
+    selected: false
+  },
+  {
+    name: 'Food',
+    amount: 284.21,
+    selected: false
+  },
+  {
+    name: 'Entertainment',
+    amount: 282.44,
+    selected: false
+  },
+  {
+    name: 'Retail',
+    amount: 207.12,
+    selected: false
+  },
+  {
+    name: 'Insurance',
+    amount: 100.0,
+    selected: false
+  }
+]
+
+const FILTERS = [
+  {
+    name: 'Age'
+  },
+  {
+    name: 'Gender'
+  },
+  {
+    name: 'Occupation'
+  },
+  {
+    name: 'Relationship Status'
+  },
+  {
+    name: 'Habitation'
+  },
+  {
+    name: 'Municipality'
+  }
+]
 
 @inject('levelUpStore')
 @observer
@@ -18,65 +66,27 @@ export default class CategoryFilter extends Component {
     let params = this.props.navigation.state.params
 
     this.state = {
-      categoriesConstant: [
-        {
-          name: 'Rent',
-          amount: 649.0,
-          selected: false
-        },
-        {
-          name: 'Food',
-          amount: 284.21,
-          selected: false
-        },
-        {
-          name: 'Entertainment',
-          amount: 282.44,
-          selected: false
-        },
-        {
-          name: 'Retail',
-          amount: 207.12,
-          selected: false
-        },
-        {
-          name: 'Insurance',
-          amount: 100.0,
-          selected: false
-        }
-      ],
-      filters: [
-        {
-          name: 'Age'
-        },
-        {
-          name: 'Gender'
-        },
-        {
-          name: 'Occupation'
-        },
-        {
-          name: 'Relationship Status'
-        },
-        {
-          name: 'Habitation'
-        },
-        {
-          name: 'Municipality'
-        }
-      ],
       title: params.title,
       amount: params.amount,
-      deadline: params.deadline
+      deadline: params.deadline,
+      categories: [],
+      filters: FILTERS
     }
 
     this.populateCategories()
   }
 
   async populateCategories() {
+    let categories
+
     try {
-      await this.props.levelUpStore.getCategoryList()
+      categories = await this.props.levelUpStore.getCategoryList()
     } catch (error) {
+
+      // // If network error, still populate hard coded info
+      categories = CATEGORIES
+      this.setState({ categories })
+
       console.error(error)
     }
   }
@@ -96,15 +106,15 @@ export default class CategoryFilter extends Component {
   }
 
   displayResults() {
-    const categories = _.filter(this.state.categories, category => {
+    let selectedCategories = _.filter(CATEGORIES, category => {
       return category.selected
     })
-    const filters = _.filter(this.state.filters, filter => {
+    let selectedFilters = _.filter(FILTERS, filter => {
       return filter.selected
     })
 
     Toast.show({
-      text: 'Categories: ' + categories.length + '\nFilters: ' + filters.length,
+      text: 'Categories: ' + selectedCategories.length + '\nFilters: ' + selectedFilters.length,
       buttonText: 'Okay',
       duration: 2000
     })
@@ -113,8 +123,8 @@ export default class CategoryFilter extends Component {
   }
 
   render() {
-    const categories = this.props.levelUpStore.categories
-    console.log(categories)
+    // let categories = this.props.levelUpStore.categories
+    // console.log(categories)
 
     const goBack = () => this.props.navigation.goBack()
 
@@ -125,53 +135,73 @@ export default class CategoryFilter extends Component {
 
           <Content style={{ marginTop: 16, marginBottom: 16 }}>
             <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
+
             <List style={{ marginBottom: 32 }}>
-              {categories.map((category, index) => (
-                <ListItem key={index}>
-                  <CheckBox
-                    checked={category.selected}
+              {
+                this.state.categories.map((category, index) => {
+                return (
+                  <ListItem
+                    key={index}
+                    button
                     onPress={() => {
                       let modified = this.state.categories
-                      modified[index].selected = !category.selected
+                      modified[index].selected = !modified[index].selected
 
-                      this.setState({
-                        categories: modified
-                      })
-                    }}
-                  />
-                  <Body>
-                    <Text>
-                      {index + 1}. {category.name}
-                    </Text>
-                  </Body>
-                  <Right style={{ flex: 1 }}>
-                    <Text>${category.amount.toFixed(2)}</Text>
-                  </Right>
-                </ListItem>
-              ))}
+                      this.setState({ categories: modified })
+                    }}>
+                    <CheckBox
+                      checked={category.selected}
+                      onPress={() => {
+                        let modified = this.state.categories
+                        modified[index].selected = !category.selected
+
+                        this.setState({ categories: modified })
+                      }}/>
+                    <Body>
+                      <Text>
+                        {index + 1}. {category.name}
+                      </Text>
+                    </Body>
+                    <Right style={{ flex: 1 }}>
+                      <Text>${category.amount.toFixed(2)}</Text>
+                    </Right>
+                  </ListItem>
+                )})
+            }
+
             </List>
 
             <H3 style={{ margin: 16 }}>Choose filters to apply:</H3>
+
             <List style={{ marginBottom: 32 }}>
-              {this.state.filters.map((filter, index) => (
-                <ListItem key={index}>
-                  <CheckBox
-                    checked={filter.selected}
+              {
+                FILTERS.map((filter, index) => {
+                return (
+                  <ListItem
+                    key={index}
+                    button
                     onPress={() => {
                       let modified = this.state.filters
-                      modified[index].selected = !filter.selected
+                      modified[index].selected = !modified[index].selected
 
-                      this.setState({
-                        filters: modified
-                      })
-                    }}
-                  />
-                  <Body>
-                    <Text>{filter.name}</Text>
-                  </Body>
-                </ListItem>
-              ))}
+                      this.setState({ filters: modified })
+                    }}>
+                    <CheckBox
+                      checked={filter.selected}
+                      onPress={() => {
+                        let modified = this.state.filters
+                        modified[index].selected = !filter.selected
+
+                        this.setState({ filters: modified })
+                      }}/>
+                    <Body>
+                      <Text>{filter.name}</Text>
+                    </Body>
+                  </ListItem>
+                )})
+              }
             </List>
+
           </Content>
           <Footer style={{ position: 'relative', top: 5 }}>
             <Button full success style={styles.fullBtn} onPress={() => this.displayResults()}>

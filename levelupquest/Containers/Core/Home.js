@@ -12,6 +12,7 @@ import { inject, observer } from 'mobx-react'
 import styles from './Styles/HomeScreenStyle'
 import HeaderComponent from '../../Components/HeaderComponent'
 
+
 const menuOptions = [
   {
     name: 'New Goal',

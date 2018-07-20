@@ -90,6 +90,8 @@ class LevelUpStore {
 
       this.categories.push(obj)
     })
+
+    return this.categories
   }
 }
 
