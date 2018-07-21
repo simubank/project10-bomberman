@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import {
   Container,
@@ -33,23 +33,20 @@ export default class Settings extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {}
+    this.state = {
+      preferences: []
+    }
 
-    this.initData()
+    this.populatePreferences()
   }
 
-  async initData() {
-    try {
-      await this.props.levelUpStore.getCustomers()
-
-      console.log(this.props.levelUpStore.customers)
-    } catch (error) {
-      console.log(error)
-    }
+  async populatePreferences() {
+    let preferences = await this.props.levelUpStore.getPurchasePreferences()
+    
+    this.setState({ preferences })
   }
 
   render() {
-    const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (
@@ -58,9 +55,26 @@ export default class Settings extends Component {
           <HeaderComponent goBack={goBack} title="Settings" />
 
           <Content>
-            <Button>
-              <Text>Connect to Twitter</Text>
+            <Button style={{ margin: 16 }} onPress={() => this.populatePreferences()}>
+              <Text>Analyze Personality</Text>
             </Button>
+
+            <List style={{ marginBottom: 32 }}>
+            {this.state.preferences.map((preference, index) => {
+              return (
+                <ListItem key={index}>
+                  <Body>
+                    <Text>
+                      {index + 1}. {preference.name}
+                    </Text>
+                  </Body>
+                  <Right>
+                    <Text>{preference.score}</Text>
+                  </Right>
+                </ListItem>
+              )
+            })}
+          </List>
           </Content>
         </Container>
       </Root>
