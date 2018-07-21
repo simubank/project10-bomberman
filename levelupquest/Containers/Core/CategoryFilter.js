@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
-import { Image, StyleSheet, View, Alert } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import _ from 'lodash'
-import axios from 'axios'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
-  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root,
-  CheckBox, Footer } from 'native-base'
+import { Container, Content, Text, Button, Body, Right, H3, List, ListItem, Toast, CheckBox, Footer } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
-
 
 const CATEGORIES = [
   {
@@ -84,7 +80,6 @@ export default class CategoryFilter extends Component {
     try {
       categories = await this.props.levelUpStore.getCategoryList()
     } catch (error) {
-
       // // If network error, still populate hard coded info
       categories = CATEGORIES
       this.setState({ categories })
@@ -98,7 +93,7 @@ export default class CategoryFilter extends Component {
       title: this.state.title,
       amount: this.state.amount,
       deadline: this.state.deadline
-      //TODO: send the object returned by the API call
+      // TODO: send the object returned by the API call
     }
 
     this.props.navigation.navigate({
@@ -138,8 +133,7 @@ export default class CategoryFilter extends Component {
           <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
 
           <List style={{ marginBottom: 32 }}>
-            {
-              this.state.categories.map((category, index) => {
+            {this.state.categories.map((category, index) => {
               return (
                 <ListItem
                   key={index}
@@ -149,7 +143,8 @@ export default class CategoryFilter extends Component {
                     modified[index].selected = !modified[index].selected
 
                     this.setState({ categories: modified })
-                  }}>
+                  }}
+                >
                   <CheckBox
                     checked={category.selected}
                     onPress={() => {
@@ -157,7 +152,8 @@ export default class CategoryFilter extends Component {
                       modified[index].selected = !category.selected
 
                       this.setState({ categories: modified })
-                    }}/>
+                    }}
+                  />
                   <Body>
                     <Text>
                       {index + 1}. {category.name}
@@ -167,16 +163,14 @@ export default class CategoryFilter extends Component {
                     <Text>${category.amount.toFixed(2)}</Text>
                   </Right>
                 </ListItem>
-              )})
-          }
-
+              )
+            })}
           </List>
 
           <H3 style={{ margin: 16 }}>Choose filters to apply:</H3>
 
           <List style={{ marginBottom: 32 }}>
-            {
-              FILTERS.map((filter, index) => {
+            {FILTERS.map((filter, index) => {
               return (
                 <ListItem
                   key={index}
@@ -186,7 +180,8 @@ export default class CategoryFilter extends Component {
                     modified[index].selected = !modified[index].selected
 
                     this.setState({ filters: modified })
-                  }}>
+                  }}
+                >
                   <CheckBox
                     checked={filter.selected}
                     onPress={() => {
@@ -194,13 +189,14 @@ export default class CategoryFilter extends Component {
                       modified[index].selected = !filter.selected
 
                       this.setState({ filters: modified })
-                    }}/>
+                    }}
+                  />
                   <Body>
                     <Text>{filter.name}</Text>
                   </Body>
                 </ListItem>
-              )})
-            }
+              )
+            })}
           </List>
         </Content>
 
@@ -214,6 +210,4 @@ export default class CategoryFilter extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-
-})
+const styles = StyleSheet.create({})

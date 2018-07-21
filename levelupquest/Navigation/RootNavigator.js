@@ -1,4 +1,4 @@
-import { addNavigationHelpers, StackNavigator, NavigationActions } from 'react-navigation'
+import { StackNavigator } from 'react-navigation'
 
 import Home from '../Containers/Core/Home'
 
@@ -9,6 +9,7 @@ import Settings from '../Containers/Core/Settings'
 import CategoryFilter from '../Containers/Core/CategoryFilter'
 import Graph from '../Containers/Core/Graph'
 import Summary from '../Containers/Core/Summary'
+import Map from '../Containers/Core/Map'
 
 import { observer } from 'mobx-react'
 
@@ -35,6 +36,9 @@ export const AppNavigator = StackNavigator(
     },
     Summary: {
       screen: Summary
+    },
+    Map: {
+      screen: Map
     }
   },
   {

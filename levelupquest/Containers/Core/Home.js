@@ -1,53 +1,50 @@
-import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer } from 'native-base'
+import { Body, Container, Content, Left, List, ListItem, Right, Text } from 'native-base'
 import React, { Component } from 'react'
-import { Dimensions, Image, View, StatusBar } from 'react-native'
-import SideMenu from 'react-native-side-menu'
-import Carousel from 'react-native-snap-carousel'
-import { connect } from 'react-redux'
-import Modal from 'react-native-modal'
+import { View, StatusBar } from 'react-native'
+// import Modal from 'react-native-modal'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { inject, observer } from 'mobx-react'
+import { inject } from 'mobx-react'
 
 // Styles
 import styles from './Styles/HomeScreenStyle'
 import HeaderComponent from '../../Components/HeaderComponent'
-
 
 const menuOptions = [
   {
     name: 'New Goal',
     icon: 'ios-calendar-outline',
     iconSet: 'Ionicons',
-    screen: 'NewGoal',
-    color: 'red'
+    screen: 'NewGoal'
   },
   {
     name: 'Progress',
     icon: 'ios-trending-up-outline',
     iconSet: 'Ionicons',
-    screen: 'Summary',
-    color: '#b3b300'
+    screen: 'Summary'
   },
   {
     name: 'Rewards',
     icon: 'ios-trophy-outline',
     iconSet: 'Ionicons',
-    screen: 'Rewards',
-    color: 'green'
+    screen: 'Rewards'
   },
   {
     name: 'Settings',
     icon: 'ios-settings-outline',
     iconSet: 'Ionicons',
-    screen: 'Settings',
-    color: 'blue'
+    screen: 'Settings'
   },
   {
     name: 'Graph',
     icon: 'ios-stats-outline',
     iconSet: 'Ionicons',
-    screen: 'Graph',
-    color: 'purple'
+    screen: 'Graph'
+  },
+  {
+    name: 'Map',
+    icon: 'ios-map-outline',
+    iconSet: 'Ionicons',
+    screen: 'Map'
   }
 ]
 
@@ -62,7 +59,7 @@ export default class Home extends Component {
     }
   }
 
-  _renderIcon({ icon, iconSet, color }, size = 50) {
+  _renderIcon({ icon }, size = 50) {
     return <Ionicons name={icon} size={size} color="green" />
   }
 

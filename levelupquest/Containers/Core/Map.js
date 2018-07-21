@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, View, WebView } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import {
   Container,
@@ -29,7 +29,7 @@ import HeaderComponent from '../../Components/HeaderComponent'
 
 @inject('levelUpStore')
 @observer
-export default class Settings extends Component {
+export default class Map extends Component {
   constructor(props) {
     super(props)
 
@@ -55,17 +55,19 @@ export default class Settings extends Component {
     return (
       <Root>
         <Container>
-          <HeaderComponent goBack={goBack} title="Settings" />
+          <HeaderComponent goBack={goBack} title="Map" />
 
           <Content>
-            <Button>
-              <Text>Connect to Twitter</Text>
-            </Button>
+            <WebView
+              source={{
+                uri:
+                  'https://www.google.ca/maps/place/TD+Canada+Trust/@43.6475473,-79.3819741,18.02z/data=!4m5!3m4!1s0x882b34b5669d1e39:0xa2331ecc2935120a!8m2!3d43.6482298!4d-79.3809414'
+              }}
+              style={{ width: '100%', height: 600 }}
+            />
           </Content>
         </Container>
       </Root>
     )
   }
 }
-
-const styles = StyleSheet.create({})
