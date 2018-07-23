@@ -83,6 +83,15 @@ export default class Summary extends Component {
     */
   }
 
+  renderAmountSpentPerCategory(currentAmount, goal){
+    if(currentAmount > goal) {
+      return <Text style={{ marginBottom: 4, color: 'red' }}>${currentAmount.toFixed(2)}</Text>
+    }
+    else {
+      return <Text style={{ marginBottom: 4, color: 'green' }}>${currentAmount.toFixed(2)}</Text>
+    }
+  }
+
   render() {
     const goBack = () => this.props.navigation.goBack()
 
@@ -120,11 +129,11 @@ export default class Summary extends Component {
                     <Body>
                       <Text style={{ marginBottom: 4, fontWeight: 'bold' }}>{category.name}</Text>
                       <Text style={{ marginBottom: 4, fontSize: 14 }}>
-                        ${category.amount.toFixed(2)} {' > '} ${category.target.toFixed(2)}
+                        Goal: ${category.target.toFixed(2)}
                       </Text>
                     </Body>
                     <Right>
-                      <Text style={{ marginBottom: 4 }}>${category.current.toFixed(2)}</Text>
+                      { this.renderAmountSpentPerCategory(category.current, category.target) }
                     </Right>
                   </ListItem>
                 ))}
