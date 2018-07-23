@@ -22,16 +22,6 @@ export default class Map extends Component {
     this.getLocation()
   }
 
-  async initData() {
-    try {
-      await this.props.levelUpStore.getCustomers()
-
-      console.log(this.props.levelUpStore.customers)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   getLocation() {
     var options = {
       enableHighAccuracy: true,
