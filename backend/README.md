@@ -46,6 +46,12 @@ POST /cashback/:accountId
 * The cashback amount is set in a dictionary sent with the request in the 'amount' key
 * TBD
 
+GET /metrics/:category?age=...&gender=...&occupation=...
+* Returns the average of the averages for the monthly spending by the <age>, <gender>, and <occupation>
+* Note: Currently only factors in age and gender, not occupation, will fix this later today
+* Returns 400 if an invalid argument is given, for gender it is case-sensitive with values Male, Female, Other.
+* Still untested
+
 ## Uses the Simulants API
 
 GET /customers/
