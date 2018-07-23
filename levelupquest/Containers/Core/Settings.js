@@ -1,12 +1,31 @@
 import React, { Component } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
-  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast,
-  Root } from 'native-base'
+import {
+  Container,
+  Header,
+  Content,
+  Card,
+  CardItem,
+  Thumbnail,
+  Text,
+  Button,
+  Icon,
+  Left,
+  Body,
+  Right,
+  H1,
+  H2,
+  H3,
+  List,
+  ListItem,
+  Title,
+  Fab,
+  Toast,
+  Root
+} from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
-
 
 @inject('levelUpStore')
 @observer
@@ -14,23 +33,20 @@ export default class Settings extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {}
+    this.state = {
+      preferences: []
+    }
 
-    this.initData()
+    this.populatePreferences()
   }
 
-  async initData() {
-    try {
-      await this.props.levelUpStore.getCustomers()
-
-      console.log(this.props.levelUpStore.customers)
-    } catch (error) {
-      console.log(error)
-    }
+  async populatePreferences() {
+    let preferences = await this.props.levelUpStore.getPurchasePreferences()
+    
+    this.setState({ preferences })
   }
 
   render() {
-    const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (
@@ -39,39 +55,26 @@ export default class Settings extends Component {
           <HeaderComponent goBack={goBack} title="Settings" />
 
           <Content>
-            <List>
-              {customers.map((customer, index) => (
-                <ListItem avatar key={index}>
-                  <Left>
-                    <Button
-                      rounded
-                      light={customer.status === 'OFFLINE'}
-                      info={customer.status === 'ONLINE'}
-                      success={customer.status === 'CHECKED_OUT'}
-                      warning={customer.status === 'NEED_HELP'}
-                    >
-                      <Text>{'   '}</Text>
-                    </Button>
-                  </Left>
+            <Button style={{ margin: 16 }} onPress={() => this.populatePreferences()}>
+              <Text>Analyze Personality</Text>
+            </Button>
+
+            <List style={{ marginBottom: 32 }}>
+            {this.state.preferences.map((preference, index) => {
+              return (
+                <ListItem key={index}>
                   <Body>
-                    <Text style={{ marginBottom: 4 }}>{customer.name}</Text>
-                    <Text style={{ marginBottom: 4, fontSize: 14 }}>
-                      {customer.gender} {customer.age} ({customer.isMarried ? 'Married' : 'Not Married'})
+                    <Text>
+                      {index + 1}. {preference.name}
                     </Text>
-                    {customer.purchases.map((purchase, index) => (
-                      <Text note key={index}>
-                        {purchase.productName}
-                      </Text>
-                    ))}
                   </Body>
                   <Right>
-                    <Text style={{ marginBottom: 4 }}>{customer.entryTime}</Text>
-                    <Text style={{ marginBottom: 4, fontSize: 14 }}>{customer.location}</Text>
-                    <Text note>{customer.customerSince}</Text>
+                    <Text>{preference.score}</Text>
                   </Right>
                 </ListItem>
-              ))}
-            </List>
+              )
+            })}
+          </List>
           </Content>
         </Container>
       </Root>
