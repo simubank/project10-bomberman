@@ -1,30 +1,20 @@
+
+var conf = require('./config');
+const PORT = conf['PORT'];
+
 var express = require('express');
 var router = express.Router();
 
 const request = require('request');
 const auth_key = require('./authkey');
 
-// The calculated averages for the various demographics
-var calculated_averages = [];
+// Get the averages data
+var averages;
+//var averages = require('./manipulator');
 
-// A list of all occupations represented
-var occupation_list = [];
-
-// Recalculates all the averages in calculated_averages
-function recalculate_averages() {
-    calculated_averages = [];
-
-    var total = 0;
-    var n = 0;
-    
-    return calculated_averages;
-}
-
-// Gets the average from calculated_averages according
-// to the dictionary <filters>
-function get_average(filters) {
-    return 0;
-}
+// Get the common functions
+var common_functions = require('./comm');
+var convert_age = common_functions['convert_age'];
 
 router.get('/stats', function(req, res, next) {
     // 
@@ -90,7 +80,7 @@ router.get('/customers/:customerId/spending/category/:category', function(req, r
 		// If the category tag is included
 
 		// Filter for dates
-		var transaction_date = Date.parse(transaction.originationDate);
+		var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -157,7 +147,7 @@ router.get('/customers/:customerId/spending/category/:category/withinDays/:days'
 		// If the category tag is included
 
 		// Filter for dates
-		var transaction_date = Date.parse(transaction.originationDate);
+		var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -222,7 +212,7 @@ router.get('/customers/:customerId/spending', function(req, res, next) {
 	    
 
 	    // Filter for dates
-	    var transaction_date = Date.parse(transaction.originationDate);
+	    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 	    
 	    var date_difference = now_date - transaction_date;
 	    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -287,7 +277,7 @@ router.get('/customers/:customerId/spending/withinDays/:days', function(req, res
 	    
 
 	    // Filter for dates
-	    var transaction_date = Date.parse(transaction.originationDate);
+	    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 	    
 	    var date_difference = now_date - transaction_date;
 	    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -376,7 +366,7 @@ router.get('/customers/:customerId/spending/categories', function(req, res, next
 		    // If the category tag is not yet accounted for
 		    
 		    // Filter for dates
-		    var transaction_date = Date.parse(transaction.originationDate);
+		    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
 		    
 		    var date_difference = now_date - transaction_date;
 		    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -600,7 +590,7 @@ router.get('/transactions', function(req, res, next) {
 	    customer_promises.push(getCustomerTransactions(customer.id));
 
 	    // TODO: Sample mode, comment out for full results
-	    if (i == 200) {
+	    if (i == conf['sample_size']) {
 		break;
 	    }
 	    
@@ -620,6 +610,141 @@ router.get('/transactions', function(req, res, next) {
 
 });
 
+router.get('/transactions/withinDays/:days', function(req, res, next) {
+    // Returns a sample of the transactions that occurred within <days> days
+    // Used to generate the metrics
+    request.get('http://localhost:' + PORT.toString() + '/transactions', function(error, response, body) {
+	// Response will be an array of arrays, with each sub array
+	// representing a customer's transactions
+	// We filter for the transactions that occur within the
+	// right timeframe
+	
+	var parsed_body = JSON.parse(response.body);
+
+	if (parsed_body.statusCode != 200) {
+	    // Error in processing
+	    res.send(parsed_body);
+	    return;
+	}
+
+	var now_date = new Date();
+	var ret_transactions = [];
+
+	for (var i = 0; i < parsed_body.result.length; i++) {
+	    // One user's transactions as an array
+	    var users_transactions = [];
+	    for (var j = 0; j < parsed_body.result[i].length; j++) {
+		// Iterate over the user's transactions
+		var transaction = parsed_body.result[i][j];
+
+		// Filter for dates
+
+		var transaction_date = Date.parse(transaction.postDate);
+		
+		var date_difference = now_date - transaction_date;
+		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
+		
+		
+		
+		if (date_difference > Number(req.params.days) || date_difference < 0) {
+		    // Date is more than <days> days ago
+		    continue;
+		}
+		
+		users_transactions.push(transaction);
+		
+	    }
+
+	    ret_transactions.push(users_transactions);
+	}
+	
+
+	res.send({'result': ret_transactions,
+		  "errorDetails" : null,
+		  "errorMsg": null,
+		  "statusCode": 200});
+    });
+});
+
+// Metrics routes
+router.get('/metrics/:category', function(req, res, next) {
+    // Check to make sure that all arguments are set right
+    if (req.query.gender == null || req.query.age == null ||
+	req.query.occupation == null) {
+	res.send({'result': [],
+		  "errorDetails" : null,
+		  "errorMsg": "A parameter (one of age, gender, occupation) was not set",
+		  "statusCode": 400});
+	return;
+    }
+
+    // Number of debits/credits summed, allows us to skip certain
+    // categories if we want to if an invalid value is sent in
+    var debit_n = 0;
+    var credit_n = 0;
+
+    var debits = 0;
+    var credits = 0;
+
+    // Used to check that the category exists
+    var value_to_add;
+    
+    // Handle ages
+    value_to_add = averages['ages'][convert_age(req.query.age)];
+    if (value_to_add == null) {
+	res.send({'result': [],
+		  "errorDetails" : null,
+		  "errorMsg": "Invalid age",
+		  "statusCode": 400});
+	return;
+	
+    }
+
+    value_to_add = averages['ages'][convert_age(req.query.age)][req.params.category];
+
+    // value_to_add is now a dict with two keys
+    debits = debits + value_to_add['debit_average'];
+    credits = credits + value_to_add['credit_average'];
+    debit_n = debit_n + 1;
+    credit_n = credit_n + 1;
+    
+    // Handle genders
+    value_to_add = averages['genders'][req.query.gender];
+    if (value_to_add == null) {
+	res.send({'result': [],
+		  "errorDetails" : null,
+		  "errorMsg": "Invalid gender",
+		  "statusCode": 400});
+	return;
+	
+    }
+
+    value_to_add = averages['genders'][req.query.gender][req.params.category];
+
+    // value_to_add is now a dict with two keys
+    debits = debits + value_to_add['debit_average'];
+    credits = credits + value_to_add['credit_average'];
+    debit_n = debit_n + 1;
+    credit_n = credit_n + 1;
+    
+
+    // TODO: Handle occupations
+
+
+    // Divide and return
+    res.send({'result': {'debit_average' : debits / debit_n,
+			 'credit_average' : credits / credit_n
+
+
+			},
+	      "errorDetails" : null,
+	      "errorMsg": null,
+	      "statusCode": 200});
+	
+
+    
+});
+
 // Debug follow up routes
 router.get('/customers/:customerId', function(req, res, next) {
     // TODO: Update this later
@@ -637,4 +762,5 @@ router.get('*', function(req, res, next) {
 
 module.exports = router;
 
-recalculate_averages();
+// To allow us to make a request to the server for data
+averages = require('./manipulator');

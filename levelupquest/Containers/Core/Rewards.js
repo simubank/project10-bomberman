@@ -1,12 +1,20 @@
 import React, { Component } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
-  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root
+import {
+  Container,
+  Content,
+  Text,
+  Button,
+  Left,
+  Body,
+  Right,
+  List,
+  ListItem,
+  Root
 } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
-
 
 @inject('levelUpStore')
 @observer

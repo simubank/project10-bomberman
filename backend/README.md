@@ -46,6 +46,12 @@ POST /cashback/:accountId
 * The cashback amount is set in a dictionary sent with the request in the 'amount' key
 * TBD
 
+GET /metrics/:category?age=...&gender=...&occupation=...
+* Returns the average of the averages for the monthly spending by the <age>, <gender>, and <occupation>
+* Note: Currently only factors in age and gender, not occupation, will fix this later today
+* Returns 400 if an invalid argument is given, for gender it is case-sensitive with values Male, Female, Other.
+* Still untested
+
 ## Uses the Simulants API
 
 GET /customers/
@@ -58,6 +64,10 @@ GET /transactions
 
 GET /metrics/...
 * TBD
+
+GET /transactions/withinDays/:days
+* Returns a sample of the transactions that occurred within <days> days
+* Does not flatten the arrays (ie. returns an array of arrays, with each sub array being one user's transactions)
 
 ## Implementation Details
 * Express with Node.js

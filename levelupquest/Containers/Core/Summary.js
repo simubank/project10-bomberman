@@ -1,14 +1,26 @@
 import React, { Component } from 'react'
-import { Image, Alert, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import * as Progress from 'react-native-progress'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
-  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root
+import {
+  Container,
+  Content,
+  Card,
+  CardItem,
+  Text,
+  Button,
+  Icon,
+  Left,
+  Body,
+  Right,
+  List,
+  ListItem,
+  Fab,
+  Root
 } from 'native-base'
 
 import MakeItRainComponent from '../../Components/MakeItRainComponent'
 import HeaderComponent from '../../Components/HeaderComponent'
-
 
 const TEST_CATEGORIES = [
   {
@@ -51,7 +63,7 @@ export default class Summary extends Component {
       percentage: 0.3,
       categories: TEST_CATEGORIES,
       rain: false,
-      fabActive: true,
+      fabActive: true
     }
 
     this.initData()
@@ -68,7 +80,7 @@ export default class Summary extends Component {
 
   onFastForwardClicked() {
     console.log('FAST FORWARDDDDDD')
-    /*TODO: FAST FORWARDDDDDD
+    /* TODO: FAST FORWARDDDDDD
         - generate mock data for category spending values
         - calculate total saved over the period of time
     */
@@ -76,7 +88,7 @@ export default class Summary extends Component {
 
   onDepositSavingsClicked() {
     console.log('HERE COMES THE MONEYYYYY')
-    /*TODO:
+    /* TODO:
         - total savings = 0
         - update progress bar
         - rain money
@@ -158,10 +170,11 @@ export default class Summary extends Component {
           <Fab
             active={this.state.active}
             direction="up"
-            containerStyle={{ }}
+            containerStyle={{}}
             style={{ backgroundColor: 'turquoise' }}
             position="bottomRight"
-            onPress={() => this.setState({ active: !this.state.active })}>
+            onPress={() => this.setState({ active: !this.state.active })}
+          >
             <Icon name="md-add" />
             <Button style={{ backgroundColor: 'green' }} onPress={() => this.onDepositSavingsClicked()}>
               <Icon name="logo-usd" />

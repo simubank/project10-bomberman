@@ -1,13 +1,23 @@
 import React, { Component } from 'react'
-import { Image, StyleSheet, View, Alert } from 'react-native'
+import { View } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,
-  Icon, Left, Body, Right, H1, H2, H3, List, ListItem, Title, Fab, Toast, Root,
-  Form, Item, Input, Label, Footer, DatePicker } from 'native-base'
+import {
+  Container,
+  Content,
+  Text,
+  Button,
+  Toast,
+  Root,
+  Form,
+  Item,
+  Input,
+  Label,
+  Footer,
+  DatePicker
+} from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
-
 
 @inject('levelUpStore')
 @observer
@@ -20,6 +30,8 @@ export default class NewGoal extends Component {
       amount: 0,
       deadline: new Date()
     }
+
+    this.setDate = this.setDate.bind(this) // DO NOT REMOVE
   }
 
   goNext() {
@@ -41,7 +53,13 @@ export default class NewGoal extends Component {
 
   displayResults() {
     Toast.show({
-      text: 'Goal: ' + this.state.title + '\nAmount: ' + this.state.amount + '\nDeadline: ' + this.state.deadline.toString().substr(4, 12),
+      text:
+        'Goal: ' +
+        this.state.title +
+        '\nAmount: ' +
+        this.state.amount +
+        '\nDeadline: ' +
+        this.state.deadline.toString().substr(4, 12),
       buttonText: 'Okay',
       duration: 2000
     })
@@ -86,7 +104,6 @@ export default class NewGoal extends Component {
                 />
                 <Text>Date: {this.state.deadline.toString().substr(4, 12)}</Text>
               </View>
-
             </Form>
           </Content>
 
