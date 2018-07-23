@@ -29,6 +29,8 @@ var categories = {}; // Overall spending per each filter
 var ages = {}; // Spending per each filter, age dependant
 var genders = {}; // Spending per each filter, gender dependant
 
+const GENDER_LIST = ['Male', 'Female', 'Other'];
+
 // Get the common functions
 var common_functions = require('./comm');
 var convert_age = common_functions['convert_age'];
@@ -105,21 +107,35 @@ var overall_debit_n = 0;
 var overall_credit_n = 0;
 for (var i = 0; i < sample_data.length; i++) {
     var user_array = sample_data[i];
-    
+
+    if (user_array.length == 0) {
+	continue;
+    }
+
+    // The user associated with the transaction
+    var transaction = user_array[0];
+    var transaction_user = customers_dict[transaction.customerId];
+    var user_age = convert_age(transaction_user.age);
+    var user_gender = transaction_user.gender;
+
+    var has_spent = {'debits': [],
+		     'credits': []};
+
     for (var j = 0; j < user_array.length; j++) {
 	// Iterate over each transaction for the user
-	var transaction = user_array[j];
+	transaction = user_array[j];
 
 	if (transaction.type == "CreditCardTransaction") {
 	    transaction.currencyAmount = transaction.currencyAmount * -1;
 	}
 
+	// TODO: Fix this
 	if (isDebit(transaction)) {
 	    overall_debit = overall_debit + transaction.currencyAmount;
-	    overall_debit_n = overall_debit_n + 1;
+	    //overall_debit_n = overall_debit_n + 1;
 	} else {
 	    overall_credit = overall_credit + transaction.currencyAmount;
-	    overall_credit_n = overall_credit_n + 1;
+	    //overall_credit_n = overall_credit_n + 1;
 	}
 
 	for (var k = 0; k < filter_categories.length; k++) {
@@ -128,18 +144,16 @@ for (var i = 0; i < sample_data.length; i++) {
 	    if (transaction.categoryTags.includes(category)) {
 		if (isDebit(transaction)) {
 		    categories[category]['debit_average'] = categories[category]['debit_average'] + transaction.currencyAmount;
-		    categories[category]['debit_n'] = categories[category]['debit_n'] + 1;
+		    has_spent['debits'].push(category);
+		    //categories[category]['debit_n'] = categories[category]['debit_n'] + 1;
 		} else {
 		    categories[category]['credit_average'] = categories[category]['credit_average'] + transaction.currencyAmount;
-		    categories[category]['credit_n'] = categories[category]['credit_n'] + 1;
+		    has_spent['credits'].push(category);
+		    //categories[category]['credit_n'] = categories[category]['credit_n'] + 1;
 		}
 	    }
 	}
 
-	// The user associated with the transaction
-	var transaction_user = customers_dict[transaction.customerId];
-	var user_age = convert_age(transaction_user.age);
-	var user_gender = transaction_user.gender;
 
 	// Handle the age filters
 	for (var k = 0; k < filter_categories.length; k++) {
@@ -148,10 +162,10 @@ for (var i = 0; i < sample_data.length; i++) {
 	    if (transaction.categoryTags.includes(category)) {
 		if (isDebit(transaction)) {
 		    ages[user_age][category]['debit_average'] = ages[user_age][category]['debit_average'] + transaction.currencyAmount;
-		    ages[user_age][category]['debit_n'] = ages[user_age][category]['debit_n'] + 1;
+		    //ages[user_age][category]['debit_n'] = ages[user_age][category]['debit_n'] + 1;
 		} else {
 		    ages[user_age][category]['credit_average'] = ages[user_age][category]['credit_average'] + transaction.currencyAmount;
-		    ages[user_age][category]['credit_n'] = ages[user_age][category]['credit_n'] + 1;
+		    //ages[user_age][category]['credit_n'] = ages[user_age][category]['credit_n'] + 1;
 		}
 	    }
 	}
@@ -163,15 +177,33 @@ for (var i = 0; i < sample_data.length; i++) {
 	    if (transaction.categoryTags.includes(category)) {
 		if (isDebit(transaction)) {
 		    genders[user_gender][category]['debit_average'] = genders[user_gender][category]['debit_average'] + transaction.currencyAmount;
-		    genders[user_gender][category]['debit_n'] = genders[user_gender][category]['debit_n'] + 1;
-		    } else {
-			genders[user_gender][category]['credit_average'] = genders[user_gender][category]['credit_average'] + transaction.currencyAmount;
-			genders[user_gender][category]['credit_n'] = genders[user_gender][category]['credit_n'] + 1;
-		    }
+		    //genders[user_gender][category]['debit_n'] = genders[user_gender][category]['debit_n'] + 1;
+		} else {
+		    genders[user_gender][category]['credit_average'] = genders[user_gender][category]['credit_average'] + transaction.currencyAmount;
+		    //genders[user_gender][category]['credit_n'] = genders[user_gender][category]['credit_n'] + 1;
+		}
 	    }
 	    
+	}
+
     }
-    
+
+    // Add the n if needed
+    for (var k = 0; k < filter_categories.length; k++) {
+	category = filter_categories[k];
+	if (has_spent['debits'].includes(category)) {
+
+
+	    ages[user_age][category]['debit_n']++;
+	    genders[user_gender][category]['debit_n']++;
+
+	}
+
+	if (has_spent['credits'].includes(category)) {
+
+	    ages[user_age][category]['credit_n']++;
+	    genders[user_gender][category]['credit_n']++;
+	}
     }
 
 }
@@ -192,6 +224,28 @@ for (var i = 0; i < filter_categories.length; i++) {
 
 }
 
+// Divide ages
+for (var i = 0; i < 100; i=i + 5) {
+
+    for (var j = 0; j < filter_categories.length; j++) {
+	category = filter_categories[j];
+
+	ages[i.toString()][category]['debit_average'] = ages[i.toString()][category]['debit_average'] / ages[i.toString()][category]['debit_n'];
+	ages[i.toString()][category]['credit_average'] = ages[i.toString()][category]['credit_average'] / ages[i.toString()][category]['credit_n'];
+    }
+}
+
+// Divide genders
+for (var i = 0; i < GENDER_LIST.length; i++) {
+    var selected_gender = GENDER_LIST[i];
+
+    for (var j = 0; j < filter_categories.length; j++) {
+	category = filter_categories[j];
+
+	genders[selected_gender][category]['debit_average'] = genders[selected_gender][category]['debit_average'] / genders[selected_gender][category]['debit_n'];
+	genders[selected_gender][category]['credit_average'] = genders[selected_gender][category]['credit_average'] / genders[selected_gender][category]['credit_n'];
+    }
+}
 
 module.exports = {
     'debit_average' : overall_debit,
