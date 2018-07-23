@@ -1,27 +1,9 @@
 import React, { Component } from 'react'
-import { Image, StyleSheet, View, WebView } from 'react-native'
+import { WebView } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import {
   Container,
-  Header,
   Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  H1,
-  H2,
-  H3,
-  List,
-  ListItem,
-  Title,
-  Fab,
-  Toast,
   Root
 } from 'native-base'
 
@@ -33,9 +15,11 @@ export default class Map extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {}
+    this.state = {
+      active: false
+    }
 
-    this.initData()
+    this.getLocation()
   }
 
   async initData() {
@@ -48,8 +32,30 @@ export default class Map extends Component {
     }
   }
 
+  getLocation() {
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    }
+    
+    function success(pos) {
+      var crd = pos.coords
+    
+      console.log('Your current position is:')
+      console.log(`Latitude : ${crd.latitude}`)
+      console.log(`Longitude: ${crd.longitude}`)
+      console.log(`More or less ${crd.accuracy} meters.`)
+    }
+    
+    function error(err) {
+      console.warn(`ERROR(${err.code}): ${err.message}`)
+    }
+    
+    navigator.geolocation.getCurrentPosition(success, error, options)
+  }
+
   render() {
-    const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (
@@ -61,9 +67,9 @@ export default class Map extends Component {
             <WebView
               source={{
                 uri:
-                  'https://www.google.ca/maps/place/TD+Canada+Trust/@43.6475473,-79.3819741,18.02z/data=!4m5!3m4!1s0x882b34b5669d1e39:0xa2331ecc2935120a!8m2!3d43.6482298!4d-79.3809414'
+                  'https://vigilant-jang-175355.netlify.com/map.html'
               }}
-              style={{ width: '100%', height: 600 }}
+              style={{ width: 380, height: 610 }}
             />
           </Content>
         </Container>

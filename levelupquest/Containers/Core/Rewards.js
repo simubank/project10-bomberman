@@ -3,25 +3,14 @@ import { Image, StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import {
   Container,
-  Header,
   Content,
-  Card,
-  CardItem,
-  Thumbnail,
   Text,
   Button,
-  Icon,
   Left,
   Body,
   Right,
-  H1,
-  H2,
-  H3,
   List,
   ListItem,
-  Title,
-  Fab,
-  Toast,
   Root
 } from 'native-base'
 
