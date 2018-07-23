@@ -30,6 +30,8 @@ export default class NewGoal extends Component {
       amount: 0,
       deadline: new Date()
     }
+
+    this.setDate = this.setDate.bind(this) // DO NOT REMOVE
   }
 
   goNext() {
