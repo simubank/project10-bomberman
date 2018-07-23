@@ -666,6 +666,85 @@ router.get('/transactions/withinDays/:days', function(req, res, next) {
     });
 });
 
+// Metrics routes
+router.get('/metrics/:category', function(req, res, next) {
+    // Check to make sure that all arguments are set right
+    if (req.query.gender == null || req.query.age == null ||
+	req.query.occupation == null) {
+	res.send({'result': [],
+		  "errorDetails" : null,
+		  "errorMsg": "A parameter (one of age, gender, occupation) was not set",
+		  "statusCode": 400});
+	return;
+    }
+
+    // Number of debits/credits summed, allows us to skip certain
+    // categories if we want to if an invalid value is sent in
+    var debit_n = 0;
+    var credit_n = 0;
+
+    var debits = 0;
+    var credits = 0;
+
+    // Used to check that the category exists
+    var value_to_add;
+    
+    // Handle ages
+    value_to_add = averages['ages'][convert_age(req.query.age)];
+    if (value_to_add == null) {
+	res.send({'result': [],
+		  "errorDetails" : null,
+		  "errorMsg": "Invalid age",
+		  "statusCode": 400});
+	return;
+	
+    }
+
+    value_to_add = averages['ages'][convert_age(req.query.age)][req.params.category];
+
+    // value_to_add is now a dict with two keys
+    debits = debits + value_to_add['debit_average'];
+    credits = credits + value_to_add['credit_average'];
+    debit_n = debit_n + 1;
+    credit_n = credit_n + 1;
+    
+    // Handle genders
+    value_to_add = averages['genders'][req.query.gender];
+    if (value_to_add == null) {
+	res.send({'result': [],
+		  "errorDetails" : null,
+		  "errorMsg": "Invalid gender",
+		  "statusCode": 400});
+	return;
+	
+    }
+
+    value_to_add = averages['genders'][req.query.gender][req.params.category];
+
+    // value_to_add is now a dict with two keys
+    debits = debits + value_to_add['debit_average'];
+    credits = credits + value_to_add['credit_average'];
+    debit_n = debit_n + 1;
+    credit_n = credit_n + 1;
+    
+
+    // TODO: Handle occupations
+
+
+    // Divide and return
+    res.send({'result': {'debit_average' : debits / debit_n,
+			 'credit_average' : credits / credit_n
+
+
+			},
+	      "errorDetails" : null,
+	      "errorMsg": null,
+	      "statusCode": 200});
+	
+
+    
+});
+
 // Debug follow up routes
 router.get('/customers/:customerId', function(req, res, next) {
     // TODO: Update this later
