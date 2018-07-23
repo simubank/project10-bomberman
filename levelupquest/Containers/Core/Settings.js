@@ -24,7 +24,7 @@ export default class Settings extends Component {
 
     this.state = {
       preferences: [],
-      alertFrequency: [0],
+      alertFrequency: [0]
     }
   }
 

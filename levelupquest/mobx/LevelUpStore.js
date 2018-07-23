@@ -6968,6 +6968,8 @@ class LevelUpStore {
 
   @observable categories = []
 
+  @observable averages = []
+
   @observable preferences = []
 
   @action
@@ -7032,6 +7034,38 @@ class LevelUpStore {
     })
 
     return this.categories
+  }
+
+  @action
+  async getCategorySpending(categoryName, age, gender, occupation) {
+    const url = 'http://localhost:4527/metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
+    
+    let res
+
+    try {
+      res = await axios.get(url)
+    } catch (error) {
+      console.error(error)
+    }
+
+    let amount = 0
+    let result = res.data.result
+
+    if (result.debit_average) {
+      amount = result.debit_average
+    } else {
+      amount = result.credit_average
+    }
+    if (amount < 0) {
+      amount = -amount
+    }
+
+    let obj = {
+      name: categoryName,
+      average: amount
+    }
+
+    this.averages.push(obj)
   }
 
   @action
