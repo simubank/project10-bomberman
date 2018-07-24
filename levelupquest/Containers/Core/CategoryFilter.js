@@ -85,6 +85,7 @@ export default class CategoryFilter extends Component {
     }
 
     this.setState({ categories })
+    console.log(categories)
   }
 
   async getAverageSpending() {
@@ -94,6 +95,8 @@ export default class CategoryFilter extends Component {
     let selectedFilters = _.filter(this.state.filters, filter => {
       return filter.selected
     })
+
+    this.props.levelUpStore.userCategories = selectedCategories
 
     // constant selected filters
     const age = 20
@@ -110,7 +113,7 @@ export default class CategoryFilter extends Component {
       }
     })
 
-    console.log(this.props.levelUpStore.averages)
+    console.log(this.props.levelUpStore.categories)
   }
 
   goNext() {
@@ -169,7 +172,7 @@ export default class CategoryFilter extends Component {
                     </Text>
                   </Body>
                   <Right style={{ flex: 1 }}>
-                    <Text>${category.amount.toFixed(2)}</Text>
+                    <Text>${category.average}</Text>
                   </Right>
                 </ListItem>
               )

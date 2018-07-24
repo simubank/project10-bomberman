@@ -23,12 +23,17 @@ class Goal {
   @observable amountProgress
   @observable deadline
 
-  constructor(title, amount, amountProgress, deadline, cat) {
+  constructor(title, amount, amountProgress, deadline, cat, labels) {
+    console.log(cat)
+    console.log(labels)
     this.title = title
     this.amount = amount
     this.amountProgress = amountProgress
     this.deadline = deadline
-    this.categories = cat
+    this.categories = cat.map((item, index) => ({
+      name: labels[index],
+      average: cat[index],
+    }))
   }
 }
 

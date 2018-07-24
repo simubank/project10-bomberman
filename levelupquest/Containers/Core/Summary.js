@@ -170,6 +170,7 @@ export default class Summary extends Component {
   render() {
     const goBack = () => this.props.navigation.goBack()
     const { goal } = this.props.levelUpStore
+    console.log(goal.categories)
 
     return (
       <Root>
@@ -185,7 +186,7 @@ export default class Summary extends Component {
                   </View>
                   <View>
                     <Text note style={{ marginTop: 5, marginBottom: 5, color: 'black' }}>
-                      Target Date: {goal.deadline}
+                      Target Date: {goal.deadline.toString().substr(4, 12)}
                     </Text>
                   </View>
                 </View>
