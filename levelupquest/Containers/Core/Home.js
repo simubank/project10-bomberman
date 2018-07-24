@@ -46,6 +46,13 @@ export default class Home extends Component {
       userSelectModalVisible: true,
       userLevel: ''
     }
+
+    this.generateSampleGoal()
+  }
+
+  generateSampleGoal() {
+    if(!this.props.levelUpStore.goal)
+      this.props.levelUpStore.setGoal("Vacation", 1000, 0, 'Dec 04 2018', null)
   }
 
   _renderIcon({ icon }, size = 50) {
