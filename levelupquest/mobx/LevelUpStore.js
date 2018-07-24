@@ -23,12 +23,17 @@ class Goal {
   @observable amountProgress
   @observable deadline
 
-  constructor(title, amount, amountProgress, deadline, cat) {
+  constructor(title, amount, amountProgress, deadline, cat, labels) {
+    console.log(cat)
+    console.log(labels)
     this.title = title
     this.amount = amount
     this.amountProgress = amountProgress
     this.deadline = deadline
-    this.categories = cat
+    this.categories = cat.map((item, index) => ({
+      name: labels[index],
+      average: cat[index],
+    }))
   }
 }
 
@@ -104,7 +109,7 @@ class LevelUpStore {
 
       let obj = {
         name: categoryName,
-        average: categoryInfo.net
+        amount: categoryInfo.net,
         // selected: false,
         // target: categoryInfo.net,
         // current: categoryInfo.net
@@ -116,7 +121,7 @@ class LevelUpStore {
       // this.categories.push(obj)
     })
 
-    return this.userCategories
+    return this.categories
   }
 
   @action
