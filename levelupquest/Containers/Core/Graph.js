@@ -50,8 +50,10 @@ export default class Graph extends Component {
   // Call this to pull data from the store
   getCategories() {
     //TODO: change with actual method of pulling data from API
-    let userCategories = this.props.levelUpStore.setSampleUserCategoriesList()
-    let populationCategories = this.props.levelUpStore.setSampleCategoriesList()
+    // let userCategories = this.props.levelUpStore.setSampleUserCategoriesList()
+    // let populationCategories = this.props.levelUpStore.setSampleCategoriesList()
+    let userCategories = this.props.levelUpStore.userCategories
+    let populationCategories = this.props.levelUpStore.categories
 
     this.setUserBarData(userCategories)
     this.setPopulationBarData(populationCategories)

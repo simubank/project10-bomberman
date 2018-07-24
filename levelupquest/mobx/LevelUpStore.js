@@ -102,21 +102,19 @@ class LevelUpStore {
         categoryInfo.net = -categoryInfo.net
       }
 
-      const obj = {
+      let obj = {
         name: categoryName,
         amount: categoryInfo.net,
-        selected: false,
-        target: categoryInfo.net,
-        current: categoryInfo.net,
-        status: 'N/A'
+        // selected: false,
+        // target: categoryInfo.net,
+        // current: categoryInfo.net
       }
 
-      this.categories.push(obj)
-    })
+      let cat = new Category(obj)
+      this.userCategories.push(cat)
 
-    // this.categories = categoriesObject.map(obj =>
-    //   Category.fromResponseObject(obj)
-    // )
+      // this.categories.push(obj)
+    })
 
     return this.categories
   }
@@ -150,7 +148,10 @@ class LevelUpStore {
       average: amount
     }
 
-    this.averages.push(obj)
+    let cat = new Category(obj)
+    this.categories.push(cat)
+
+    // this.averages.push(obj)
   }
 
   @action
