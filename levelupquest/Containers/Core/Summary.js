@@ -24,28 +24,25 @@ import HeaderComponent from '../../Components/HeaderComponent'
 
 const TEST_CATEGORIES = [
   {
-    name: 'Food',
+    name: 'Fast food',
     amount: 284.21,
     selected: false,
     target: 200.0,
-    current: 131.34,
-    status: 'UNDER'
+    current: 0.0
   },
   {
     name: 'Entertainment',
     amount: 282.44,
     selected: false,
     target: 100.0,
-    current: 93.21,
-    status: 'NEAR'
+    current: 0.0
   },
   {
     name: 'Retail',
     amount: 207.12,
     selected: false,
     target: 150.0,
-    current: 195.32,
-    status: 'ABOVE'
+    current: 0.0
   }
 ]
 
@@ -57,50 +54,116 @@ export default class Summary extends Component {
 
     this.state = {
       title: 'Vacation',
-      amount: 2000.0,
-      date: 'Dec 04 2018',
-      saved: 600.0,
-      percentage: 0.3,
+      amount: 1000.0,
+      deadline: 'Dec 04 2018',
+      saved: 0.0,
+      cashBack: 0.0,
       categories: TEST_CATEGORIES,
       rain: false,
       fabActive: true
     }
-
-    this.initData()
-  }
-
-  async initData() {
-    try {
-      await this.props.levelUpStore.getCustomers()
-      // console.log(this.props.levelUpStore.customers)
-    } catch (error) {
-      // console.log(error)
-    }
   }
 
   onFastForwardClicked() {
-    console.log('FAST FORWARDDDDDD')
-    /* TODO: FAST FORWARDDDDDD
-        - generate mock data for category spending values
-        - calculate total saved over the period of time
-    */
+    // randomly generate monthly spendings
+
+    const min = 50
+    const max = 200
+
+    let modified = this.state.categories.map(category => {
+      let amountIncrease = Math.floor(Math.random() * (max - min + 1)) + min
+      category.current = amountIncrease
+
+      return category
+    })
+
+    this.setState({ categories: modified })
   }
 
   onDepositSavingsClicked() {
-    console.log('HERE COMES THE MONEYYYYY')
-    /* TODO:
-        - total savings = 0
-        - update progress bar
-        - rain money
-    */
+    // get amount difference for each category
+
+    let sum = 0
+
+    this.state.categories.forEach(category => {
+      let diff = this.calculateDifference(category)
+      sum += parseFloat(diff)
+    })
+
+    // update cash back amount
+
+    let cashBackAmount = sum * 0.01
+
+    // check if goal has been reached
+
+    let newAmount = this.state.saved + sum + cashBackAmount
+
+    if (newAmount >= this.state.amount) {
+      this.setState(prevState => ({
+        saved: prevState.amount,
+        rain: true
+      }))
+
+      return
+    }
+
+    // goal has not been reached
+
+    this.setState(prevState => ({
+      saved: prevState.saved + sum + cashBackAmount,
+      cashBack: prevState.cashBack + cashBackAmount
+    }))
+
+    // reset current spendings for each category
+
+    let modified = this.state.categories.map(category => {
+      category.current = 0
+
+      return category
+    })
+
+    this.setState({ categories: modified })
   }
 
-  renderAmountSpentPerCategory(currentAmount, goal){
-    if(currentAmount > goal) {
+  renderAmountSpentPerCategory(currentAmount, goal) {
+    if (currentAmount > goal) {
       return <Text style={{ marginBottom: 4, color: 'red' }}>${currentAmount.toFixed(2)}</Text>
-    }
-    else {
+    } else {
       return <Text style={{ marginBottom: 4, color: 'green' }}>${currentAmount.toFixed(2)}</Text>
+    }
+  }
+
+  getCategoryIcon(name) {
+    let icon = 'pricetags'
+
+    if (name === 'Fast food') {
+      icon = 'cafe'
+    } else if (name === 'Retail') {
+      icon = 'cart'
+    } else if (name === 'Entertainment') {
+      icon = 'desktop'
+    } else if (name === 'Utility bill') {
+      icon = 'flash'
+    } else if (name === 'Insurance') {
+      icon = 'speedometer'
+    }
+
+    return icon
+  }
+
+  calculatePercentage() {
+    if (this.state.saved === 0) {
+      return 0
+    } else {
+      return ((this.state.saved * 100) / this.state.amount).toFixed(0)
+    }
+  }
+
+  calculateDifference(category) {
+    if (category.target >= category.current) {
+      return (category.target - category.current).toFixed(2)
+    } else {
+      return (0).toFixed(2)
     }
   }
 
@@ -110,66 +173,67 @@ export default class Summary extends Component {
     return (
       <Root>
         <Container>
-          <HeaderComponent goBack={goBack} title="Summary" />
+          <HeaderComponent goBack={goBack} title="Progress" />
 
           <Content padder>
             <Card>
               <CardItem header bordered>
-                <Text>{this.state.title}</Text>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <View>
+                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{this.state.title}</Text>
+                  </View>
+                  <View>
+                    <Text note style={{ marginTop: 5, marginBottom: 5, color: 'black' }}>
+                      Target Date: {this.state.deadline}
+                    </Text>
+                  </View>
+                </View>
               </CardItem>
+
+              <CardItem bordered>
+                <Text style={{ marginRight: 20 }}>Progress: {this.calculatePercentage()}%</Text>
+                <Progress.Bar progress={this.calculatePercentage() / 100} width={180} height={10} />
+              </CardItem>
+
               <CardItem bordered>
                 <Body>
                   {this.state.rain && <MakeItRainComponent />}
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Amount: ${this.state.amount.toFixed(2)}</Text>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Date: {this.state.date}</Text>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Saved: ${this.state.saved.toFixed(2)}</Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Goal Amount: ${this.state.amount.toFixed(2)}</Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Total Savings: ${this.state.saved.toFixed(2)}</Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>
+                    Cash Back Earned: ${this.state.cashBack.toFixed(2)}
+                  </Text>
                 </Body>
               </CardItem>
+
               <List>
                 {this.state.categories.map((category, index) => (
                   <ListItem avatar key={index}>
                     <Left>
-                      <Button
-                        rounded
-                        info={category.status === 'NEAR'}
-                        success={category.status === 'UNDER'}
-                        warning={category.status === 'ABOVE'}
-                      >
-                        <Text>{'   '}</Text>
+                      <Button iconLeft transparent style={{ width: 50 }}>
+                        <Icon
+                          name={this.getCategoryIcon(category.name)}
+                          style={{ color: category.target >= category.current ? 'green' : 'red', fontSize: 30 }}
+                        />
                       </Button>
                     </Left>
                     <Body>
                       <Text style={{ marginBottom: 4, fontWeight: 'bold' }}>{category.name}</Text>
+                      <Text style={{ marginBottom: 4, fontSize: 14 }}>Limit: ${category.target.toFixed(2)}</Text>
                       <Text style={{ marginBottom: 4, fontSize: 14 }}>
-                        Goal: ${category.target.toFixed(2)}
+                        Savings: ${this.calculateDifference(category)}
                       </Text>
                     </Body>
-                    <Right>
-                      { this.renderAmountSpentPerCategory(category.current, category.target) }
-                    </Right>
+                    <Right>{this.renderAmountSpentPerCategory(category.current, category.target)}</Right>
                   </ListItem>
                 ))}
               </List>
-              <CardItem footer bordered>
-                <Left>
-                  <Text>Progress: {this.state.percentage * 100}%</Text>
-                </Left>
-                <Right>
-                  <Progress.Bar progress={this.state.percentage} width={180} height={10} />
-                </Right>
-              </CardItem>
             </Card>
-
-            <View style={{ paddingVertical: 30 }} />
-
-            <Button danger onPress={() => this.setState({ rain: !this.state.rain })}>
-              <Text>Psst... Lily Press Me</Text>
-            </Button>
           </Content>
 
           <Fab
             active={this.state.active}
-            direction="up"
+            direction="left"
             containerStyle={{}}
             style={{ backgroundColor: 'turquoise' }}
             position="bottomRight"

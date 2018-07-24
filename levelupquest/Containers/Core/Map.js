@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import { WebView } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import {
-  Container,
-  Content,
-  Root
-} from 'native-base'
+import { Container, Content, Root } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 
@@ -19,7 +15,7 @@ export default class Map extends Component {
       active: false
     }
 
-    this.getLocation()
+    // this.getLocation()
   }
 
   getLocation() {
@@ -55,10 +51,7 @@ export default class Map extends Component {
 
           <Content>
             <WebView
-              source={{
-                uri:
-                  'https://vigilant-jang-175355.netlify.com/map.html'
-              }}
+              source={{ uri: 'https://vigilant-jang-175355.netlify.com/map.html' }}
               style={{ width: 380, height: 610 }}
             />
           </Content>

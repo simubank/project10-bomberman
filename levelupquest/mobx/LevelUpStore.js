@@ -6992,7 +6992,7 @@ class LevelUpStore {
     }
 
     const categoryList = res.data.result
-    const categoriesToSkip = ['eTransfer', 'Salary', 'Tax']
+    const categoriesToSkip = ['eTransfer', 'Salary', 'Tax', 'Mortgage']
 
     await categoryList.forEach(async categoryName => {
       let skip = _.find(categoriesToSkip, obj => {

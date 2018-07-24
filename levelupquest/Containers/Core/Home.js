@@ -13,37 +13,26 @@ const menuOptions = [
   {
     name: 'New Goal',
     icon: 'ios-calendar-outline',
-    iconSet: 'Ionicons',
     screen: 'NewGoal'
   },
   {
     name: 'Progress',
     icon: 'ios-trending-up-outline',
-    iconSet: 'Ionicons',
     screen: 'Summary'
-  },
-  {
-    name: 'Rewards',
-    icon: 'ios-trophy-outline',
-    iconSet: 'Ionicons',
-    screen: 'Rewards'
   },
   {
     name: 'Settings',
     icon: 'ios-settings-outline',
-    iconSet: 'Ionicons',
     screen: 'Settings'
   },
   {
     name: 'Graph',
     icon: 'ios-stats-outline',
-    iconSet: 'Ionicons',
     screen: 'Graph'
   },
   {
     name: 'Map',
     icon: 'ios-map-outline',
-    iconSet: 'Ionicons',
     screen: 'Map'
   }
 ]

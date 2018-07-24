@@ -2,17 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
-import {
-  Container,
-  Content,
-  Text,
-  Button,
-  Body,
-  Right,
-  List,
-  ListItem,
-  Root
-} from 'native-base'
+import { Container, Content, Text, Button, Body, Right, List, ListItem, Root } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 
@@ -30,7 +20,7 @@ export default class Settings extends Component {
 
   async populatePreferences() {
     let preferences = await this.props.levelUpStore.getPurchasePreferences()
-    
+
     this.setState({ preferences })
     this.changeFrequencyBasedOnPreferences()
   }
@@ -59,7 +49,7 @@ export default class Settings extends Component {
   frequencyNumToText() {
     let txt = ''
 
-    switch(this.state.alertFrequency[0]) {
+    switch (this.state.alertFrequency[0]) {
       case 0:
         txt = 'Never'
         break
@@ -92,9 +82,7 @@ export default class Settings extends Component {
           <HeaderComponent goBack={goBack} title="Settings" />
 
           <Content>
-            <Text style={{ margin: 16, fontSize: 18 }}>
-              Notification Frequency: { this.frequencyNumToText() }
-            </Text>
+            <Text style={{ margin: 16, fontSize: 18 }}>Notification Frequency: {this.frequencyNumToText()}</Text>
 
             <View style={{ margin: 16, marginLeft: 32 }}>
               <MultiSlider
@@ -121,18 +109,18 @@ export default class Settings extends Component {
             </Button>
 
             <List style={{ marginTop: 16, marginBottom: 32 }}>
-            {this.state.preferences.map((preference, index) => {
-              return (
-                <ListItem key={index}>
-                  <Body>
-                    <Text>{preference.name}</Text>
-                  </Body>
-                  <Right>
-                    <Text>{preference.score}</Text>
-                  </Right>
-                </ListItem>
-              )
-            })}
+              {this.state.preferences.map((preference, index) => {
+                return (
+                  <ListItem key={index}>
+                    <Body>
+                      <Text>{preference.name}</Text>
+                    </Body>
+                    <Right>
+                      <Text>{preference.score}</Text>
+                    </Right>
+                  </ListItem>
+                )
+              })}
             </List>
           </Content>
         </Container>

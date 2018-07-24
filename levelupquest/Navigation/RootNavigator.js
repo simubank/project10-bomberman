@@ -3,15 +3,12 @@ import { StackNavigator } from 'react-navigation'
 import Home from '../Containers/Core/Home'
 
 import NewGoal from '../Containers/Core/NewGoal'
-import Rewards from '../Containers/Core/Rewards'
 import Settings from '../Containers/Core/Settings'
 
 import CategoryFilter from '../Containers/Core/CategoryFilter'
 import Graph from '../Containers/Core/Graph'
 import Summary from '../Containers/Core/Summary'
-import Map from '../Containers/Core/Map'
-
-import { observer } from 'mobx-react'
+import LocationMap from '../Containers/Core/Map'
 
 export const AppNavigator = StackNavigator(
   {
@@ -21,9 +18,6 @@ export const AppNavigator = StackNavigator(
     },
     NewGoal: {
       screen: NewGoal
-    },
-    Rewards: {
-      screen: Rewards
     },
     Settings: {
       screen: Settings
@@ -38,7 +32,7 @@ export const AppNavigator = StackNavigator(
       screen: Summary
     },
     Map: {
-      screen: Map
+      screen: LocationMap
     }
   },
   {

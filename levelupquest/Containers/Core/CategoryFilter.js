@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import _ from 'lodash'
-import { Container, Content, Text, Button, Body, Right, H3, List, ListItem, Toast, CheckBox, Footer } from 'native-base'
+import { Container, Content, Text, Button, Body, Right, H3, List, ListItem, CheckBox, Footer } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
@@ -95,7 +95,7 @@ export default class CategoryFilter extends Component {
       return filter.selected
     })
 
-    // selected filters
+    // constant selected filters
     const age = 20
     const gender = 'Male'
     const occupation = 'blah'
@@ -129,20 +129,10 @@ export default class CategoryFilter extends Component {
 
   displayResults() {
     this.getAverageSpending()
-
-    Toast.show({
-      text: 'Categories + Filters',
-      buttonText: 'Okay',
-      duration: 2000
-    })
-
     this.goNext()
   }
 
   render() {
-    // let categories = this.props.levelUpStore.categories
-    // console.log(categories)
-
     const goBack = () => this.props.navigation.goBack()
 
     return (
