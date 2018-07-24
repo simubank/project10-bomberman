@@ -14,10 +14,6 @@ import footerStyles from './Styles/FooterStyle'
 
 
 const randomColor = () => ('#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '000000').slice(0, 7)
-
-const xAxisData = [14, 1, 100, 95, 94, 24, 8]
-const xAxisLabels = ['Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks']
-
 const axesSvg = { fontSize: 10, fill: 'grey' }
 const verticalContentInset = { top: 10, bottom: 10 }
 
