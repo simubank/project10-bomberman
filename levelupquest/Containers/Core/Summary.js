@@ -53,9 +53,9 @@ export default class Summary extends Component {
     super(props)
 
     this.state = {
-      title: 'Vacation',
-      amount: 1000.0,
-      deadline: 'Dec 04 2018',
+      // title: 'Vacation',
+      // amount: 1000.0,
+      // deadline: 'Dec 04 2018',
       saved: 0.0,
       cashBack: 0.0,
       categories: TEST_CATEGORIES,
@@ -169,6 +169,7 @@ export default class Summary extends Component {
 
   render() {
     const goBack = () => this.props.navigation.goBack()
+    const { goal } = this.props.levelUpStore
 
     return (
       <Root>
@@ -180,11 +181,11 @@ export default class Summary extends Component {
               <CardItem header bordered>
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <View>
-                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{this.state.title}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{goal.title}</Text>
                   </View>
                   <View>
                     <Text note style={{ marginTop: 5, marginBottom: 5, color: 'black' }}>
-                      Target Date: {this.state.deadline}
+                      Target Date: {goal.deadline}
                     </Text>
                   </View>
                 </View>
@@ -198,7 +199,7 @@ export default class Summary extends Component {
               <CardItem bordered>
                 <Body>
                   {this.state.rain && <MakeItRainComponent />}
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Goal Amount: ${this.state.amount.toFixed(2)}</Text>
+                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Goal Amount: ${goal.amount.toFixed(2)}</Text>
                   <Text style={{ marginTop: 5, marginBottom: 5 }}>Total Savings: ${this.state.saved.toFixed(2)}</Text>
                   <Text style={{ marginTop: 5, marginBottom: 5 }}>
                     Cash Back Earned: ${this.state.cashBack.toFixed(2)}

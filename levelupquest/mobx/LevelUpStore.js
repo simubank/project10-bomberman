@@ -57,7 +57,7 @@ class LevelUpStore {
 
   @observable categories = []
   @observable userCategories = []
-  @observable goals = []
+  @observable goal
 
   @action
   async getCategoryList() {
@@ -227,9 +227,9 @@ class LevelUpStore {
   }
 
   @action
-  addGoal(title, amount, deadline, cat) {
-    let goal = new Goal(title, amount, deadline, cat)
-    this.goals.push(goal)
+  setGoal(title, amount, amountProgress, deadline, cat) {
+    this.goal = new Goal(title, amount, amountProgress, deadline, cat)
+    console.log(this.goal)
   }
 
   @action

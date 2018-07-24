@@ -37,8 +37,8 @@ export default class NewGoal extends Component {
   goNext() {
     let params = {
       title: this.state.title,
-      amount: this.state.amount,
-      deadline: this.state.deadline
+      amount: parseFloat(this.state.amount),
+      deadline: this.state.deadline.toString()
     }
 
     this.props.navigation.navigate({

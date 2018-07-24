@@ -138,21 +138,6 @@ export default class Graph extends Component {
     this.state.currentTotalSpending = originalTotalSpending
   }
 
-  confirmGoalCreate() {
-    this.props.levelUpStore.addGoal(this.state.title, this.state.amount, this.state.deadline, this.state.userCategories)
-
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({
-          key: 'Home',
-          routeName: 'Home'
-        })
-      ]
-    })
-    this.props.navigation.dispatch(resetAction)
-  }
-
   // setBarData() {
   //   let userData = [ 14, 37, 150, 95, 94, 24, 8 ]
   //     .map((value, index) => ({
@@ -226,9 +211,25 @@ export default class Graph extends Component {
     this.setCurrentTotalSpending()
   }
 
+  confirmGoalCreate() {
+    console.log('goals', this.state.userData)
+    this.props.levelUpStore.setGoal(this.state.title, this.state.amount, 0, this.state.deadline, this.state.userData)
+
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          key: 'Home',
+          routeName: 'Home'
+        })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
+  }
+
   displayResults() {
     Toast.show({
-      text: 'Graph',
+      text: 'New goal created!',
       buttonText: 'Okay',
       duration: 2000
     })
