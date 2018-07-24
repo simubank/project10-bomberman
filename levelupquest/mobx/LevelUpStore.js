@@ -104,7 +104,7 @@ class LevelUpStore {
 
       let obj = {
         name: categoryName,
-        amount: categoryInfo.net,
+        average: categoryInfo.net
         // selected: false,
         // target: categoryInfo.net,
         // current: categoryInfo.net
@@ -116,7 +116,7 @@ class LevelUpStore {
       // this.categories.push(obj)
     })
 
-    return this.categories
+    return this.userCategories
   }
 
   @action

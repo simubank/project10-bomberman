@@ -26,11 +26,6 @@ const menuOptions = [
     screen: 'Settings'
   },
   {
-    name: 'Graph',
-    icon: 'ios-stats-outline',
-    screen: 'Graph'
-  },
-  {
     name: 'Map',
     icon: 'ios-map-outline',
     screen: 'Map'

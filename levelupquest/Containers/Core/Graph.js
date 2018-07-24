@@ -8,6 +8,7 @@ import { inject, observer } from 'mobx-react'
 import { BarChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
 import { NavigationActions, StackActions } from 'react-navigation'
+import _ from 'lodash'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
@@ -42,6 +43,7 @@ export default class Graph extends Component {
       userData: [],
       populationData: [],
       xAxisLabels: [],
+      numBars: 0,
     }
 
     this.getCategories()
@@ -54,6 +56,8 @@ export default class Graph extends Component {
     // let populationCategories = this.props.levelUpStore.setSampleCategoriesList()
     let userCategories = this.props.levelUpStore.userCategories
     let populationCategories = this.props.levelUpStore.categories
+    
+    console.log(populationCategories)
 
     this.setUserBarData(userCategories)
     this.setPopulationBarData(populationCategories)
@@ -68,6 +72,7 @@ export default class Graph extends Component {
   }
 
   setUserBarData(userCategories) {
+    console.log('u', userCategories)
     let userData = userCategories.map((cat, index) => ({
       value: cat.average,
       svg: {
@@ -76,20 +81,72 @@ export default class Graph extends Component {
       },
       key: `pie-${index}`,
     }))
-
+    console.log('u2', userData)
     this.state.userData = userData
+    this.state.numBars = userData.length
   }
 
   setPopulationBarData(populationCategories) {
-    let populationData = populationCategories.map((cat, index) => ({
-      value: cat.average,
-      svg: {
-        fill: 'lightgrey',
+    const min = 50
+    const max = 200
+    const BACKUP_DATA = [
+      {
+        value: Math.floor(Math.random() * (max - min + 1)) + min,
+        svg: {
+          fill: 'lightgrey',
+        },
+        key: `pie2-1`,
       },
-      key: `pie-${index}`,
-    }))
+      {
+        value: Math.floor(Math.random() * (max - min + 1)) + min,
+        svg: {
+          fill: 'lightgrey',
+        },
+        key: `pie2-2`,
+      },
+      {
+        value: Math.floor(Math.random() * (max - min + 1)) + min,
+        svg: {
+          fill: 'lightgrey',
+        },
+        key: `pie2-3`,
+      }
+    ]
 
-    this.state.populationData = populationData
+    console.log('h', populationCategories)
+    // let populationData = populationCategories.map((cat, index) => ({
+    //   value: cat.average,
+    //   svg: {
+    //     fill: 'lightgrey',
+    //   },
+    //   key: `pie2-${index}`,
+    // }))
+
+    let populationData = []
+    console.log(populationCategories, populationCategories.length)
+    console.log('num: ', this.state.numBars)
+
+    // for (let i = 0; i < this.state.numBars; i++) {
+    //   console.log(i)
+    //   let obj = {
+    //     value: populationCategories[i].average,
+    //     svg: {
+    //       fill: 'lightgrey',
+    //     },
+    //     key: `pie2-${i}`,
+    //   }
+    //   populationData.push(obj)
+    // }
+    console.log('h2', populationData)
+
+    if(populationCategories.length == 0) {
+      const diff = BACKUP_DATA.length - this.state.numBars
+      this.state.populationData = _.drop(BACKUP_DATA, diff)
+    } else {
+      this.state.populationData = populationData
+    }
+
+    console.log(this.state.populationData)
   }
 
   setBarData() {
@@ -106,6 +163,8 @@ export default class Graph extends Component {
     ]
 
     this.state.barData = barData
+
+    console.log(barData)
   }
 
   setXAxis(userCategories) {
@@ -135,40 +194,6 @@ export default class Graph extends Component {
     this.state.originalTotalSpending = originalTotalSpending
     this.state.currentTotalSpending = originalTotalSpending
   }
-
-  // setBarData() {
-  //   let userData = [ 14, 37, 150, 95, 94, 24, 8 ]
-  //     .map((value, index) => ({
-  //       value,
-  //       svg: {
-  //         fill: randomColor(),
-  //         onPress: () => this.selectGraphCategory(value, index),
-  //       },
-  //       key: `pie-${index}`,
-  //     }))
-  //
-  //   let populationData = [ 24, 28, 93, 77, 42, 62, 52]
-  //     .map((value, index) => ({
-  //       value,
-  //       svg: {
-  //         fill: 'lightgrey',
-  //       },
-  //       key: `pie-${index}`,
-  //     }))
-  //
-  //   let barData = [
-  //     {
-  //       data: userData,
-  //       svg: {
-  //         fill: 'rgb(134, 65, 244)',
-  //       },
-  //     },
-  //     {
-  //       data: populationData,
-  //     },
-  //   ]
-  //   return barData
-  // }
 
   setCurrentTotalSpending() {
     let currentTotalSpending = 0
@@ -211,7 +236,7 @@ export default class Graph extends Component {
 
   confirmGoalCreate() {
     console.log('goals', this.state.userData)
-    this.props.levelUpStore.setGoal(this.state.title, this.state.amount, 0, this.state.deadline, this.state.userData)
+    this.props.levelUpStore.setGoal(this.state.title, this.state.amount, 0, this.state.deadline, this.state.userData, this.state.xAxisLabels)
 
     const resetAction = StackActions.reset({
       index: 0,
@@ -279,7 +304,7 @@ export default class Graph extends Component {
                 style={{ marginHorizontal: 0 }}
                 data={ this.state.userData }
                 formatLabel={ (value, index) => index+1 }
-                contentInset={{ left: 48, right: 20 }}
+                contentInset={{ left: 55, right: 25 }}
                 svg={{ fontSize: 10, fill: 'black' }}
                 spacingInner={0.2}
               />
