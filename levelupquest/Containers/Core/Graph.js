@@ -1,7 +1,10 @@
-import { Button, Container, Content, Text, Footer, Toast } from 'native-base'
+import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer, Toast, Icon, Title } from 'native-base'
 import React, { Component } from 'react'
-import { View } from 'react-native'
-import { inject } from 'mobx-react'
+import { Dimensions, StatusBar, StyleSheet, View, Alert } from 'react-native'
+import { connect } from 'react-redux'
+import Modal from 'react-native-modal'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { inject, observer } from 'mobx-react'
 import { BarChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
 import { NavigationActions, StackActions } from 'react-navigation'
@@ -9,7 +12,8 @@ import { NavigationActions, StackActions } from 'react-navigation'
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
 
-const randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
+
+const randomColor = () => ('#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '000000').slice(0, 7)
 
 const xAxisData = [14, 1, 100, 95, 94, 24, 8]
 const xAxisLabels = ['Food', 'Entertainment', 'Clothing', 'Transportation', 'Loans', 'Items', 'Drinks']
@@ -37,7 +41,7 @@ export default class Graph extends Component {
       graphMax: 0,
       originalTotalSpending: 0,
       currentTotalSpending: 0,
-      totalSaving: 0
+      totalSaving: 0,
     }
 
     this.setGraphMaxAndSum(this.state.barData)
@@ -57,33 +61,35 @@ export default class Graph extends Component {
   }
 
   setBarData() {
-    let userData = [14, 37, 150, 95, 94, 24, 8].map((value, index) => ({
-      value,
-      svg: {
-        fill: randomColor(),
-        onPress: () => this.selectGraphCategory(value, index)
-      },
-      key: `pie-${index}`
-    }))
+    let userData = [ 14, 37, 150, 95, 94, 24, 8 ]
+      .map((value, index) => ({
+        value,
+        svg: {
+          fill: randomColor(),
+          onPress: () => this.selectGraphCategory(value, index),
+        },
+        key: `pie-${index}`,
+      }))
 
-    let populationData = [24, 28, 93, 77, 42, 62, 52].map((value, index) => ({
-      value,
-      svg: {
-        fill: 'lightgrey'
-      },
-      key: `pie-${index}`
-    }))
+    let populationData = [ 24, 28, 93, 77, 42, 62, 52]
+      .map((value, index) => ({
+        value,
+        svg: {
+          fill: 'lightgrey',
+        },
+        key: `pie-${index}`,
+      }))
 
     let barData = [
       {
         data: userData,
         svg: {
-          fill: 'rgb(134, 65, 244)'
-        }
+          fill: 'rgb(134, 65, 244)',
+        },
       },
       {
-        data: populationData
-      }
+        data: populationData,
+      },
     ]
     return barData
   }
@@ -95,16 +101,14 @@ export default class Graph extends Component {
     barData[0].data.map(data => {
       originalTotalSpending += data.value
 
-      if (data.value > graphMax) {
+      if (data.value > graphMax){
         graphMax = data.value
       }
     })
 
-    this.setState({
-      graphMax: graphMax,
-      originalTotalSpending: originalTotalSpending,
-      currentTotalSpending: originalTotalSpending
-    })
+    this.state.graphMax = graphMax
+    this.state.originalTotalSpending = originalTotalSpending
+    this.state.currentTotalSpending = originalTotalSpending
   }
 
   setCurrentTotalSpending() {
@@ -120,7 +124,7 @@ export default class Graph extends Component {
   }
 
   selectGraphCategory = (value, index) => {
-    if (!this.state.showSlider) {
+    if(!this.state.showSlider) {
       this.setState({ showSlider: true })
     }
 
@@ -132,7 +136,8 @@ export default class Graph extends Component {
   }
 
   onSliderChange(value) {
-    if (value[0] === 0) value[0] = 1
+    if(value[0] == 0)
+      value[0] = 1
 
     let selectedCategoryValue = value
 
@@ -162,54 +167,53 @@ export default class Graph extends Component {
         <HeaderComponent goBack={goBack} title="Graph" />
 
         <Content style={{ backgroundColor: '#f3f2f7' }}>
-          <View style={{ alignItems: 'center', paddingVertical: 30 }}>
+          <View style={{alignItems:'center', paddingVertical:30}}>
             <Text>Total spending: {this.state.currentTotalSpending}</Text>
             <Text>Total saving: {this.state.totalSaving}</Text>
           </View>
 
-          <View style={{ margin: 20 }}>
-            <View style={{ flexDirection: 'row' }}>
+          <View style={{ margin:20 }}>
+            <View style={{ flexDirection: 'row'}}>
               <YAxis
-                data={[this.state.graphMin, this.state.graphMax]}
-                style={{}}
+                data={ [this.state.graphMin, this.state.graphMax] }
+                style={{ }}
                 contentInset={verticalContentInset}
                 svg={axesSvg}
-              />
+                />
 
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1}}>
                 <BarChart
-                  style={{ height: 200, marginLeft: 10 }}
-                  data={this.state.barData}
-                  yAccessor={({ item }) => item.value}
+                  style={ { height: 200, marginLeft: 10 } }
+                  data={ this.state.barData }
+                  yAccessor={({ item }) => item.value }
                   svg={{
-                    fill: 'green'
+                      fill: 'green',
                   }}
                   contentInset={verticalContentInset}
                   spacingInner={0.2}
                   yMin={this.state.graphMin}
-                  yMax={this.state.graphMax}
-                >
-                  <Grid />
+                  yMax={this.state.graphMax}>
+                    <Grid/>
                 </BarChart>
               </View>
             </View>
 
             <XAxis
               style={{ marginHorizontal: 0 }}
-              data={xAxisData}
-              formatLabel={(value, index) => index + 1}
+              data={ xAxisData }
+              formatLabel={ (value, index) => index+1 }
               contentInset={{ left: 48, right: 20 }}
               svg={{ fontSize: 10, fill: 'black' }}
               spacingInner={0.2}
             />
 
-            <View style={{ paddingVertical: 30 }} />
+            <View style={{paddingVertical:30}} />
 
-            {this.state.showSlider && (
-              <View style={{ alignItems: 'center' }}>
+            { this.state.showSlider &&
+              <View style={{alignItems:'center'}}>
                 <Text>{this.state.sliderLabel}</Text>
                 <Text>{this.state.selectedCategoryValue[0]}</Text>
-                <View style={{ paddingVertical: 20 }} />
+                <View style={{paddingVertical:20}} />
 
                 <MultiSlider
                   selectedStyle={{
@@ -229,8 +233,9 @@ export default class Graph extends Component {
                   onValuesChangeFinish={value => this.onSliderChange(value)}
                 />
               </View>
-            )}
+            }
           </View>
+
         </Content>
         <Footer style={footerStyles.footer}>
           <Button full success style={footerStyles.fullBtn} onPress={() => this.displayResults()}>
