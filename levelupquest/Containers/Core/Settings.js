@@ -18,10 +18,11 @@ export default class Settings extends Component {
     }
   }
 
-  async populatePreferences() {
-    let preferences = await this.props.levelUpStore.getPurchasePreferences()
+  loadPreferences() {
+    this.setState({
+      preferences: this.props.levelUpStore.preferences
+    })
 
-    this.setState({ preferences })
     this.changeFrequencyBasedOnPreferences()
   }
 
@@ -32,10 +33,12 @@ export default class Settings extends Component {
       sum += preference.score
     })
 
-    sum -= 1.5
+    sum = 4
 
     let newValues = [0]
     newValues[0] = sum
+
+    console.log(newValues)
 
     this.setState({ alertFrequency: newValues })
   }
@@ -104,7 +107,7 @@ export default class Settings extends Component {
               />
             </View>
 
-            <Button style={{ marginLeft: 16 }} onPress={() => this.populatePreferences()}>
+            <Button style={{ marginLeft: 16 }} onPress={() => this.loadPreferences()}>
               <Text>Analyze Personality</Text>
             </Button>
 

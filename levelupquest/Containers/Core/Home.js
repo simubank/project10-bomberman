@@ -43,7 +43,27 @@ export default class Home extends Component {
     }
 
     this.generateSampleGoal()
+    this.populateCategories()
+    this.populatePreferences()
     // this.props.levelUpStore.setSampleUserCategoriesList()
+  }
+
+  async populateCategories() {
+    let categories
+
+    try {
+      categories = await this.props.levelUpStore.getCategoryList()
+    } catch (error) {
+      categories = CATEGORIES
+      console.error(error)
+    }
+
+    // this.setState({ categories })
+    console.log(categories)
+  }
+
+  async populatePreferences() {
+    await this.props.levelUpStore.getPurchasePreferences()
   }
 
   generateSampleGoal() {

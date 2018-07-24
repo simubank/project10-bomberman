@@ -67,25 +67,9 @@ export default class CategoryFilter extends Component {
       title: params.title,
       amount: params.amount,
       deadline: params.deadline,
-      categories: [],
+      categories: this.props.levelUpStore.userCategories,
       filters: FILTERS
-    }
-
-    this.populateCategories()
-  }
-
-  async populateCategories() {
-    let categories
-
-    try {
-      categories = await this.props.levelUpStore.getCategoryList()
-    } catch (error) {
-      categories = CATEGORIES
-      console.error(error)
-    }
-
-    this.setState({ categories })
-    console.log(categories)
+    } 
   }
 
   async getAverageSpending() {
@@ -172,7 +156,7 @@ export default class CategoryFilter extends Component {
                     </Text>
                   </Body>
                   <Right style={{ flex: 1 }}>
-                    <Text>${category.average}</Text>
+                    <Text>${category.average.toFixed(2)}</Text>
                   </Right>
                 </ListItem>
               )
