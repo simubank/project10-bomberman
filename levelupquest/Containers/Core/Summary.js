@@ -58,7 +58,7 @@ export default class Summary extends Component {
       // deadline: 'Dec 04 2018',
       saved: 0.0,
       cashBack: 0.0,
-      categories: TEST_CATEGORIES,
+      categories: this.props.levelUpStore.goal.categories, // TEST_CATEGORIES,
       rain: false,
       fabActive: true
     }
@@ -99,10 +99,10 @@ export default class Summary extends Component {
     let newAmount = this.state.saved + sum + cashBackAmount
 
     if (newAmount >= amount) {
-      this.setState(prevState => ({
-        saved: prevState.amount,
+      this.setState({
+        saved: this.props.levelUpStore.goal.amount,
         rain: true
-      }))
+      })
 
       return
     }
@@ -160,8 +160,8 @@ export default class Summary extends Component {
   }
 
   calculateDifference(category) {
-    if (category.target >= category.current) {
-      return (category.target - category.current).toFixed(2)
+    if (category.average.value >= category.current) {
+      return (category.average.value - category.current).toFixed(2)
     } else {
       return (0).toFixed(2)
     }
@@ -170,6 +170,7 @@ export default class Summary extends Component {
   render() {
     const goBack = () => this.props.navigation.goBack()
     const { goal } = this.props.levelUpStore
+    console.log('categories in goal')
     console.log(goal.categories)
 
     return (
@@ -209,24 +210,24 @@ export default class Summary extends Component {
               </CardItem>
 
               <List>
-                {this.state.categories.map((category, index) => (
+                {goal.categories.map((category, index) => (
                   <ListItem avatar key={index}>
                     <Left>
                       <Button iconLeft transparent style={{ width: 50 }}>
                         <Icon
                           name={this.getCategoryIcon(category.name)}
-                          style={{ color: category.target >= category.current ? 'green' : 'red', fontSize: 30 }}
+                          style={{ color: category.average.value >= category.current ? 'green' : 'red', fontSize: 30 }}
                         />
                       </Button>
                     </Left>
                     <Body>
                       <Text style={{ marginBottom: 4, fontWeight: 'bold' }}>{category.name}</Text>
-                      <Text style={{ marginBottom: 4, fontSize: 14 }}>Limit: ${category.target.toFixed(2)}</Text>
+                      <Text style={{ marginBottom: 4, fontSize: 14 }}>Limit: ${category.average.value.toFixed(2)}</Text>
                       <Text style={{ marginBottom: 4, fontSize: 14 }}>
                         Savings: ${this.calculateDifference(category)}
                       </Text>
                     </Body>
-                    <Right>{this.renderAmountSpentPerCategory(category.current, category.target)}</Right>
+                    <Right>{this.renderAmountSpentPerCategory(category.current, category.average.value)}</Right>
                   </ListItem>
                 ))}
               </List>

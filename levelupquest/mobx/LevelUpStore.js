@@ -33,6 +33,7 @@ class Goal {
     this.categories = cat.map((item, index) => ({
       name: labels[index],
       average: cat[index],
+      current: 0,
     }))
   }
 }
@@ -109,7 +110,7 @@ class LevelUpStore {
 
       let obj = {
         name: categoryName,
-        amount: categoryInfo.net,
+        average: categoryInfo.net,
         // selected: false,
         // target: categoryInfo.net,
         // current: categoryInfo.net
@@ -121,7 +122,8 @@ class LevelUpStore {
       // this.categories.push(obj)
     })
 
-    return this.categories
+    // return this.categories
+    return this.userCategories
   }
 
   @action
@@ -233,8 +235,8 @@ class LevelUpStore {
   }
 
   @action
-  setGoal(title, amount, amountProgress, deadline, cat) {
-    this.goal = new Goal(title, amount, amountProgress, deadline, cat)
+  setGoal(title, amount, amountProgress, deadline, cat, labels) {
+    this.goal = new Goal(title, amount, amountProgress, deadline, cat, labels)
     console.log(this.goal)
   }
 
