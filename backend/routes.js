@@ -147,7 +147,7 @@ router.get('/customers/:customerId/spending/category/:category/withinDays/:days'
 		// If the category tag is included
 
 		// Filter for dates
-		var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
+		var transaction_date = Date.parse(transaction.originationDate);
 
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -212,7 +212,7 @@ router.get('/customers/:customerId/spending', function(req, res, next) {
 	    
 
 	    // Filter for dates
-	    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
+	    var transaction_date = Date.parse(transaction.originationDate);
 	    
 	    var date_difference = now_date - transaction_date;
 	    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -277,7 +277,7 @@ router.get('/customers/:customerId/spending/withinDays/:days', function(req, res
 	    
 
 	    // Filter for dates
-	    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
+	    var transaction_date = Date.parse(transaction.originationDate);
 	    
 	    var date_difference = now_date - transaction_date;
 	    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -285,7 +285,7 @@ router.get('/customers/:customerId/spending/withinDays/:days', function(req, res
 	    
 	    
 	    if (date_difference > Number(req.params.days) || date_difference < 0) {
-		    // Date is more than <days> days ago
+		// Date is more than <days> days ago
 		continue;
 	    }
 	    
@@ -332,9 +332,6 @@ router.post('/customers/:customerId/limits/:category', function(req, res, next) 
 router.get('/customers/:customerId/spending/categories', function(req, res, next) {
     // Returns all the categories of transactions by a certain customer for transactions that have passed
 
-    // Fails on customer 433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_3037469e-356e-4cad-a50a-6ec8e7752d12
-    // Account ID? TODO
-    
     // Request options
     var opt = {
 	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
@@ -366,7 +363,7 @@ router.get('/customers/:customerId/spending/categories', function(req, res, next
 		    // If the category tag is not yet accounted for
 		    
 		    // Filter for dates
-		    var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
+		    var transaction_date = Date.parse(transaction.originationDate);
 		    
 		    var date_difference = now_date - transaction_date;
 		    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
@@ -438,8 +435,6 @@ router.post('/cashback/:accountId', function(req, res, next) {
     // Get the amount of money we need
     var parsed_body = JSON.parse(req.body);
 
-    // TODO: Error check
-    
     var money_needed = parsed_body.amount;
 
     // Options for the request to generate money for our cashback
@@ -481,7 +476,7 @@ router.post('/cashback/:accountId', function(req, res, next) {
 		body: JSON.stringify({amount: money_needed,
 				      currency: 'CAD',
 				      fromAccountID: parsed_app_account_number,
-				      receipt: null, // TODO: What is this supposed to do?
+				      receipt: null,
 				      toAccountID: req.params.accountId
 				     })
 	    };
@@ -569,12 +564,11 @@ router.get('/transactions', function(req, res, next) {
 		request(transOpt, function(inerror, inresponse, inbody) {
 
 		    if (inresponse == null || inresponse == undefined || inerror != null) {
-			resolve([]); // TODO: Fix this
+			resolve([]);
 			return;
 		    }
 		    
 		    var inparsed_body = JSON.parse(inresponse.body);
-		    // TODO: Error check
 		    
 		    // Set the promise's value to the list of transactions for the customer
 		    resolve(inparsed_body.result);
@@ -589,7 +583,7 @@ router.get('/transactions', function(req, res, next) {
 	    // all the transactions of the customer
 	    customer_promises.push(getCustomerTransactions(customer.id));
 
-	    // TODO: Sample mode, comment out for full results
+	    // Sample mode, comment out for full results (warning, insanely large)
 	    if (i == conf['sample_size']) {
 		break;
 	    }
@@ -726,10 +720,6 @@ router.get('/metrics/:category', function(req, res, next) {
     credits = credits + value_to_add['credit_average'];
     debit_n = debit_n + 1;
     credit_n = credit_n + 1;
-    
-
-    // TODO: Handle occupations
-
 
     // Divide and return
     res.send({'result': {'debit_average' : debits / debit_n,
@@ -743,12 +733,6 @@ router.get('/metrics/:category', function(req, res, next) {
 	
 
     
-});
-
-// Debug follow up routes
-router.get('/customers/:customerId', function(req, res, next) {
-    // TODO: Update this later
-    res.sendStatus(404);
 });
 
 // Catch all other requests, return a 404
