@@ -28,26 +28,119 @@ export default class Graph extends Component {
     let params = this.props.navigation.state.params
 
     this.state = {
-      // title: params.title,
-      // amount: params.amount,
-      // deadline: params.deadline,
+      title: params.title,
+      amount: params.amount,
+      deadline: params.deadline,
 
       sliderLabel: 'Select a category',
       selectedCategoryIndex: 0,
       selectedCategoryValue: [],
-      barData: this.setBarData(),
+      barData: [],
       showSlider: false,
       graphMin: 0,
       graphMax: 0,
       originalTotalSpending: 0,
       currentTotalSpending: 0,
       totalSaving: 0,
+
+      userData: [],
+      populationData: [],
+      xAxisLabels: [],
     }
 
-    this.setGraphMaxAndSum(this.state.barData)
+    this.getCategories()
+  }
+
+  // Call this to pull data from the store
+  getCategories() {
+    //TODO: change with actual method of pulling data from API
+    let userCategories = this.props.levelUpStore.setSampleUserCategoriesList()
+    let populationCategories = this.props.levelUpStore.setSampleCategoriesList()
+
+    this.setUserBarData(userCategories)
+    this.setPopulationBarData(populationCategories)
+    this.setBarData()
+
+    // console.log(this.state.userData)
+    // console.log(this.state.populationData)
+    // console.log(this.state.barData)
+
+    this.setXAxis(userCategories)
+    this.setGraphMaxAndSum()
+  }
+
+  setUserBarData(userCategories) {
+    let userData = userCategories.map((cat, index) => ({
+      value: cat.average,
+      svg: {
+        fill: randomColor(),
+        onPress: () => this.selectGraphCategory(cat, index),
+      },
+      key: `pie-${index}`,
+    }))
+
+    this.state.userData = userData
+  }
+
+  setPopulationBarData(populationCategories) {
+    let populationData = populationCategories.map((cat, index) => ({
+      value: cat.average,
+      svg: {
+        fill: 'lightgrey',
+      },
+      key: `pie-${index}`,
+    }))
+
+    this.state.populationData = populationData
+  }
+
+  setBarData() {
+    let barData = [
+      {
+        data: this.state.userData,
+        svg: {
+          fill: 'rgb(134, 65, 244)',
+        },
+      },
+      {
+        data: this.state.populationData,
+      },
+    ]
+
+    this.state.barData = barData
+  }
+
+  setXAxis(userCategories) {
+    let xAxisLabels = userCategories.map(cat => cat.name)
+    this.state.xAxisLabels = xAxisLabels
+  }
+
+  setGraphMaxAndSum() {
+    let graphMax = 0
+    let originalTotalSpending = 0
+
+    this.state.barData[0].data.map(data => {
+      originalTotalSpending += data.value
+
+      if (data.value > graphMax){
+        graphMax = data.value
+      }
+    })
+
+    this.state.barData[1].data.map(data => {
+      if (data.value > graphMax){
+        graphMax = data.value
+      }
+    })
+
+    this.state.graphMax = graphMax
+    this.state.originalTotalSpending = originalTotalSpending
+    this.state.currentTotalSpending = originalTotalSpending
   }
 
   confirmGoalCreate() {
+    this.props.levelUpStore.addGoal(this.state.title, this.state.amount, this.state.deadline, this.state.userCategories)
+
     const resetAction = StackActions.reset({
       index: 0,
       actions: [
@@ -60,56 +153,39 @@ export default class Graph extends Component {
     this.props.navigation.dispatch(resetAction)
   }
 
-  setBarData() {
-    let userData = [ 14, 37, 150, 95, 94, 24, 8 ]
-      .map((value, index) => ({
-        value,
-        svg: {
-          fill: randomColor(),
-          onPress: () => this.selectGraphCategory(value, index),
-        },
-        key: `pie-${index}`,
-      }))
-
-    let populationData = [ 24, 28, 93, 77, 42, 62, 52]
-      .map((value, index) => ({
-        value,
-        svg: {
-          fill: 'lightgrey',
-        },
-        key: `pie-${index}`,
-      }))
-
-    let barData = [
-      {
-        data: userData,
-        svg: {
-          fill: 'rgb(134, 65, 244)',
-        },
-      },
-      {
-        data: populationData,
-      },
-    ]
-    return barData
-  }
-
-  setGraphMaxAndSum(barData) {
-    let graphMax = 0
-    let originalTotalSpending = 0
-
-    barData[0].data.map(data => {
-      originalTotalSpending += data.value
-
-      if (data.value > graphMax){
-        graphMax = data.value
-      }
-    })
-
-    this.state.graphMax = graphMax
-    this.state.originalTotalSpending = originalTotalSpending
-    this.state.currentTotalSpending = originalTotalSpending
-  }
+  // setBarData() {
+  //   let userData = [ 14, 37, 150, 95, 94, 24, 8 ]
+  //     .map((value, index) => ({
+  //       value,
+  //       svg: {
+  //         fill: randomColor(),
+  //         onPress: () => this.selectGraphCategory(value, index),
+  //       },
+  //       key: `pie-${index}`,
+  //     }))
+  //
+  //   let populationData = [ 24, 28, 93, 77, 42, 62, 52]
+  //     .map((value, index) => ({
+  //       value,
+  //       svg: {
+  //         fill: 'lightgrey',
+  //       },
+  //       key: `pie-${index}`,
+  //     }))
+  //
+  //   let barData = [
+  //     {
+  //       data: userData,
+  //       svg: {
+  //         fill: 'rgb(134, 65, 244)',
+  //       },
+  //     },
+  //     {
+  //       data: populationData,
+  //     },
+  //   ]
+  //   return barData
+  // }
 
   setCurrentTotalSpending() {
     let currentTotalSpending = 0
@@ -129,7 +205,7 @@ export default class Graph extends Component {
     }
 
     let selectedCategoryValue = [this.state.barData[0].data[index].value]
-    let sliderLabel = xAxisLabels[index]
+    let sliderLabel = this.state.xAxisLabels[index]
 
     this.setState({ selectedCategoryIndex: index })
     this.setState({ selectedCategoryValue, sliderLabel })
@@ -141,11 +217,12 @@ export default class Graph extends Component {
 
     let selectedCategoryValue = value
 
-    let barData = this.state.barData
-    barData[0].data[this.state.selectedCategoryIndex].value = value[0]
+    let userData = this.state.userData
+    userData[this.state.selectedCategoryIndex].value = value[0]
 
-    this.setState({ barData, selectedCategoryValue })
+    this.setState({ userData, selectedCategoryValue })
 
+    this.setBarData()
     this.setCurrentTotalSpending()
   }
 
@@ -168,73 +245,75 @@ export default class Graph extends Component {
 
         <Content style={{ backgroundColor: '#f3f2f7' }}>
           <View style={{alignItems:'center', paddingVertical:30}}>
-            <Text>Total spending: {this.state.currentTotalSpending}</Text>
-            <Text>Total saving: {this.state.totalSaving}</Text>
+            <Text>Total spending: ${this.state.currentTotalSpending.toFixed(2)}</Text>
+            <Text>Total saving: ${this.state.totalSaving.toFixed(2)}</Text>
           </View>
 
-          <View style={{ margin:20 }}>
-            <View style={{ flexDirection: 'row'}}>
-              <YAxis
-                data={ [this.state.graphMin, this.state.graphMax] }
-                style={{ }}
-                contentInset={verticalContentInset}
-                svg={axesSvg}
-                />
-
-              <View style={{ flex: 1}}>
-                <BarChart
-                  style={ { height: 200, marginLeft: 10 } }
-                  data={ this.state.barData }
-                  yAccessor={({ item }) => item.value }
-                  svg={{
-                      fill: 'green',
-                  }}
+          { this.state.barData[0] &&
+            <View style={{ margin:20 }}>
+              <View style={{ flexDirection: 'row'}}>
+                <YAxis
+                  data={ [this.state.graphMin, this.state.graphMax] }
+                  style={{ }}
                   contentInset={verticalContentInset}
-                  spacingInner={0.2}
-                  yMin={this.state.graphMin}
-                  yMax={this.state.graphMax}>
-                    <Grid/>
-                </BarChart>
+                  svg={axesSvg}
+                  />
+
+                <View style={{ flex: 1}}>
+                  <BarChart
+                    style={ { height: 200, marginLeft: 10 } }
+                    data={ this.state.barData }
+                    yAccessor={({ item }) => item.value }
+                    svg={{
+                        fill: 'green',
+                    }}
+                    contentInset={verticalContentInset}
+                    spacingInner={0.2}
+                    yMin={this.state.graphMin}
+                    yMax={this.state.graphMax}>
+                      <Grid/>
+                  </BarChart>
+                </View>
               </View>
+
+              <XAxis
+                style={{ marginHorizontal: 0 }}
+                data={ this.state.userData }
+                formatLabel={ (value, index) => index+1 }
+                contentInset={{ left: 48, right: 20 }}
+                svg={{ fontSize: 10, fill: 'black' }}
+                spacingInner={0.2}
+              />
+
+              <View style={{paddingVertical:30}} />
+
+              { this.state.showSlider &&
+                <View style={{alignItems:'center'}}>
+                  <Text>{this.state.sliderLabel}</Text>
+                  <Text>{this.state.selectedCategoryValue[0]}</Text>
+                  <View style={{paddingVertical:20}} />
+
+                  <MultiSlider
+                    selectedStyle={{
+                      backgroundColor: 'green'
+                    }}
+                    unselectedStyle={{
+                      backgroundColor: 'silver'
+                    }}
+                    trackStyle={{
+                      height: 3,
+                      backgroundColor: 'green'
+                    }}
+                    values={this.state.selectedCategoryValue}
+                    min={0}
+                    max={this.state.graphMax}
+                    step={5}
+                    onValuesChangeFinish={value => this.onSliderChange(value)}
+                  />
+                </View>
+              }
             </View>
-
-            <XAxis
-              style={{ marginHorizontal: 0 }}
-              data={ xAxisData }
-              formatLabel={ (value, index) => index+1 }
-              contentInset={{ left: 48, right: 20 }}
-              svg={{ fontSize: 10, fill: 'black' }}
-              spacingInner={0.2}
-            />
-
-            <View style={{paddingVertical:30}} />
-
-            { this.state.showSlider &&
-              <View style={{alignItems:'center'}}>
-                <Text>{this.state.sliderLabel}</Text>
-                <Text>{this.state.selectedCategoryValue[0]}</Text>
-                <View style={{paddingVertical:20}} />
-
-                <MultiSlider
-                  selectedStyle={{
-                    backgroundColor: 'green'
-                  }}
-                  unselectedStyle={{
-                    backgroundColor: 'silver'
-                  }}
-                  trackStyle={{
-                    height: 3,
-                    backgroundColor: 'green'
-                  }}
-                  values={this.state.selectedCategoryValue}
-                  min={0}
-                  max={this.state.graphMax}
-                  step={5}
-                  onValuesChangeFinish={value => this.onSliderChange(value)}
-                />
-              </View>
-            }
-          </View>
+          }
 
         </Content>
         <Footer style={footerStyles.footer}>

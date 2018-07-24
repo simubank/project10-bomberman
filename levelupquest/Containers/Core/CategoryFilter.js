@@ -118,7 +118,6 @@ export default class CategoryFilter extends Component {
       title: this.state.title,
       amount: this.state.amount,
       deadline: this.state.deadline
-      // TODO: send the object returned by the API call
     }
 
     this.props.navigation.navigate({
