@@ -389,7 +389,7 @@ router.get('/customers/:customerId/spending/categories', function(req, res, next
 });
 
 router.get('/', function(req, res, next) {
-    res.send({'result': calculated_averages,
+    res.send({'result': "Hello, world!",
 	      "errorDetails" : null,
 	      "errorMsg": null,
 	      "statusCode": 200});
