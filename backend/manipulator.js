@@ -24,7 +24,7 @@ for (var i = 0; i < customers_data.length; i++) {
 }
 
 
-var filter_categories = ['Fast food', 'Salary', 'Rent', 'Utility bill', 'eTransfer', 'Tax', 'Insurance', 'Mortgage'];
+var filter_categories = ['Entertainment', 'Retail', 'Fast food', 'Salary', 'Rent', 'Utility bill', 'eTransfer', 'Tax', 'Insurance', 'Mortgage'];
 var categories = {}; // Overall spending per each filter
 var ages = {}; // Spending per each filter, age dependant
 var genders = {}; // Spending per each filter, gender dependant
