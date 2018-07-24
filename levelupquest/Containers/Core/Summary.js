@@ -54,7 +54,7 @@ export default class Summary extends Component {
 
     this.state = {
       // title: 'Vacation',
-      // amount: 1000.0,
+      amount: 0,
       // deadline: 'Dec 04 2018',
       saved: 0.0,
       cashBack: 0.0,
@@ -80,7 +80,7 @@ export default class Summary extends Component {
     this.setState({ categories: modified })
   }
 
-  onDepositSavingsClicked() {
+  onDepositSavingsClicked(amount) {
     // get amount difference for each category
 
     let sum = 0
@@ -98,7 +98,7 @@ export default class Summary extends Component {
 
     let newAmount = this.state.saved + sum + cashBackAmount
 
-    if (newAmount >= this.state.amount) {
+    if (newAmount >= amount) {
       this.setState(prevState => ({
         saved: prevState.amount,
         rain: true
@@ -151,11 +151,11 @@ export default class Summary extends Component {
     return icon
   }
 
-  calculatePercentage() {
+  calculatePercentage(amount) {
     if (this.state.saved === 0) {
       return 0
     } else {
-      return ((this.state.saved * 100) / this.state.amount).toFixed(0)
+      return ((this.state.saved * 100) / amount).toFixed(0)
     }
   }
 
@@ -192,8 +192,8 @@ export default class Summary extends Component {
               </CardItem>
 
               <CardItem bordered>
-                <Text style={{ marginRight: 20 }}>Progress: {this.calculatePercentage()}%</Text>
-                <Progress.Bar progress={this.calculatePercentage() / 100} width={180} height={10} />
+                <Text style={{ marginRight: 20 }}>Progress: {this.calculatePercentage(goal.amount)}%</Text>
+                <Progress.Bar progress={this.calculatePercentage(goal.amount) / 100} width={180} height={10} />
               </CardItem>
 
               <CardItem bordered>
@@ -241,7 +241,7 @@ export default class Summary extends Component {
             onPress={() => this.setState({ active: !this.state.active })}
           >
             <Icon name="md-add" />
-            <Button style={{ backgroundColor: 'green' }} onPress={() => this.onDepositSavingsClicked()}>
+            <Button style={{ backgroundColor: 'green' }} onPress={() => this.onDepositSavingsClicked(goal.amount)}>
               <Icon name="logo-usd" />
             </Button>
             <Button style={{ backgroundColor: 'orange' }} onPress={() => this.onFastForwardClicked()}>
