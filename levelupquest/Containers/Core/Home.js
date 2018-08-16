@@ -59,7 +59,7 @@ export default class Home extends Component {
     }
 
     // this.setState({ categories })
-    console.log(categories)
+    // console.log(categories)
   }
 
   async populatePreferences() {

@@ -57,8 +57,6 @@ export default class Graph extends Component {
     let userCategories = this.props.levelUpStore.userCategories
     let populationCategories = this.props.levelUpStore.categories
     
-    console.log(populationCategories)
-
     this.setUserBarData(userCategories)
     this.setPopulationBarData(populationCategories)
     this.setBarData()
@@ -72,7 +70,6 @@ export default class Graph extends Component {
   }
 
   setUserBarData(userCategories) {
-    console.log('u', userCategories)
     let userData = userCategories.map((cat, index) => ({
       value: cat.average,
       svg: {
@@ -81,7 +78,7 @@ export default class Graph extends Component {
       },
       key: `pie-${index}`,
     }))
-    console.log('u2', userData)
+
     this.state.userData = userData
     this.state.numBars = userData.length
   }
@@ -113,40 +110,28 @@ export default class Graph extends Component {
       }
     ]
 
-    console.log('h', populationCategories)
-    // let populationData = populationCategories.map((cat, index) => ({
-    //   value: cat.average,
-    //   svg: {
-    //     fill: 'lightgrey',
-    //   },
-    //   key: `pie2-${index}`,
-    // }))
-
+    console.log('popCat from store', populationCategories)
+    
     let populationData = []
-    console.log(populationCategories, populationCategories.length)
-    console.log('num: ', this.state.numBars)
-
-    // for (let i = 0; i < this.state.numBars; i++) {
-    //   console.log(i)
-    //   let obj = {
-    //     value: populationCategories[i].average,
-    //     svg: {
-    //       fill: 'lightgrey',
-    //     },
-    //     key: `pie2-${i}`,
-    //   }
-    //   populationData.push(obj)
-    // }
-    console.log('h2', populationData)
+    // console.log(populationCategories, populationCategories.length)
+    console.log('length of popCat', populationCategories.length)
 
     if(populationCategories.length == 0) {
       const diff = BACKUP_DATA.length - this.state.numBars
       this.state.populationData = _.drop(BACKUP_DATA, diff)
     } else {
+      populationData = populationCategories.map((cat, index) => ({
+        value: cat.average,
+        svg: {
+          fill: 'lightgrey',
+        },
+        key: `pie2-${index}`,
+      }))
+
       this.state.populationData = populationData
     }
 
-    console.log(this.state.populationData)
+    console.log('formatted popData', this.state.populationData)
   }
 
   setBarData() {
@@ -164,7 +149,7 @@ export default class Graph extends Component {
 
     this.state.barData = barData
 
-    console.log(barData)
+    // console.log(barData)
   }
 
   setXAxis(userCategories) {
@@ -260,12 +245,17 @@ export default class Graph extends Component {
     this.confirmGoalCreate()
   }
 
+  resetAndGoBack() {
+    this.props.levelUpStore.resetCategories()
+    this.props.navigation.goBack()
+  }
+
   render() {
     const { goBack } = this.props.navigation
 
     return (
       <Container>
-        <HeaderComponent goBack={goBack} title="Graph" />
+        <HeaderComponent goBack={() => this.resetAndGoBack()} title="Graph" />
 
         <Content style={{ backgroundColor: '#f3f2f7' }}>
           <View style={{alignItems:'center', paddingVertical:30}}>

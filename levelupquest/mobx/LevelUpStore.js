@@ -24,8 +24,6 @@ class Goal {
   @observable deadline
 
   constructor(title, amount, amountProgress, deadline, cat, labels) {
-    console.log(cat)
-    console.log(labels)
     this.title = title
     this.amount = amount
     this.amountProgress = amountProgress
@@ -49,7 +47,7 @@ class LevelUpStore {
   @action
   async getCategoryList() {
     const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
-    const url = 'http://localhost:4527/customers/' + customerID + '/spending/categories'
+    const url = 'http://40.85.201.31:4527/customers/' + customerID + '/spending/categories'
 
     let res
 
@@ -73,7 +71,7 @@ class LevelUpStore {
 
       const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
       const url =
-        'http://localhost:4527/customers/' + customerID + '/spending/category/' + categoryName + '/withinDays/30'
+        'http://40.85.201.31:4527/customers/' + customerID + '/spending/category/' + categoryName + '/withinDays/30'
 
       let res2
 
@@ -109,7 +107,7 @@ class LevelUpStore {
 
   @action
   async getCategorySpending(categoryName, age, gender, occupation) {
-    const url = 'http://localhost:4527/metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
+    const url = 'http://40.85.201.31:4527/metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
 
     let res
 
@@ -140,6 +138,12 @@ class LevelUpStore {
     this.categories.push(cat)
 
     // this.averages.push(obj)
+  }
+
+  @action
+  async resetCategories() {
+    this.categories = []
+    this.userCategories = []
   }
 
   @action
