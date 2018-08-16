@@ -33,31 +33,12 @@ class Goal {
     this.categories = cat.map((item, index) => ({
       name: labels[index],
       average: cat[index],
-      current: 0,
+      current: 0
     }))
   }
 }
 
 class LevelUpStore {
-  @observable customers = [
-    {
-      id: '',
-      name: '',
-      gender: '',
-      age: 0,
-      isMarried: false,
-      entryTime: '',
-      customerSince: '',
-      status: '',
-      location: '',
-      purchases: [
-        {
-          productID: '',
-          productName: ''
-        }
-      ]
-    }
-  ]
   @observable averages = []
   @observable preferences = []
 
@@ -181,20 +162,20 @@ class LevelUpStore {
     console.log('end')
 
     let data = await res.json()
-    let purchasing_preferences = data.consumption_preferences[0].consumption_preferences
+    let purchasingPreferences = data.consumption_preferences[0].consumption_preferences
 
-    this.preferences = _.dropRight(_.drop(_.reverse(purchasing_preferences)), 5)
+    this.preferences = _.dropRight(_.drop(_.reverse(purchasingPreferences)), 5)
 
     return this.preferences
   }
 
   @action
   setSampleCategoriesList() {
-    let obj1 =  { name: "Fast Food", average: 70.30}
-    let obj2 = { name: "Retail", average: 50.2}
-    let obj3 = { name: "Insurance", average: 130.9}
-    let obj4 = { name: "House", average: 200 }
-    let obj5 = { name: "Other", average: 22.11 }
+    let obj1 = { name: 'Fast Food', average: 70.3 }
+    let obj2 = { name: 'Retail', average: 50.2 }
+    let obj3 = { name: 'Insurance', average: 130.9 }
+    let obj4 = { name: 'House', average: 200 }
+    let obj5 = { name: 'Other', average: 22.11 }
 
     let cat1 = new Category(obj1)
     let cat2 = new Category(obj2)
@@ -213,11 +194,11 @@ class LevelUpStore {
 
   @action
   setSampleUserCategoriesList() {
-    let obj1 =  { name: "Fast Food", average: 53.11}
-    let obj2 = { name: "Retail", average: 79}
-    let obj3 = { name: "Insurance", average: 100.23}
-    let obj4 = { name: "House", average: 25.93 }
-    let obj5 = { name: "Other", average: 25 }
+    let obj1 = { name: 'Fast Food', average: 53.11 }
+    let obj2 = { name: 'Retail', average: 79 }
+    let obj3 = { name: 'Insurance', average: 100.23 }
+    let obj4 = { name: 'House', average: 25.93 }
+    let obj5 = { name: 'Other', average: 25 }
 
     let cat1 = new Category(obj1)
     let cat2 = new Category(obj2)
@@ -250,7 +231,6 @@ const store = (window.store = new LevelUpStore())
 
 export default store
 export { LevelUpStore }
-
 
 const profile = {
   "contentItems": [

@@ -69,8 +69,9 @@ export default class Home extends Component {
   generateSampleGoal() {
     let labels = []
     let averages = []
-    if(!this.props.levelUpStore.goal)
-      this.props.levelUpStore.setGoal("Vacation", 1000, 0, 'Dec 04 2018', averages, labels)
+    if (!this.props.levelUpStore.goal) {
+      this.props.levelUpStore.setGoal('Vacation', 1000, 0, 'Dec 04 2018', averages, labels)
+    }
   }
 
   _renderIcon({ icon }, size = 50) {

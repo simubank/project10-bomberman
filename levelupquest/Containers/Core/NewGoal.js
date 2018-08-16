@@ -68,7 +68,6 @@ export default class NewGoal extends Component {
   }
 
   render() {
-    // const customers = this.props.levelUpStore.customers
     const goBack = () => this.props.navigation.goBack()
 
     return (
