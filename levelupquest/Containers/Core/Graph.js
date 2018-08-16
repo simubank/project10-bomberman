@@ -197,7 +197,7 @@ export default class Graph extends Component {
       this.setState({ showSlider: true })
     }
 
-    let selectedCategoryValue = [this.state.barData[0].data[index].value]
+    let selectedCategoryValue = [this.state.barData[0].data[index].value.toFixed(2)]
     let sliderLabel = this.state.xAxisLabels[index]
 
     this.setState({ selectedCategoryIndex: index })
@@ -304,7 +304,7 @@ export default class Graph extends Component {
               { this.state.showSlider &&
                 <View style={{alignItems:'center'}}>
                   <Text>{this.state.sliderLabel}</Text>
-                  <Text>{this.state.selectedCategoryValue[0]}</Text>
+                  <Text>${this.state.selectedCategoryValue[0]}</Text>
                   <View style={{paddingVertical:20}} />
 
                   <MultiSlider
