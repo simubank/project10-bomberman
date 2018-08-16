@@ -49,7 +49,7 @@ router.get('/customers/:customerId/spending/category/:category', function(req, r
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
+	url: "https://botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -116,7 +116,7 @@ router.get('/customers/:customerId/spending/category/:category/withinDays/:days'
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
+	url: "https://botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -184,7 +184,7 @@ router.get('/customers/:customerId/spending', function(req, res, next) {
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
+	url: "https://botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -249,7 +249,7 @@ router.get('/customers/:customerId/spending/withinDays/:days', function(req, res
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
+	url: "https://botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -334,7 +334,7 @@ router.get('/customers/:customerId/spending/categories', function(req, res, next
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
+	url: "https://botsfinancial.com/api/customers/" + req.params.customerId + "/transactions",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -402,7 +402,7 @@ router.get('/customers/:customerId/info', function(req, res, next) {
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/customers/" + req.params.customerId,
+	url: "https://botsfinancial.com/api/customers/" + req.params.customerId,
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -440,7 +440,7 @@ router.post('/cashback/:accountId', function(req, res, next) {
     // Options for the request to generate money for our cashback
     // account
     var optGenerateMoney = {
-	url: "https://dev.botsfinancial.com/api/transfers",
+	url: "https://botsfinancial.com/api/transfers",
 	headers: {
 	    'Authorization': auth_key
 	},
@@ -451,7 +451,7 @@ router.post('/cashback/:accountId', function(req, res, next) {
 
     // Request options for the determine what our account # is request
     var optAccountNumber = {
-	url: "https://dev.botsfinancial.com/api/transfers",
+	url: "https://botsfinancial.com/api/transfers",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -469,7 +469,7 @@ router.post('/cashback/:accountId', function(req, res, next) {
 	    
 	    // Request options for the transfer request
 	    var optTransfer = {
-		url: "https://dev.botsfinancial.com/api/transfers",
+		url: "https://botsfinancial.com/api/transfers",
 		headers: {
 		    'Authorization': auth_key
 		},
@@ -506,7 +506,7 @@ router.get('/customers', function(req, res, next) {
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/simulants/",
+	url: "https://botsfinancial.com/api/simulants/",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -540,7 +540,7 @@ router.get('/transactions', function(req, res, next) {
 
     // Request options
     var opt = {
-	url: "https://dev.botsfinancial.com/api/simulants/",
+	url: "https://botsfinancial.com/api/simulants/",
 	headers: {
 	    'Authorization': auth_key
 	}
@@ -554,7 +554,7 @@ router.get('/transactions', function(req, res, next) {
 	function getCustomerTransactions(customerId) {
 	    // Returns a promise whose value is the list of transactions for customerId
 	    var transOpt = {
-		url: "https://dev.botsfinancial.com/api/simulants/" + customerId + "/simulatedtransactions",
+		url: "https://botsfinancial.com/api/simulants/" + customerId + "/simulatedtransactions",
 		headers: {
 		    'Authorization': auth_key
 		}
