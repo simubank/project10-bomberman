@@ -304,7 +304,7 @@ export default class Graph extends Component {
               { this.state.showSlider &&
                 <View style={{alignItems:'center'}}>
                   <Text>{this.state.sliderLabel}</Text>
-                  <Text>${this.state.selectedCategoryValue[0]}</Text>
+                  <Text>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
                   <View style={{paddingVertical:20}} />
 
                   <MultiSlider

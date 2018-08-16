@@ -31,7 +31,23 @@ export default class NewGoal extends Component {
       deadline: new Date()
     }
 
+    this.populateCategories()
     this.setDate = this.setDate.bind(this) // DO NOT REMOVE
+  }
+
+  async populateCategories() {
+    let categories
+
+    try {
+      await this.props.levelUpStore.resetCategories()
+      categories = await this.props.levelUpStore.getCategoryList()
+    } catch (error) {
+      categories = CATEGORIES
+      console.error(error)
+    }
+
+    // this.setState({ categories })
+    // console.log(categories)
   }
 
   goNext() {

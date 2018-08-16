@@ -37,22 +37,28 @@ const CATEGORIES = [
 
 const FILTERS = [
   {
-    name: 'Age'
+    name: 'Age',
+    selected: false
   },
   {
-    name: 'Gender'
+    name: 'Gender',
+    selected: false
   },
   {
-    name: 'Occupation'
+    name: 'Occupation',
+    selected: false
   },
   {
-    name: 'Relationship Status'
+    name: 'Relationship Status',
+    selected: false
   },
   {
-    name: 'Habitation'
+    name: 'Habitation',
+    selected: false
   },
   {
-    name: 'Municipality'
+    name: 'Municipality',
+    selected: false
   }
 ]
 
@@ -73,6 +79,11 @@ export default class CategoryFilter extends Component {
   }
 
   async getAverageSpending() {
+    // reset field selected for each filter
+    this.state.filters.forEach(filter => {
+      filter.selected = false
+    })
+
     let selectedCategories = _.filter(this.state.categories, category => {
       return category.selected
     })
