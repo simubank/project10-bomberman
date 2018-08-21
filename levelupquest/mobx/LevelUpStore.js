@@ -43,11 +43,53 @@ class LevelUpStore {
   @observable categories = []
   @observable userCategories = []
   @observable goal
+  @observable customer
+
+  @action
+  async getCustomerProfile() {
+    const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
+    const url = 'https://botsfinancial.com/api/customers/' + customerID
+    const AUTH_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
+
+    let res
+
+    try {
+      res = await axios.get(url, { headers: { 'Authorization': AUTH_KEY } })
+    } catch (error) {
+      console.error(error)
+    }
+
+    const info = res.data.result[0]
+
+    // format info
+    function capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
+    }
+
+    info.primaryOccupation = capitalizeFirstLetter(info.primaryOccupation)
+    info.relationshipStatus = capitalizeFirstLetter(info.relationshipStatus)
+    info.habitationStatus = capitalizeFirstLetter(info.habitationStatus)
+    
+    if (info.habitationStatus === 'Sharingrent') {
+      info.habitationStatus = 'Sharing Rent'
+    }
+    
+    this.customer = {
+      firstName: info.givenName,
+      lastName: info.surname,
+      age: info.age,
+      gender: info.gender,
+      occupation: info.primaryOccupation,
+      relationshipStatus: info.relationshipStatus,
+      habitation: info.habitationStatus,
+      municipality: info.addresses.principalResidence.municipality
+    }
+  }
 
   @action
   async getCategoryList() {
     const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
-    const url = 'http://40.85.201.31:4527/customers/' + customerID + '/spending/categories'
+    const url = 'http://localhost:4526/customers/' + customerID + '/spending/categories'
 
     let res
 
@@ -71,7 +113,7 @@ class LevelUpStore {
 
       const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
       const url =
-        'http://40.85.201.31:4527/customers/' + customerID + '/spending/category/' + categoryName + '/withinDays/30'
+        'http://localhost:4526/customers/' + customerID + '/spending/category/' + categoryName + '/withinDays/30'
 
       let res2
 
@@ -107,7 +149,7 @@ class LevelUpStore {
 
   @action
   async getCategorySpending(categoryName, age, gender, occupation) {
-    const url = 'http://40.85.201.31:4527/metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
+    const url = 'http://localhost:4526/metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
 
     let res
 

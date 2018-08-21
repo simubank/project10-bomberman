@@ -107,7 +107,7 @@ export default class Settings extends Component {
               />
             </View>
 
-            <Button style={{ marginLeft: 16 }} onPress={() => this.loadPreferences()}>
+            <Button style={{ marginLeft: 16, backgroundColor: 'green' }} onPress={() => this.loadPreferences()}>
               <Text>Analyze Personality</Text>
             </Button>
 

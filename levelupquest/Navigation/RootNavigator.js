@@ -9,6 +9,7 @@ import CategoryFilter from '../Containers/Core/CategoryFilter'
 import Graph from '../Containers/Core/Graph'
 import Summary from '../Containers/Core/Summary'
 import LocationMap from '../Containers/Core/Map'
+import Profile from '../Containers/Core/Profile'
 
 export const AppNavigator = StackNavigator(
   {
@@ -33,6 +34,9 @@ export const AppNavigator = StackNavigator(
     },
     Map: {
       screen: LocationMap
+    },
+    Profile: {
+      screen: Profile
     }
   },
   {

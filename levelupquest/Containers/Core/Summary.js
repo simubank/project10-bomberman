@@ -183,7 +183,7 @@ export default class Summary extends Component {
               <CardItem header bordered>
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <View>
-                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{goal.title}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'green' }}>{goal.title}</Text>
                   </View>
                   <View>
                     <Text note style={{ marginTop: 5, marginBottom: 5, color: 'black' }}>
@@ -195,7 +195,7 @@ export default class Summary extends Component {
 
               <CardItem bordered>
                 <Text style={{ marginRight: 20 }}>Progress: {this.calculatePercentage(goal.amount)}%</Text>
-                <Progress.Bar progress={this.calculatePercentage(goal.amount) / 100} width={180} height={10} />
+                <Progress.Bar progress={this.calculatePercentage(goal.amount) / 100} width={180} height={10} color={'green'} />
               </CardItem>
 
               <CardItem bordered>

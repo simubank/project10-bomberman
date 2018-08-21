@@ -29,6 +29,11 @@ const menuOptions = [
     name: 'Map',
     icon: 'ios-map-outline',
     screen: 'Map'
+  },
+  {
+    name: 'Profile',
+    icon: 'ios-contact-outline',
+    screen: 'Profile'
   }
 ]
 
@@ -44,10 +49,9 @@ export default class Home extends Component {
 
     this.generateSampleGoal()
     this.populatePreferences()
+    this.props.levelUpStore.getCustomerProfile()
     // this.props.levelUpStore.setSampleUserCategoriesList()
   }
-
-
 
   async populatePreferences() {
     await this.props.levelUpStore.getPurchasePreferences()

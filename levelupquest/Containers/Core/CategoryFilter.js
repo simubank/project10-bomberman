@@ -98,6 +98,17 @@ export default class CategoryFilter extends Component {
     const gender = 'Male'
     const occupation = 'blah'
 
+    for (let category of selectedCategories) {
+      let categoryName = category.name
+
+      try {
+        await this.props.levelUpStore.getCategorySpending(categoryName, age, gender, occupation)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    /*
     selectedCategories.forEach(async category => {
       let categoryName = category.name
 
@@ -107,6 +118,7 @@ export default class CategoryFilter extends Component {
         console.error(error)
       }
     })
+    */
 
     console.log(this.props.levelUpStore.categories)
   }
@@ -124,8 +136,8 @@ export default class CategoryFilter extends Component {
     })
   }
 
-  displayResults() {
-    this.getAverageSpending()
+  async displayResults() {
+    await this.getAverageSpending()
     this.goNext()
   }
 
