@@ -27,6 +27,7 @@ export default class Graph extends Component {
       title: params.title,
       amount: params.amount,
       deadline: params.deadline,
+      selectedCategories: params.selectedCategories,
 
       sliderLabel: 'Select a category',
       selectedCategoryIndex: 0,
@@ -35,6 +36,7 @@ export default class Graph extends Component {
       showSlider: false,
       graphMin: 0,
       graphMax: 0,
+
       originalTotalSpending: 0,
       currentTotalSpending: 0,
       totalSaving: 0,
@@ -42,27 +44,19 @@ export default class Graph extends Component {
       userData: [],
       populationData: [],
       xAxisLabels: [],
-      numBars: 0,
+      numBars: 0
     }
 
-    this.getCategories()
+    this.getUserAndPopulationCategories()
   }
 
-  // Call this to pull data from the store
-  getCategories() {
-    // TODO: change with actual method of pulling data from API
-    // let userCategories = this.props.levelUpStore.setSampleUserCategoriesList()
-    // let populationCategories = this.props.levelUpStore.setSampleCategoriesList()
-    let userCategories = this.props.levelUpStore.userCategories
-    let populationCategories = this.props.levelUpStore.categories
+  getUserAndPopulationCategories() {
+    let userCategories = this.state.selectedCategories
+    let populationCategories = this.props.levelUpStore.populationCategories
 
     this.setUserBarData(userCategories)
     this.setPopulationBarData(populationCategories)
     this.setBarData()
-
-    // console.log(this.state.userData)
-    // console.log(this.state.populationData)
-    // console.log(this.state.barData)
 
     this.setXAxis(userCategories)
     this.setGraphMaxAndSum()
@@ -83,69 +77,15 @@ export default class Graph extends Component {
   }
 
   setPopulationBarData(populationCategories) {
-    const min = 50
-    const max = 200
-
-    const BACKUP_DATA = [
-      {
-        value: Math.floor(Math.random() * (max - min + 1)) + min,
-        svg: {
-          fill: 'lightgrey'
-        },
-        key: `pie2-1`
+    let populationData = populationCategories.map((cat, index) => ({
+      value: cat.average,
+      svg: {
+        fill: 'lightgrey'
       },
-      {
-        value: Math.floor(Math.random() * (max - min + 1)) + min,
-        svg: {
-          fill: 'lightgrey'
-        },
-        key: `pie2-2`
-      },
-      {
-        value: Math.floor(Math.random() * (max - min + 1)) + min,
-        svg: {
-          fill: 'lightgrey'
-        },
-        key: `pie2-3`
-      },
-      {
-        value: Math.floor(Math.random() * (max - min + 1)) + min,
-        svg: {
-          fill: 'lightgrey'
-        },
-        key: `pie2-4`
-      },
-      {
-        value: Math.floor(Math.random() * (max - min + 1)) + min,
-        svg: {
-          fill: 'lightgrey'
-        },
-        key: `pie2-5`
-      }
-    ]
+      key: `pie2-${index}`
+    }))
 
-    console.log('popCat from store', populationCategories)
-
-    let populationData = []
-    // console.log(populationCategories, populationCategories.length)
-    console.log('length of popCat', populationCategories.length)
-
-    if (populationCategories.length === 0) {
-      const diff = BACKUP_DATA.length - this.state.numBars
-      this.state.populationData = _.drop(BACKUP_DATA, diff)
-    } else {
-      populationData = populationCategories.map((cat, index) => ({
-        value: cat.average,
-        svg: {
-          fill: 'lightgrey'
-        },
-        key: `pie2-${index}`
-      }))
-
-      this.state.populationData = populationData
-    }
-
-    console.log('formatted popData', this.state.populationData)
+    this.state.populationData = populationData
   }
 
   setBarData() {
@@ -162,8 +102,6 @@ export default class Graph extends Component {
     ]
 
     this.state.barData = barData
-
-    // console.log(barData)
   }
 
   setXAxis(userCategories) {
@@ -219,9 +157,7 @@ export default class Graph extends Component {
   }
 
   onSliderChange(value) {
-    if (value[0] === 0) {
-      value[0] = 1
-    }
+    if (value[0] === 0) value[0] = 1
 
     let selectedCategoryValue = value
 
@@ -235,7 +171,6 @@ export default class Graph extends Component {
   }
 
   confirmGoalCreate() {
-    console.log('goals', this.state.userData)
     this.props.levelUpStore.setGoal(this.state.title, this.state.amount, 0, this.state.deadline, this.state.userData, this.state.xAxisLabels)
 
     const resetAction = StackActions.reset({
@@ -260,26 +195,41 @@ export default class Graph extends Component {
     this.confirmGoalCreate()
   }
 
-  resetAndGoBack() {
-    this.props.levelUpStore.resetCategories()
-    this.props.navigation.goBack()
-  }
-
   render() {
     const { goBack } = this.props.navigation
 
     return (
       <Container>
-        <HeaderComponent goBack={() => this.resetAndGoBack()} title="Graph" />
+        <HeaderComponent goBack={goBack} title="Graph" />
 
-        <Content style={{ backgroundColor: '#f3f2f7' }}>
-          <View style={{ alignItems: 'center', paddingVertical: 30 }}>
-            <Text style={{ fontSize: 18, marginBottom: 5 }}>Total Spending: ${parseFloat(this.state.currentTotalSpending).toFixed(2)}</Text>
-            <Text style={{ fontSize: 18, marginBottom: 5 }}>Total Savings: ${this.state.totalSaving.toFixed(2)}</Text>
+        <Content style={{ backgroundColor: 'white' }}>
+          <View style={{ paddingVertical: 10 }}>
+            <List>
+              <ListItem>
+                <Text style={{ fontSize: 16 }}>Total Spending:</Text>
+                <Right style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 16 }}>${parseFloat(this.state.currentTotalSpending).toFixed(2)}</Text>
+                </Right>
+              </ListItem>
+
+              <ListItem>
+                <Text style={{ fontSize: 16 }}>Total Savings:</Text>
+                <Right style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 16 }}>${this.state.totalSaving.toFixed(2)}</Text>
+                </Right>
+              </ListItem>
+
+              <ListItem style={{ borderBottomColor: 'transparent' }}>
+                <Text style={{ fontSize: 16 }}>Recommended Savings:</Text>
+                <Right style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 16 }}>${this.state.totalSaving.toFixed(2)}</Text>
+                </Right>
+              </ListItem>
+            </List>
           </View>
 
-          { this.state.barData[0] &&
-            <View style={{ margin: 20 }}>
+          { this.state.barData[0] && 
+            <View style={{ padding: 20, backgroundColor: '#f3f2f7' }}>
               <View style={{ flexDirection: 'row' }}>
                 <YAxis
                   data={[this.state.graphMin, this.state.graphMax]}
@@ -311,34 +261,32 @@ export default class Graph extends Component {
                 svg={{ fontSize: 10, fill: 'black' }}
                 spacingInner={0.2}
               />
+            </View>
+          }
 
-              <View style={{ paddingVertical: 30 }} />
+          { this.state.showSlider &&
+            <View style={{ alignItems: 'center', marginTop: 25 }}>
+              <Text style={{ fontSize: 16, marginBottom: 5 }}>{this.state.sliderLabel}</Text>
+              <Text style={{ fontSize: 16, marginBottom: 5 }}>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
+              <View style={{ paddingVertical: 10 }} />
 
-              { this.state.showSlider &&
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 18, marginBottom: 5 }}>{this.state.sliderLabel}</Text>
-                  <Text style={{ fontSize: 18, marginBottom: 5 }}>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
-                  <View style={{ paddingVertical: 20 }} />
-
-                  <MultiSlider
-                    selectedStyle={{
-                      backgroundColor: 'green'
-                    }}
-                    unselectedStyle={{
-                      backgroundColor: 'silver'
-                    }}
-                    trackStyle={{
-                      height: 3,
-                      backgroundColor: 'green'
-                    }}
-                    values={this.state.selectedCategoryValue}
-                    min={0}
-                    max={this.state.graphMax}
-                    step={5}
-                    onValuesChangeFinish={value => this.onSliderChange(value)}
-                  />
-                </View>
-              }
+              <MultiSlider
+                selectedStyle={{
+                  backgroundColor: 'green'
+                }}
+                unselectedStyle={{
+                  backgroundColor: 'silver'
+                }}
+                trackStyle={{
+                  height: 3,
+                  backgroundColor: 'green'
+                }}
+                values={this.state.selectedCategoryValue}
+                min={0}
+                max={this.state.graphMax}
+                step={5}
+                onValuesChangeFinish={value => this.onSliderChange(value)}
+              />
             </View>
           }
 

@@ -1,66 +1,11 @@
 import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import _ from 'lodash'
 import { Container, Content, Text, Button, Body, Right, H3, List, ListItem, CheckBox, Footer } from 'native-base'
+import _ from 'lodash'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
-
-const CATEGORIES = [
-  {
-    name: 'Rent',
-    amount: 649.0,
-    selected: false
-  },
-  {
-    name: 'Food',
-    amount: 284.21,
-    selected: false
-  },
-  {
-    name: 'Entertainment',
-    amount: 282.44,
-    selected: false
-  },
-  {
-    name: 'Retail',
-    amount: 207.12,
-    selected: false
-  },
-  {
-    name: 'Insurance',
-    amount: 100.0,
-    selected: false
-  }
-]
-
-const FILTERS = [
-  {
-    name: 'Age',
-    selected: false
-  },
-  {
-    name: 'Gender',
-    selected: false
-  },
-  {
-    name: 'Occupation',
-    selected: false
-  },
-  {
-    name: 'Relationship Status',
-    selected: false
-  },
-  {
-    name: 'Habitation',
-    selected: false
-  },
-  {
-    name: 'Municipality',
-    selected: false
-  }
-]
 
 @inject('levelUpStore')
 @observer
@@ -74,16 +19,13 @@ export default class CategoryFilter extends Component {
       amount: params.amount,
       deadline: params.deadline,
       categories: this.props.levelUpStore.userCategories,
-      filters: FILTERS
+      selectedCategories: [],
+      filters: this.props.levelUpStore.filters,
+      customer: this.props.levelUpStore.customer
     } 
   }
 
-  async getAverageSpending() {
-    // reset field selected for each filter
-    this.state.filters.forEach(filter => {
-      filter.selected = false
-    })
-
+  async setPopulationCategories() {
     let selectedCategories = _.filter(this.state.categories, category => {
       return category.selected
     })
@@ -91,43 +33,29 @@ export default class CategoryFilter extends Component {
       return filter.selected
     })
 
-    this.props.levelUpStore.userCategories = selectedCategories
+    this.state.selectedCategories = selectedCategories
+    
+    const { age, gender, occupation } = this.state.customer
 
-    // constant selected filters
-    const age = 20
-    const gender = 'Male'
-    const occupation = 'blah'
+    this.props.levelUpStore.resetPopulationCategories()
 
     for (let category of selectedCategories) {
       let categoryName = category.name
 
       try {
-        await this.props.levelUpStore.getCategorySpending(categoryName, age, gender, occupation)
+        await this.props.levelUpStore.getPopulationCategory(categoryName, age, gender, occupation)
       } catch (error) {
         console.error(error)
       }
     }
-
-    /*
-    selectedCategories.forEach(async category => {
-      let categoryName = category.name
-
-      try {
-        await this.props.levelUpStore.getCategorySpending(categoryName, age, gender, occupation)
-      } catch (error) {
-        console.error(error)
-      }
-    })
-    */
-
-    console.log(this.props.levelUpStore.categories)
   }
 
   goNext() {
     let params = {
       title: this.state.title,
       amount: this.state.amount,
-      deadline: this.state.deadline
+      deadline: this.state.deadline,
+      selectedCategories: this.state.selectedCategories
     }
 
     this.props.navigation.navigate({
@@ -137,7 +65,7 @@ export default class CategoryFilter extends Component {
   }
 
   async displayResults() {
-    await this.getAverageSpending()
+    await this.setPopulationCategories()
     this.goNext()
   }
 

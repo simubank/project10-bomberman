@@ -20,7 +20,7 @@ export default class Settings extends Component {
 
   loadPreferences() {
     this.setState({
-      preferences: this.props.levelUpStore.preferences
+      preferences: this.props.levelUpStore.purchasingPreferences
     })
 
     this.changeFrequencyBasedOnPreferences()
@@ -37,8 +37,6 @@ export default class Settings extends Component {
 
     let newValues = [0]
     newValues[0] = sum
-
-    console.log(newValues)
 
     this.setState({ alertFrequency: newValues })
   }

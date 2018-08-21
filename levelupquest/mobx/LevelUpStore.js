@@ -2,6 +2,35 @@ import { observable, action } from 'mobx'
 import axios from 'axios'
 import _ from 'lodash'
 
+const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
+const AUTH_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
+const FILTERS = [
+  {
+    name: 'Age',
+    selected: false
+  },
+  {
+    name: 'Gender',
+    selected: false
+  },
+  {
+    name: 'Occupation',
+    selected: false
+  },
+  {
+    name: 'Relationship Status',
+    selected: false
+  },
+  {
+    name: 'Habitation',
+    selected: false
+  },
+  {
+    name: 'Municipality',
+    selected: false
+  }
+]
+
 class Category {
   @observable name
   @observable average
@@ -37,19 +66,17 @@ class Goal {
 }
 
 class LevelUpStore {
-  @observable averages = []
-  @observable preferences = []
-
-  @observable categories = []
   @observable userCategories = []
+  @observable populationCategories = []
+  @observable filters = FILTERS
+  
   @observable goal
   @observable customer
+  @observable purchasingPreferences = []
 
   @action
   async getCustomerProfile() {
-    const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
-    const url = 'https://botsfinancial.com/api/customers/' + customerID
-    const AUTH_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
+    const url = 'https://botsfinancial.com/api/customers/' + CUSTOMER_ID
 
     let res
 
@@ -60,19 +87,6 @@ class LevelUpStore {
     }
 
     const info = res.data.result[0]
-
-    // format info
-    function capitalizeFirstLetter(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
-    }
-
-    info.primaryOccupation = capitalizeFirstLetter(info.primaryOccupation)
-    info.relationshipStatus = capitalizeFirstLetter(info.relationshipStatus)
-    info.habitationStatus = capitalizeFirstLetter(info.habitationStatus)
-    
-    if (info.habitationStatus === 'Sharingrent') {
-      info.habitationStatus = 'Sharing Rent'
-    }
     
     this.customer = {
       firstName: info.givenName,
@@ -87,9 +101,8 @@ class LevelUpStore {
   }
 
   @action
-  async getCategoryList() {
-    const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
-    const url = 'http://localhost:4526/customers/' + customerID + '/spending/categories'
+  async getUserCategories() {
+    const url = 'http://localhost:4526/customers/' + CUSTOMER_ID + '/spending/categories'
 
     let res
 
@@ -107,13 +120,10 @@ class LevelUpStore {
         return obj === categoryName
       })
 
-      if (skip) {
-        return
-      }
+      if (skip) return
 
-      const customerID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
       const url =
-        'http://localhost:4526/customers/' + customerID + '/spending/category/' + categoryName + '/withinDays/30'
+        'http://localhost:4526/customers/' + CUSTOMER_ID + '/spending/category/' + categoryName + '/withinDays/30'
 
       let res2
 
@@ -123,7 +133,7 @@ class LevelUpStore {
         console.error(error)
       }
 
-      const categoryInfo = res2.data.result
+      let categoryInfo = res2.data.result
 
       if (categoryInfo.net < 0) {
         categoryInfo.net = -categoryInfo.net
@@ -132,23 +142,18 @@ class LevelUpStore {
       let obj = {
         name: categoryName,
         average: categoryInfo.net,
-        // selected: false,
-        // target: categoryInfo.net,
-        // current: categoryInfo.net
+        selected: false
       }
 
       let cat = new Category(obj)
       this.userCategories.push(cat)
-
-      // this.categories.push(obj)
     })
 
-    // return this.categories
     return this.userCategories
   }
 
   @action
-  async getCategorySpending(categoryName, age, gender, occupation) {
+  async getPopulationCategory(categoryName, age, gender, occupation) {
     const url = 'http://localhost:4526/metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
 
     let res
@@ -177,21 +182,26 @@ class LevelUpStore {
     }
 
     let cat = new Category(obj)
-    this.categories.push(cat)
-
-    // this.averages.push(obj)
+    this.populationCategories.push(cat)
   }
 
   @action
-  async resetCategories() {
-    this.categories = []
+  resetCategoriesAndFilters() {
     this.userCategories = []
+    this.populationCategories = []
+
+    this.filters.forEach(filter => {
+      filter.selected = false
+    })
+  }
+
+  @action
+  resetPopulationCategories() {
+    this.populationCategories = []
   }
 
   @action
   async getPurchasePreferences() {
-    console.log('start')
-
     let res = await fetch(
       'https://gateway.watsonplatform.net/personality-insights/api/v3/profile?version=2017-10-13&consumption_preferences=true&raw_scores=true',
       {
@@ -205,71 +215,15 @@ class LevelUpStore {
       }
     )
 
-    console.log('end')
-
     let data = await res.json()
-    let purchasingPreferences = data.consumption_preferences[0].consumption_preferences
+    let preferences = data.consumption_preferences[0].consumption_preferences
 
-    this.preferences = _.dropRight(_.drop(_.reverse(purchasingPreferences)), 5)
-
-    return this.preferences
-  }
-
-  @action
-  setSampleCategoriesList() {
-    let obj1 = { name: 'Fast Food', average: 70.3 }
-    let obj2 = { name: 'Retail', average: 50.2 }
-    let obj3 = { name: 'Insurance', average: 130.9 }
-    let obj4 = { name: 'House', average: 200 }
-    let obj5 = { name: 'Other', average: 22.11 }
-
-    let cat1 = new Category(obj1)
-    let cat2 = new Category(obj2)
-    let cat3 = new Category(obj3)
-    let cat4 = new Category(obj4)
-    let cat5 = new Category(obj5)
-
-    this.categories.push(cat1)
-    this.categories.push(cat2)
-    this.categories.push(cat3)
-    this.categories.push(cat4)
-    this.categories.push(cat5)
-
-    return this.categories
-  }
-
-  @action
-  setSampleUserCategoriesList() {
-    let obj1 = { name: 'Fast Food', average: 53.11 }
-    let obj2 = { name: 'Retail', average: 79 }
-    let obj3 = { name: 'Insurance', average: 100.23 }
-    let obj4 = { name: 'House', average: 25.93 }
-    let obj5 = { name: 'Other', average: 25 }
-
-    let cat1 = new Category(obj1)
-    let cat2 = new Category(obj2)
-    let cat3 = new Category(obj3)
-    let cat4 = new Category(obj4)
-    let cat5 = new Category(obj5)
-
-    this.userCategories.push(cat1)
-    this.userCategories.push(cat2)
-    this.userCategories.push(cat3)
-    this.userCategories.push(cat4)
-    this.userCategories.push(cat5)
-
-    return this.userCategories
+    this.purchasingPreferences = _.dropRight(_.drop(_.reverse(preferences)), 5)
   }
 
   @action
   setGoal(title, amount, amountProgress, deadline, cat, labels) {
     this.goal = new Goal(title, amount, amountProgress, deadline, cat, labels)
-    console.log(this.goal)
-  }
-
-  @action
-  createSampleGoals() {
-    // TODO: create some sample ones
   }
 }
 

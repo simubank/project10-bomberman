@@ -48,18 +48,14 @@ export default class Home extends Component {
     }
 
     this.generateSampleGoal()
-    this.populatePreferences()
     this.props.levelUpStore.getCustomerProfile()
-    // this.props.levelUpStore.setSampleUserCategoriesList()
-  }
-
-  async populatePreferences() {
-    await this.props.levelUpStore.getPurchasePreferences()
+    this.props.levelUpStore.getPurchasePreferences()
   }
 
   generateSampleGoal() {
-    let labels = []
     let averages = []
+    let labels = []
+
     if (!this.props.levelUpStore.goal) {
       this.props.levelUpStore.setGoal('Vacation', 1000, 0, 'Dec 04 2018', averages, labels)
     }

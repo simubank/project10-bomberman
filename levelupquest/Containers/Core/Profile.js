@@ -24,6 +24,16 @@ export default class Profile extends Component {
     this.state = {}
   }
 
+  formatText(str) {
+    str = str.charAt(0).toUpperCase() + str.slice(1) // capitalize
+
+    if (str === 'Sharingrent') {
+      str = 'Sharing rent'
+    }
+
+    return str
+  }
+
   render() {
     const goBack = () => this.props.navigation.goBack()
     const customer = this.props.levelUpStore.customer
@@ -65,7 +75,7 @@ export default class Profile extends Component {
                   <Text>Occupation</Text>
                 </Left>
                 <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{customer.occupation}</Text>
+                  <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.occupation)}</Text>
                 </Right>
               </CardItem>
               <CardItem>
@@ -73,7 +83,7 @@ export default class Profile extends Component {
                   <Text>Relationship Status</Text>
                 </Left>
                 <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{customer.relationshipStatus}</Text>
+                  <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.relationshipStatus)}</Text>
                 </Right>
               </CardItem>
               <CardItem>
@@ -81,7 +91,7 @@ export default class Profile extends Component {
                   <Text>Habitation</Text>
                 </Left>
                 <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{customer.habitation}</Text>
+                  <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.habitation)}</Text>
                 </Right>
               </CardItem>
               <CardItem style={{ paddingBottom: 20 }}>

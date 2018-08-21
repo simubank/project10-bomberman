@@ -31,36 +31,10 @@ export default class NewGoal extends Component {
       deadline: new Date()
     }
 
-    this.populateCategories()
     this.setDate = this.setDate.bind(this) // DO NOT REMOVE
-  }
 
-  async populateCategories() {
-    let categories
-
-    try {
-      await this.props.levelUpStore.resetCategories()
-      categories = await this.props.levelUpStore.getCategoryList()
-    } catch (error) {
-      categories = CATEGORIES
-      console.error(error)
-    }
-
-    // this.setState({ categories })
-    // console.log(categories)
-  }
-
-  goNext() {
-    let params = {
-      title: this.state.title,
-      amount: parseFloat(this.state.amount),
-      deadline: this.state.deadline.toString()
-    }
-
-    this.props.navigation.navigate({
-      routeName: 'CategoryFilter',
-      params: params
-    })
+    this.props.levelUpStore.resetCategoriesAndFilters()
+    this.props.levelUpStore.getUserCategories()
   }
 
   setDate(newDate) {
@@ -81,6 +55,19 @@ export default class NewGoal extends Component {
     })
 
     this.goNext()
+  }
+
+  goNext() {
+    let params = {
+      title: this.state.title,
+      amount: parseFloat(this.state.amount),
+      deadline: this.state.deadline.toString()
+    }
+
+    this.props.navigation.navigate({
+      routeName: 'CategoryFilter',
+      params: params
+    })
   }
 
   render() {
