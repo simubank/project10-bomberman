@@ -274,8 +274,8 @@ export default class Graph extends Component {
 
         <Content style={{ backgroundColor: '#f3f2f7' }}>
           <View style={{ alignItems: 'center', paddingVertical: 30 }}>
-            <Text>Total spending: ${parseFloat(this.state.currentTotalSpending).toFixed(2)}</Text>
-            <Text>Total saving: ${this.state.totalSaving.toFixed(2)}</Text>
+            <Text style={{ fontSize: 18, marginBottom: 5 }}>Total Spending: ${parseFloat(this.state.currentTotalSpending).toFixed(2)}</Text>
+            <Text style={{ fontSize: 18, marginBottom: 5 }}>Total Savings: ${this.state.totalSaving.toFixed(2)}</Text>
           </View>
 
           { this.state.barData[0] &&
@@ -316,8 +316,8 @@ export default class Graph extends Component {
 
               { this.state.showSlider &&
                 <View style={{ alignItems: 'center' }}>
-                  <Text>{this.state.sliderLabel}</Text>
-                  <Text>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
+                  <Text style={{ fontSize: 18, marginBottom: 5 }}>{this.state.sliderLabel}</Text>
+                  <Text style={{ fontSize: 18, marginBottom: 5 }}>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
                   <View style={{ paddingVertical: 20 }} />
 
                   <MultiSlider
