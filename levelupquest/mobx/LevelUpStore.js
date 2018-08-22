@@ -2,7 +2,12 @@ import { observable, action } from 'mobx'
 import axios from 'axios'
 import _ from 'lodash'
 
+const API_URL = 'https://botsfinancial.com/api'
+const BACKEND_URL = 'http://localhost:4526/'
+
 const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
+const ACCOUNT1_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
+const ACCOUNT2_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_384d8493-b9f8-46a4-863f-218a3900e884'
 const AUTH_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
 const FILTERS = [
   {
@@ -76,7 +81,7 @@ class LevelUpStore {
 
   @action
   async getCustomerProfile() {
-    const url = 'https://botsfinancial.com/api/customers/' + CUSTOMER_ID
+    const url = `${API_URL}/customers/` + CUSTOMER_ID
 
     let res
 
@@ -87,7 +92,7 @@ class LevelUpStore {
     }
 
     const info = res.data.result[0]
-    
+
     this.customer = {
       firstName: info.givenName,
       lastName: info.surname,
@@ -102,7 +107,7 @@ class LevelUpStore {
 
   @action
   async getUserCategories() {
-    const url = 'http://localhost:4526/customers/' + CUSTOMER_ID + '/spending/categories'
+    const url = BACKEND_URL + 'customers/' + CUSTOMER_ID + '/spending/categories'
 
     let res
 
@@ -122,8 +127,7 @@ class LevelUpStore {
 
       if (skip) return
 
-      const url =
-        'http://localhost:4526/customers/' + CUSTOMER_ID + '/spending/category/' + categoryName + '/withinDays/30'
+      const url = BACKEND_URL + 'customers/' + CUSTOMER_ID + '/spending/category/' + categoryName + '/withinDays/30'
 
       let res2
 
@@ -154,7 +158,7 @@ class LevelUpStore {
 
   @action
   async getPopulationCategory(categoryName, age, gender, occupation) {
-    const url = 'http://localhost:4526/metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
+    const url = BACKEND_URL + 'metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
 
     let res
 
@@ -186,6 +190,51 @@ class LevelUpStore {
   }
 
   @action
+  async getPurchasePreferences() {
+    let res = await fetch(
+      'https://gateway.watsonplatform.net/personality-insights/api/v3/profile?version=2017-10-13&consumption_preferences=true&raw_scores=true',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Basic MWVmYjQ3MjctZWFiNy00NWY5LTkyY2QtZWMxNDE2OTI2ZDU5OnJIbjNYRlhlNnJ4aA==',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(TWITTER_CONTENT)
+      }
+    )
+
+    let data = await res.json()
+    let preferences = data.consumption_preferences[0].consumption_preferences
+
+    this.purchasingPreferences = _.dropRight(_.drop(_.reverse(preferences)), 5)
+  }
+
+  @action
+  async depositMoneyToAccount(amount, date) {
+    const SMART_SAVE_DEPOSIT_TEXT = "SmartSave Goal Deposit"
+
+    let response = await axios.post(`${API_URL}/simulants/${CUSTOMER_ID}/simulatedtransactions`,
+        
+          [{
+            "type": "DepositAccountTransaction",
+            "merchantName": SMART_SAVE_DEPOSIT_TEXT ,
+            "currencyAmount": amount,
+            "postDate": date,
+            "accountId": ACCOUNT1_ID
+          }]
+        ,{
+          jar: true
+        })
+
+        // 2018-08-22T16:55:30.450Z
+        // moment().startOf('hour').fromNow();   
+        console.log(response.data)
+
+      return response.data
+  }
+
+  @action
   resetCategoriesAndFilters() {
     this.userCategories = []
     this.populationCategories = []
@@ -201,27 +250,6 @@ class LevelUpStore {
   }
 
   @action
-  async getPurchasePreferences() {
-    let res = await fetch(
-      'https://gateway.watsonplatform.net/personality-insights/api/v3/profile?version=2017-10-13&consumption_preferences=true&raw_scores=true',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          Authorization: 'Basic MWVmYjQ3MjctZWFiNy00NWY5LTkyY2QtZWMxNDE2OTI2ZDU5OnJIbjNYRlhlNnJ4aA==',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(profile)
-      }
-    )
-
-    let data = await res.json()
-    let preferences = data.consumption_preferences[0].consumption_preferences
-
-    this.purchasingPreferences = _.dropRight(_.drop(_.reverse(preferences)), 5)
-  }
-
-  @action
   setGoal(title, amount, amountProgress, deadline, cat, labels) {
     this.goal = new Goal(title, amount, amountProgress, deadline, cat, labels)
   }
@@ -232,7 +260,7 @@ const store = (window.store = new LevelUpStore())
 export default store
 export { LevelUpStore }
 
-const profile = {
+const TWITTER_CONTENT = {
   "contentItems": [
      {
         "content": "Wow, I liked @TheRock before, now I really SEE how special he is. The daughter story was IT for me. So great! #MasterClass",
