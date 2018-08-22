@@ -60,8 +60,8 @@ export default class Settings extends Component {
   }
 
   onSliderChange(values) {
-    let newValues = [0]
-    newValues[0] = values[0]
+    let newValues = []
+    newValues[0] = Math.floor(values)
     this.setState({ alertFrequency: newValues })
   }
 
@@ -103,15 +103,15 @@ export default class Settings extends Component {
           <Content>
             <Text style={{ margin: 16, fontSize: 18 }}>Notification Frequency: {this.frequencyNumToText()}</Text>
 
-            <View style={{ margin: 16, marginLeft: 32, marginBottom: 0 }}>
+            <View style={{ margin: 16, marginBottom: 0, alignItems: 'center' }}>
               <MultiSlider
                 selectedStyle={{ backgroundColor: 'green' }}
                 unselectedStyle={{ backgroundColor: 'silver' }}
                 trackStyle={{ height: 3, backgroundColor: 'green' }}
                 values={this.state.alertFrequency}
                 min={0}
-                max={5}
-                step={1}
+                max={5.01}
+                step={0.25}
                 onValuesChangeFinish={value => this.onSliderChange(value)}
               />
             </View>

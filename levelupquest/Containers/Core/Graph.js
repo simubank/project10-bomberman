@@ -213,7 +213,7 @@ export default class Graph extends Component {
 
     return (
       <Container>
-        <HeaderComponent goBack={goBack} title="Graph" />
+        <HeaderComponent goBack={goBack} title="Monthly Goal Graph" />
 
         <Content style={{ backgroundColor: 'white' }}>
           <View style={{ paddingVertical: 10 }}>
