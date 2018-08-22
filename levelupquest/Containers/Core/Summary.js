@@ -22,6 +22,8 @@ import {
 import MakeItRainComponent from '../../Components/MakeItRainComponent'
 import HeaderComponent from '../../Components/HeaderComponent'
 
+var moment = require('moment')
+
 const TEST_CATEGORIES = [
   {
     name: 'Fast food',
@@ -66,7 +68,6 @@ export default class Summary extends Component {
 
   onFastForwardClicked() {
     // randomly generate monthly spendings
-
     const min = 50
     const max = 200
 
@@ -82,7 +83,6 @@ export default class Summary extends Component {
 
   onDepositSavingsClicked(amount) {
     // get amount difference for each category
-
     let sum = 0
 
     this.state.categories.forEach(category => {
@@ -91,12 +91,12 @@ export default class Summary extends Component {
     })
 
     // update cash back amount
-
     let cashBackAmount = sum * 0.01
 
     // check if goal has been reached
+    let newAmount = this.state.saved + sum
 
-    let newAmount = this.state.saved + sum + cashBackAmount
+    this.depositToAccount(sum)
 
     if (newAmount >= amount) {
       this.setState({
@@ -108,14 +108,12 @@ export default class Summary extends Component {
     }
 
     // goal has not been reached
-
     this.setState(prevState => ({
       saved: prevState.saved + sum + cashBackAmount,
       cashBack: prevState.cashBack + cashBackAmount
     }))
 
     // reset current spendings for each category
-
     let modified = this.state.categories.map(category => {
       category.current = 0
 
@@ -167,11 +165,18 @@ export default class Summary extends Component {
     }
   }
 
+  async depositToAccount(amount) {
+    // Offset hours to make the transaction happen in the future
+    let date = moment().add(6, 'hours').format('YYYY-MM-DDTHH:mm:ss')
+
+    let result = await this.props.levelUpStore.depositMoneyToAccount(amount, date)
+
+    console.log(result)
+  }
+
   render() {
     const goBack = () => this.props.navigation.goBack()
     const { goal } = this.props.levelUpStore
-    console.log('categories in goal')
-    console.log(goal.categories)
 
     return (
       <Root>

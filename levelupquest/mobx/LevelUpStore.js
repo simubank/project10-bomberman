@@ -214,24 +214,33 @@ class LevelUpStore {
   async depositMoneyToAccount(amount, date) {
     const SMART_SAVE_DEPOSIT_TEXT = "SmartSave Goal Deposit"
 
-    let response = await axios.post(`${API_URL}/simulants/${CUSTOMER_ID}/simulatedtransactions`,
-        
-          [{
-            "type": "DepositAccountTransaction",
-            "merchantName": SMART_SAVE_DEPOSIT_TEXT ,
-            "currencyAmount": amount,
-            "postDate": date,
-            "accountId": ACCOUNT1_ID
-          }]
-        ,{
-          jar: true
-        })
+    let response
 
-        // 2018-08-22T16:55:30.450Z
-        // moment().startOf('hour').fromNow();   
-        console.log(response.data)
+    let payload = [{
+      "type": "DepositAccountTransaction",
+      "merchantName": SMART_SAVE_DEPOSIT_TEXT ,
+      "currencyAmount": amount,
+      "postDate": date,
+      "accountId": ACCOUNT1_ID
+    }]
 
-      return response.data
+    console.log(payload)
+    
+    try {
+      response = await axios.post(`${API_URL}/simulants/${CUSTOMER_ID}/simulatedtransactions`,  
+        payload,
+        { 
+          headers: {
+            'Authorization': AUTH_KEY,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+    } catch (error) {
+      console.error(error)
+    }
+
+    return response.data
   }
 
   @action
