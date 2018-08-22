@@ -2,7 +2,20 @@ import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
-import { Container, Content, Text, Button, Body, Right, List, ListItem, Root } from 'native-base'
+import {
+  Container,
+  Content,
+  Text,
+  Button,
+  Body,
+  Right,
+  List,
+  ListItem,
+  Root,
+  Spinner,
+  Separator,
+  Icon
+} from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 
@@ -14,16 +27,24 @@ export default class Settings extends Component {
 
     this.state = {
       preferences: [],
-      alertFrequency: [0]
+      alertFrequency: [0],
+      showSpinner: false
     }
   }
 
   loadPreferences() {
     this.setState({
-      preferences: this.props.levelUpStore.purchasingPreferences
+      showSpinner: true
     })
 
-    this.changeFrequencyBasedOnPreferences()
+    setTimeout(() => {
+      this.setState({
+        preferences: this.props.levelUpStore.purchasingPreferences,
+        showSpinner: false
+      })
+
+      this.changeFrequencyBasedOnPreferences()
+    }, 2000)
   }
 
   changeFrequencyBasedOnPreferences() {
@@ -33,11 +54,8 @@ export default class Settings extends Component {
       sum += preference.score
     })
 
-    sum = 4
-
     let newValues = [0]
-    newValues[0] = sum
-
+    newValues[0] = Math.floor(sum) - 1
     this.setState({ alertFrequency: newValues })
   }
 
@@ -85,18 +103,11 @@ export default class Settings extends Component {
           <Content>
             <Text style={{ margin: 16, fontSize: 18 }}>Notification Frequency: {this.frequencyNumToText()}</Text>
 
-            <View style={{ margin: 16, marginLeft: 32 }}>
+            <View style={{ margin: 16, marginLeft: 32, marginBottom: 0 }}>
               <MultiSlider
-                selectedStyle={{
-                  backgroundColor: 'green'
-                }}
-                unselectedStyle={{
-                  backgroundColor: 'silver'
-                }}
-                trackStyle={{
-                  height: 3,
-                  backgroundColor: 'green'
-                }}
+                selectedStyle={{ backgroundColor: 'green' }}
+                unselectedStyle={{ backgroundColor: 'silver' }}
+                trackStyle={{ height: 3, backgroundColor: 'green' }}
                 values={this.state.alertFrequency}
                 min={0}
                 max={5}
@@ -105,11 +116,27 @@ export default class Settings extends Component {
               />
             </View>
 
-            <Button style={{ marginLeft: 16, backgroundColor: 'green' }} onPress={() => this.loadPreferences()}>
+            <Button
+              iconLeft
+              style={[
+                { marginLeft: 16, marginTop: -16, marginBottom: 16 },
+                this.state.showSpinner ? { backgroundColor: 'gray' } : { backgroundColor: 'green' }
+              ]}
+              onPress={() => this.loadPreferences()}
+            >
+              <Icon name="bulb" />
               <Text>Analyze Personality</Text>
             </Button>
 
-            <List style={{ marginTop: 16, marginBottom: 32 }}>
+            <List>
+              {this.state.showSpinner && <Spinner color="green" />}
+
+              {this.state.preferences.length && (
+                <Separator bordered>
+                  <Text>PURCHASING PREFERENCES</Text>
+                </Separator>
+              )}
+
               {this.state.preferences.map((preference, index) => {
                 return (
                   <ListItem key={index}>
