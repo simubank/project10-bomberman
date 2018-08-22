@@ -40,6 +40,7 @@ export default class Graph extends Component {
       originalTotalSpending: 0,
       currentTotalSpending: 0,
       totalSaving: 0,
+      recommendedSaving: 0,
 
       userData: [],
       populationData: [],
@@ -48,6 +49,18 @@ export default class Graph extends Component {
     }
 
     this.getUserAndPopulationCategories()
+    this.setRecommendedSaving()
+  }
+
+  setRecommendedSaving() {
+    let amount = this.state.amount
+    let targetDate = Date.parse(this.state.deadline)
+    let currentDate = new Date().getTime()
+
+    let timeDiff = Math.abs(targetDate - currentDate)
+    let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
+
+    this.state.recommendedSaving = (amount / diffDays) * 30.5
   }
 
   getUserAndPopulationCategories() {
@@ -67,9 +80,9 @@ export default class Graph extends Component {
       value: cat.average,
       svg: {
         fill: randomColor(),
-        onPress: () => this.selectGraphCategory(cat, index),
+        onPress: () => this.selectGraphCategory(cat, index)
       },
-      key: `pie-${index}`,
+      key: `pie-${index}`
     }))
 
     this.state.userData = userData
@@ -222,7 +235,7 @@ export default class Graph extends Component {
               <ListItem style={{ borderBottomColor: 'transparent' }}>
                 <Text style={{ fontSize: 16 }}>Recommended Savings:</Text>
                 <Right style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16 }}>${this.state.totalSaving.toFixed(2)}</Text>
+                  <Text style={{ fontSize: 16 }}>${this.state.recommendedSaving.toFixed(2)}</Text>
                 </Right>
               </ListItem>
             </List>
