@@ -122,7 +122,7 @@ export default class Progress extends Component {
   }
 
   async depositToAccount(amount) {
-    let result = await this.props.levelUpStore.depositMoneyToAccount(amount)
+    let result = await this.props.levelUpStore.transferMoneyFromChequingToSavings(amount)
 
     if (result.statusCode === 200) {
       await this.props.levelUpStore.getAccountInformation()

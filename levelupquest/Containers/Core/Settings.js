@@ -13,43 +13,32 @@ export default class Settings extends Component {
     super(props)
 
     this.state = {
-      preferences: [],
-      alertFrequency: [0],
+      preferences: this.props.levelUpStore.purchasingPreferences,
+      alertFrequency: this.props.levelUpStore.notificationFrequency,
       showSpinner: false
     }
   }
 
-  loadPreferences() {
+  async analyzePersonality() {
     this.setState({
       showSpinner: true
     })
 
-    setTimeout(() => {
-      this.setState({
-        preferences: this.props.levelUpStore.purchasingPreferences,
-        showSpinner: false
-      })
+    await this.props.levelUpStore.initializeSettings()
 
-      this.changeFrequencyBasedOnPreferences()
-    }, 2000)
-  }
-
-  changeFrequencyBasedOnPreferences() {
-    let sum = 0
-
-    this.state.preferences.forEach(preference => {
-      sum += preference.score
+    this.setState({
+      preferences: this.props.levelUpStore.purchasingPreferences,
+      alertFrequency: this.props.levelUpStore.notificationFrequency,
+      showSpinner: false
     })
-
-    let newValues = [0]
-    newValues[0] = Math.floor(sum) - 1
-    this.setState({ alertFrequency: newValues })
   }
 
   onSliderChange(values) {
     let newValues = []
     newValues[0] = Math.floor(values)
+
     this.setState({ alertFrequency: newValues })
+    this.props.levelUpStore.setNotificationFrequency(newValues)
   }
 
   frequencyNumToText() {
@@ -89,7 +78,9 @@ export default class Settings extends Component {
 
           <Content>
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
-              <Text style={{ margin: 16, fontSize: 18 }}>Notification Frequency: {this.frequencyNumToText()}</Text>
+              <Text style={{ margin: 16, fontSize: 18 }}>
+                Notification Frequency: {this.frequencyNumToText()}
+              </Text>
             </View>
 
             <View style={{ margin: 16, marginBottom: 0, alignItems: 'center' }}>
@@ -112,7 +103,7 @@ export default class Settings extends Component {
                   { marginLeft: 16, marginRight: 16, marginTop: -16, marginBottom: 24 },
                   this.state.showSpinner ? { backgroundColor: 'gray' } : { backgroundColor: 'green' }
                 ]}
-                onPress={() => this.loadPreferences()}
+                onPress={() => this.analyzePersonality()}
               >
                 <Icon name="bulb" />
                 <Text>Analyze Personality</Text>
@@ -122,13 +113,13 @@ export default class Settings extends Component {
             <List>
               {this.state.showSpinner && <Spinner color="green" />}
 
-              {this.state.preferences.length && (
+              {this.state.preferences.length && !this.state.showSpinner && (
                 <Separator bordered style={{ paddingLeft: 25 }}>
                   <Text>PURCHASING PREFERENCES</Text>
                 </Separator>
               )}
 
-              {this.state.preferences.map((preference, index) => {
+              {this.state.preferences.length && !this.state.showSpinner && this.state.preferences.map((preference, index) => {
                 return (
                   <ListItem key={index}>
                     <Body>

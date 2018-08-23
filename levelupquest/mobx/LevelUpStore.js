@@ -80,7 +80,10 @@ class LevelUpStore {
   
   @observable goal
   @observable customer
+
+  @observable settingsIsInitialized = false
   @observable purchasingPreferences = []
+  @observable notificationFrequency = [0]
 
   @observable chequingAccount
   @observable savingsAccount
@@ -220,7 +223,7 @@ class LevelUpStore {
   }
 
   @action
-  async depositMoneyToAccount(amount) {
+  async transferMoneyFromChequingToSavings(amount) {
     let url = `${API_URL}/transfers`
     let data = {
       'amount': amount,
@@ -246,6 +249,13 @@ class LevelUpStore {
   }
 
   @action
+  async initializeSettings() {
+    await this.getPurchasePreferences()
+    this.calculateNotificationFrequency()
+    this.settingsIsInitialized = true
+  }
+
+  @action
   async getPurchasePreferences() {
     let res = await fetch(
       'https://gateway.watsonplatform.net/personality-insights/api/v3/profile?version=2017-10-13&consumption_preferences=true&raw_scores=true',
@@ -264,6 +274,25 @@ class LevelUpStore {
     let preferences = data.consumption_preferences[0].consumption_preferences
 
     this.purchasingPreferences = _.dropRight(_.drop(_.reverse(preferences)), 5)
+  }
+
+  @action
+  calculateNotificationFrequency() {
+    let sum = 0
+
+    this.purchasingPreferences.forEach(preference => {
+      sum += preference.score
+    })
+
+    let newValues = [0]
+    newValues[0] = Math.floor(sum) - 1
+
+    this.setNotificationFrequency(newValues)
+  }
+
+  @action
+  setNotificationFrequency(values) {
+    this.notificationFrequency = values
   }
 
   @action

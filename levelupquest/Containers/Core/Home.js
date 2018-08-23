@@ -4,7 +4,6 @@ import { inject } from 'mobx-react'
 import { Body, Container, Content, Left, List, ListItem, Text } from 'native-base'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-// Styles
 import styles from './Styles/HomeScreenStyle'
 import HeaderComponent from '../../Components/HeaderComponent'
 
@@ -46,7 +45,6 @@ export default class Home extends Component {
     this.generateSampleGoal()
     this.props.levelUpStore.getCustomerProfile()
     this.props.levelUpStore.getAccountInformation()
-    this.props.levelUpStore.getPurchasePreferences()
   }
 
   generateSampleGoal() {
