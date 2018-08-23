@@ -1,8 +1,8 @@
-import { Body, Container, Content, Left, List, ListItem, Right, Text } from 'native-base'
 import React, { Component } from 'react'
 import { View, StatusBar } from 'react-native'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import { inject } from 'mobx-react'
+import { Body, Container, Content, Left, List, ListItem, Text } from 'native-base'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 // Styles
 import styles from './Styles/HomeScreenStyle'
@@ -17,7 +17,7 @@ const menuOptions = [
   {
     name: 'Progress',
     icon: 'ios-trending-up-outline',
-    screen: 'Summary'
+    screen: 'Progress'
   },
   {
     name: 'Settings',
@@ -30,9 +30,9 @@ const menuOptions = [
     screen: 'Map'
   },
   {
-    name: 'Profile',
+    name: 'Account',
     icon: 'ios-contact-outline',
-    screen: 'Profile'
+    screen: 'Account'
   }
 ]
 

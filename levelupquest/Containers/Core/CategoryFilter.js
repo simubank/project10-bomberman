@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { Container, Content, Text, Button, Body, Right, H3, List, ListItem, CheckBox, Footer } from 'native-base'
+import { Container, Content, Text, Button, Body, Right, List, ListItem, CheckBox, Footer } from 'native-base'
 import _ from 'lodash'
 
 import HeaderComponent from '../../Components/HeaderComponent'
@@ -74,10 +74,10 @@ export default class CategoryFilter extends Component {
 
     return (
       <Container>
-        <HeaderComponent goBack={goBack} title="Filter Categories" />
+        <HeaderComponent goBack={goBack} title="Category Filter" />
 
         <Content>
-          <H3 style={{ margin: 16 }}>Choose categories to focus on:</H3>
+          <Text style={{ margin: 16, marginBottom: 8, fontSize: 18 }}>Choose categories to focus on:</Text>
 
           <List style={{ marginBottom: 32 }}>
             {this.state.categories.map((category, index) => {
@@ -114,7 +114,7 @@ export default class CategoryFilter extends Component {
             })}
           </List>
 
-          <H3 style={{ margin: 16 }}>Choose filters to apply:</H3>
+          <Text style={{ margin: 16, marginBottom: 8, fontSize: 18 }}>Choose filters to apply:</Text>
 
           <List style={{ marginBottom: 32 }}>
             {this.state.filters.map((filter, index) => {

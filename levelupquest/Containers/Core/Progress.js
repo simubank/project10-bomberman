@@ -1,66 +1,22 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import * as Progress from 'react-native-progress'
-import {
-  Container,
-  Content,
-  Card,
-  CardItem,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  List,
-  ListItem,
-  Fab,
-  Root
-} from 'native-base'
+import { Container, Content, Card, CardItem, Text, Button, Icon, Left, Body, Right, List, ListItem, Fab, Root } from 'native-base'
+import * as ProgressTracker from 'react-native-progress'
 
 import MakeItRainComponent from '../../Components/MakeItRainComponent'
 import HeaderComponent from '../../Components/HeaderComponent'
 
-var moment = require('moment')
-
-const TEST_CATEGORIES = [
-  {
-    name: 'Fast food',
-    amount: 284.21,
-    selected: false,
-    target: 200.0,
-    current: 0.0
-  },
-  {
-    name: 'Entertainment',
-    amount: 282.44,
-    selected: false,
-    target: 100.0,
-    current: 0.0
-  },
-  {
-    name: 'Retail',
-    amount: 207.12,
-    selected: false,
-    target: 150.0,
-    current: 0.0
-  }
-]
-
 @inject('levelUpStore')
 @observer
-export default class Summary extends Component {
+export default class Progress extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      // title: 'Vacation',
-      amount: 0,
-      // deadline: 'Dec 04 2018',
       saved: 0.0,
       cashBack: 0.0,
-      categories: this.props.levelUpStore.goal.categories, // TEST_CATEGORIES,
+      categories: this.props.levelUpStore.goal.categories,
       rain: false,
       fabActive: true
     }
@@ -199,7 +155,7 @@ export default class Summary extends Component {
 
               <CardItem bordered>
                 <Text style={{ marginRight: 20 }}>Progress: {this.calculatePercentage(goal.amount)}%</Text>
-                <Progress.Bar progress={this.calculatePercentage(goal.amount) / 100} width={180} height={10} color={'green'} />
+                <ProgressTracker.Bar progress={this.calculatePercentage(goal.amount) / 100} width={180} height={10} color={'green'} />
               </CardItem>
 
               <CardItem bordered>

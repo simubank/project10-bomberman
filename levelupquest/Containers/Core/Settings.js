@@ -1,21 +1,8 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { observer, inject } from 'mobx-react'
+import { Container, Content, Text, Button, Body, Right, List, ListItem, Root, Spinner, Separator, Icon } from 'native-base'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
-import {
-  Container,
-  Content,
-  Text,
-  Button,
-  Body,
-  Right,
-  List,
-  ListItem,
-  Root,
-  Spinner,
-  Separator,
-  Icon
-} from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 
@@ -101,7 +88,9 @@ export default class Settings extends Component {
           <HeaderComponent goBack={goBack} title="Settings" />
 
           <Content>
-            <Text style={{ margin: 16, fontSize: 18 }}>Notification Frequency: {this.frequencyNumToText()}</Text>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+              <Text style={{ margin: 16, fontSize: 18 }}>Notification Frequency: {this.frequencyNumToText()}</Text>
+            </View>
 
             <View style={{ margin: 16, marginBottom: 0, alignItems: 'center' }}>
               <MultiSlider
@@ -116,23 +105,25 @@ export default class Settings extends Component {
               />
             </View>
 
-            <Button
-              iconLeft
-              style={[
-                { marginLeft: 16, marginTop: -16, marginBottom: 16 },
-                this.state.showSpinner ? { backgroundColor: 'gray' } : { backgroundColor: 'green' }
-              ]}
-              onPress={() => this.loadPreferences()}
-            >
-              <Icon name="bulb" />
-              <Text>Analyze Personality</Text>
-            </Button>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+              <Button
+                iconLeft
+                style={[
+                  { marginLeft: 16, marginRight: 16, marginTop: -16, marginBottom: 24 },
+                  this.state.showSpinner ? { backgroundColor: 'gray' } : { backgroundColor: 'green' }
+                ]}
+                onPress={() => this.loadPreferences()}
+              >
+                <Icon name="bulb" />
+                <Text>Analyze Personality</Text>
+              </Button>
+            </View>
 
             <List>
               {this.state.showSpinner && <Spinner color="green" />}
 
               {this.state.preferences.length && (
-                <Separator bordered>
+                <Separator bordered style={{ paddingLeft: 25 }}>
                   <Text>PURCHASING PREFERENCES</Text>
                 </Separator>
               )}

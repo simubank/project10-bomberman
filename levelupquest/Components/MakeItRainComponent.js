@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, Alert, StyleSheet, View, Dimensions } from 'react-native'
+import { View, Dimensions } from 'react-native'
 
 import moneyFront20 from '../Images/money20-front.png'
 import moneyBack20 from '../Images/money20-back.png'

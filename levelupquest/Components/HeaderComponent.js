@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { Image, StatusBar } from 'react-native'
 import { Header, Text, Left, Right, Body, Button, Icon } from 'native-base'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import _ from 'lodash'
 
 import styles from './Styles/HeaderComponentStyle'
-import _ from 'lodash'
 
 const logo = require('../Images/levelupquest_icon.png')
 

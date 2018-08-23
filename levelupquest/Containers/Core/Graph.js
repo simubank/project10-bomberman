@@ -1,14 +1,10 @@
-import { Body, Button, Container, Content, Header, Left, List, ListItem, Right, Text, Footer, Toast, Icon, Title } from 'native-base'
 import React, { Component } from 'react'
-import { Dimensions, StatusBar, StyleSheet, View, Alert } from 'react-native'
-import { connect } from 'react-redux'
-import Modal from 'react-native-modal'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import { inject, observer } from 'mobx-react'
+import { View } from 'react-native'
+import { inject } from 'mobx-react'
+import { Button, Container, Content, List, ListItem, Right, Text, Footer, Toast } from 'native-base'
 import { BarChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
 import { NavigationActions, StackActions } from 'react-navigation'
-import _ from 'lodash'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
@@ -279,8 +275,8 @@ export default class Graph extends Component {
 
           { this.state.showSlider &&
             <View style={{ alignItems: 'center', marginTop: 25 }}>
-              <Text style={{ fontSize: 16, marginBottom: 5 }}>{this.state.sliderLabel}</Text>
-              <Text style={{ fontSize: 16, marginBottom: 5 }}>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
+              <Text style={{ fontSize: 18, marginBottom: 5 }}>{this.state.sliderLabel}</Text>
+              <Text style={{ fontSize: 18, marginBottom: 5 }}>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
               <View style={{ paddingVertical: 10 }} />
 
               <MultiSlider

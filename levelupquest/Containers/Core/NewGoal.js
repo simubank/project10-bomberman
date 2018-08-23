@@ -1,20 +1,7 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import {
-  Container,
-  Content,
-  Text,
-  Button,
-  Toast,
-  Root,
-  Form,
-  Item,
-  Input,
-  Label,
-  Footer,
-  DatePicker
-} from 'native-base'
+import { Container, Content, Text, Button, Root, Form, Item, Input, Label, Footer, DatePicker } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
 import footerStyles from './Styles/FooterStyle'
@@ -39,22 +26,6 @@ export default class NewGoal extends Component {
 
   setDate(newDate) {
     this.setState({ deadline: newDate })
-  }
-
-  displayResults() {
-    Toast.show({
-      text:
-        'Goal: ' +
-        this.state.title +
-        '\nAmount: ' +
-        this.state.amount +
-        '\nDeadline: ' +
-        this.state.deadline.toString().substr(4, 12),
-      buttonText: 'Okay',
-      duration: 2000
-    })
-
-    this.goNext()
   }
 
   goNext() {
@@ -110,7 +81,7 @@ export default class NewGoal extends Component {
           </Content>
 
           <Footer style={footerStyles.footer}>
-            <Button full success style={footerStyles.fullBtn} onPress={() => this.displayResults()}>
+            <Button full success style={footerStyles.fullBtn} onPress={() => this.goNext()}>
               <Text style={footerStyles.fullBtnTxt}>CONTINUE</Text>
             </Button>
           </Footer>

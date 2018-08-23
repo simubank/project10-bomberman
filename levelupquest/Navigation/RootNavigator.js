@@ -3,13 +3,13 @@ import { StackNavigator } from 'react-navigation'
 import Home from '../Containers/Core/Home'
 
 import NewGoal from '../Containers/Core/NewGoal'
+import Progress from '../Containers/Core/Progress'
 import Settings from '../Containers/Core/Settings'
+import LocationMap from '../Containers/Core/Map'
+import Account from '../Containers/Core/Account'
 
 import CategoryFilter from '../Containers/Core/CategoryFilter'
 import Graph from '../Containers/Core/Graph'
-import Summary from '../Containers/Core/Summary'
-import LocationMap from '../Containers/Core/Map'
-import Profile from '../Containers/Core/Profile'
 
 export const AppNavigator = StackNavigator(
   {
@@ -20,23 +20,23 @@ export const AppNavigator = StackNavigator(
     NewGoal: {
       screen: NewGoal
     },
-    Settings: {
-      screen: Settings
-    },
     CategoryFilter: {
       screen: CategoryFilter
     },
     Graph: {
       screen: Graph
     },
-    Summary: {
-      screen: Summary
+    Progress: {
+      screen: Progress
+    },
+    Settings: {
+      screen: Settings
     },
     Map: {
       screen: LocationMap
     },
-    Profile: {
-      screen: Profile
+    Account: {
+      screen: Account
     }
   },
   {
