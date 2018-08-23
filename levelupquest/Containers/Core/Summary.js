@@ -166,12 +166,11 @@ export default class Summary extends Component {
   }
 
   async depositToAccount(amount) {
-    // Offset hours to make the transaction happen in the future
-    let date = moment().add(6, 'hours').format('YYYY-MM-DDTHH:mm:ss')
+    let result = await this.props.levelUpStore.depositMoneyToAccount(amount)
 
-    let result = await this.props.levelUpStore.depositMoneyToAccount(amount, date)
-
-    console.log(result)
+    if (result.statusCode === 200) {
+      await this.props.levelUpStore.getAccountInformation()
+    }
   }
 
   render() {

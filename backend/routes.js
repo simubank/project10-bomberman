@@ -74,7 +74,9 @@ router.get('/customers/:customerId/spending/category/:category', function(req, r
 	var now_date = new Date();
 
 	for (var i = 0; i < parsed_body.result.length; i++) {
-	    var transaction = parsed_body.result[i];
+		var transaction = parsed_body.result[i];
+		
+		if (!transaction.categoryTags) continue
 
 	    if (transaction.categoryTags.includes(req.params.category)) {
 		// If the category tag is included
@@ -142,6 +144,7 @@ router.get('/customers/:customerId/spending/category/:category/withinDays/:days'
 	for (var i = 0; i < parsed_body.result.length; i++) {
 	    var transaction = parsed_body.result[i];
 	    
+		if (!transaction.categoryTags) continue
 
 	    if (transaction.categoryTags.includes(req.params.category)) {
 		// If the category tag is included
@@ -355,28 +358,30 @@ router.get('/customers/:customerId/spending/categories', function(req, res, next
 	var now_date = new Date();
 	
 	for (var i = 0; i < parsed_body.result.length; i++) {
-	    var transaction = parsed_body.result[i];
+		var transaction = parsed_body.result[i];
+
+		if (!transaction.categoryTags) continue
 	    
 	    for (var j = 0; j < transaction.categoryTags.length; j++) {
 		var transaction_category = transaction.categoryTags[j];
-		if (!transaction_categories.includes(transaction_category)) {
-		    // If the category tag is not yet accounted for
-		    
-		    // Filter for dates
-		    var transaction_date = Date.parse(transaction.originationDate);
-		    
-		    var date_difference = now_date - transaction_date;
-		    date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
-		    
-		    
-		    if (date_difference < 0) {
-			// Date has not passed
-			continue;
-		    }
-		    
-		    transaction_categories.push(transaction_category);
-		    
-		}
+			if (!transaction_categories.includes(transaction_category)) {
+				// If the category tag is not yet accounted for
+				
+				// Filter for dates
+				var transaction_date = Date.parse(transaction.originationDate);
+				
+				var date_difference = now_date - transaction_date;
+				date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
+				
+				
+				if (date_difference < 0) {
+				// Date has not passed
+				continue;
+				}
+				
+				transaction_categories.push(transaction_category);
+				
+			}
 	    }
 	}
 

@@ -10,10 +10,15 @@ import {
   Card,
   CardItem,
   Left,
-  Thumbnail
+  Thumbnail,
+  List,
+  ListItem
 } from 'native-base'
 
 import HeaderComponent from '../../Components/HeaderComponent'
+
+const CUSTOMER_ICON_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQysqwVdNUKASMQcQau2kXUBBgpHjRz_YqRJwduBzCQfCIrSFvz'
+const ACCOUNT_ICON_URL = 'https://image.flaticon.com/icons/png/512/189/189699.png'
 
 @inject('levelUpStore')
 @observer
@@ -37,6 +42,8 @@ export default class Profile extends Component {
   render() {
     const goBack = () => this.props.navigation.goBack()
     const customer = this.props.levelUpStore.customer
+    const chequingAccount = this.props.levelUpStore.chequingAccount
+    const savingsAccount = this.props.levelUpStore.savingsAccount
 
     return (
       <Root>
@@ -44,64 +51,128 @@ export default class Profile extends Component {
           <HeaderComponent goBack={goBack} title="Profile" />
 
           <Content style={{ padding: 15 }}>
-            <Card>
+            <Card style={{ marginBottom: 15 }}>
               <CardItem header bordered style={{ paddingTop: 10, paddingBottom: 10 }}>
                 <Left>
                   <Text style={{ color: 'green', fontWeight: 'bold', fontSize: 18 }}>{customer.firstName} {customer.lastName}</Text>
                 </Left>
                 <Right>
-                  <Thumbnail style={{ marginRight: 5, width: 50, height: 50, borderRadius: 25 }} source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRutaDzv9CjvkuLnXlgR1-D0bHT4as9_TUgOUGLLn_5RbCe4D5ujw' }} />
+                  <Thumbnail style={{ marginRight: 5, width: 50, height: 50, borderRadius: 25 }} source={{ uri: CUSTOMER_ICON_URL }} />
                 </Right>
               </CardItem>
 
-              <CardItem style={{ paddingTop: 20 }}>
+              <List>
+                <ListItem itemDivider>
+                  <Left>
+                    <Text>Age</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green', paddingRight: 5 }}>{customer.age}</Text>
+                  </Right>
+                </ListItem>
+
+                <ListItem style={{ borderBottomColor: 'transparent' }}>
+                  <Left>
+                    <Text>Gender</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green' }}>{customer.gender}</Text>
+                  </Right>
+                </ListItem>
+                
+                <ListItem itemDivider>
+                  <Left>
+                    <Text>Occupation</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.occupation)}</Text>
+                  </Right>
+                </ListItem>
+                
+                <ListItem style={{ borderBottomColor: 'transparent' }}>
+                  <Left>
+                    <Text>Relationship Status</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green' }}>{this.formatText(customer.relationshipStatus)}</Text>
+                  </Right>
+                </ListItem>
+                
+                <ListItem itemDivider>
+                  <Left>
+                    <Text>Habitation</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.habitation)}</Text>
+                  </Right>
+                </ListItem>
+                
+                <ListItem style={{ borderBottomColor: 'transparent' }}>
+                  <Left>
+                    <Text>Municipality</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green' }}>{customer.municipality}</Text>
+                  </Right>
+                </ListItem>
+              </List>
+            </Card>
+
+            <Card style={{ marginBottom: 35 }}>
+              <CardItem header bordered style={{ paddingTop: 10, paddingBottom: 10 }}>
                 <Left>
-                  <Text>Age</Text>
+                  <Text style={{ color: 'green', fontWeight: 'bold', fontSize: 18 }}>Account Info</Text>
                 </Left>
                 <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{customer.age}</Text>
+                  <Thumbnail style={{ marginRight: 5, width: 50, height: 50, borderRadius: 25 }} source={{ uri: ACCOUNT_ICON_URL }} />
                 </Right>
               </CardItem>
-              <CardItem>
-                <Left>
-                  <Text>Gender</Text>
-                </Left>
-                <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{customer.gender}</Text>
-                </Right>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Text>Occupation</Text>
-                </Left>
-                <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.occupation)}</Text>
-                </Right>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Text>Relationship Status</Text>
-                </Left>
-                <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.relationshipStatus)}</Text>
-                </Right>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Text>Habitation</Text>
-                </Left>
-                <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{this.formatText(customer.habitation)}</Text>
-                </Right>
-              </CardItem>
-              <CardItem style={{ paddingBottom: 20 }}>
-                <Left>
-                  <Text>Municipality</Text>
-                </Left>
-                <Right>
-                  <Text style={{ color: 'green', paddingRight: 5 }}>{customer.municipality}</Text>
-                </Right>
-              </CardItem>
+
+              <List>
+                <ListItem itemDivider>
+                  <Text style={{ fontSize: 12, fontWeight: '700' }}>CHEQUING ACCOUNT</Text>
+                </ListItem>
+
+                <ListItem>
+                  <Left>
+                    <Text>Account Number</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green' }}>{chequingAccount.maskedNumber}</Text>
+                  </Right>
+                </ListItem>
+
+                <ListItem style={{ borderBottomColor: 'transparent' }}>
+                  <Left>
+                    <Text>Account Balance</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green' }}>{chequingAccount.balance}</Text>
+                  </Right>
+                </ListItem>
+
+                <ListItem itemDivider>
+                  <Text style={{ fontSize: 12, fontWeight: '700' }}>SAVINGS ACCOUNT</Text>
+                </ListItem>
+
+                <ListItem>
+                  <Left>
+                    <Text>Account Number</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green' }}>{savingsAccount.maskedNumber}</Text>
+                  </Right>
+                </ListItem>
+
+                <ListItem style={{ borderBottomColor: 'transparent' }}>
+                  <Left>
+                    <Text>Account Balance</Text>
+                  </Left>
+                  <Right style={{ flex: 1 }}>
+                    <Text style={{ color: 'green' }}>{savingsAccount.balance}</Text>
+                  </Right>
+                </ListItem>
+              </List>
             </Card>
           </Content>
         </Container>

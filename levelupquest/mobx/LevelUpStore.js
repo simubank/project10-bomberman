@@ -3,11 +3,11 @@ import axios from 'axios'
 import _ from 'lodash'
 
 const API_URL = 'https://botsfinancial.com/api'
-const BACKEND_URL = 'http://localhost:4526/'
+const BACKEND_URL = 'http://localhost:4527/'
 
 const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
-const ACCOUNT1_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
-const ACCOUNT2_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_384d8493-b9f8-46a4-863f-218a3900e884'
+const CHEQUING_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
+const SAVINGS_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_384d8493-b9f8-46a4-863f-218a3900e884'
 const AUTH_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
 const FILTERS = [
   {
@@ -79,12 +79,14 @@ class LevelUpStore {
   @observable customer
   @observable purchasingPreferences = []
 
+  @observable chequingAccount
+  @observable savingsAccount
+  
   @action
   async getCustomerProfile() {
-    const url = `${API_URL}/customers/` + CUSTOMER_ID
+    const url = `${API_URL}/customers/${CUSTOMER_ID}`
 
     let res
-
     try {
       res = await axios.get(url, { headers: { 'Authorization': AUTH_KEY } })
     } catch (error) {
@@ -106,11 +108,38 @@ class LevelUpStore {
   }
 
   @action
+  async getAccountInformation() {
+    const url1 = `${API_URL}/accounts/${CHEQUING_ACCOUNT_ID}`
+    const url2 = `${API_URL}/accounts/${SAVINGS_ACCOUNT_ID}`
+
+    let res1
+    let res2
+    try {
+      res1 = await axios.get(url1, { headers: { 'Authorization': AUTH_KEY } })
+      res2 = await axios.get(url2, { headers: { 'Authorization': AUTH_KEY } })
+    } catch (error) {
+      console.error(error)
+    }
+
+    const info1 = res1.data.result.bankAccount
+    const info2 = res2.data.result.bankAccount
+
+    this.chequingAccount = {
+      maskedNumber: info1.maskedAccountNumber,
+      balance: info1.balance
+    }
+
+    this.savingsAccount = {
+      maskedNumber: info2.maskedAccountNumber,
+      balance: info2.balance
+    }
+  }
+
+  @action
   async getUserCategories() {
     const url = BACKEND_URL + 'customers/' + CUSTOMER_ID + '/spending/categories'
 
     let res
-
     try {
       res = await axios.get(url)
     } catch (error) {
@@ -130,7 +159,6 @@ class LevelUpStore {
       const url = BACKEND_URL + 'customers/' + CUSTOMER_ID + '/spending/category/' + categoryName + '/withinDays/30'
 
       let res2
-
       try {
         res2 = await axios.get(url)
       } catch (error) {
@@ -161,7 +189,6 @@ class LevelUpStore {
     const url = BACKEND_URL + 'metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
 
     let res
-
     try {
       res = await axios.get(url)
     } catch (error) {
@@ -190,6 +217,32 @@ class LevelUpStore {
   }
 
   @action
+  async depositMoneyToAccount(amount) {
+    let url = `${API_URL}/transfers`
+    let data = {
+      'amount': amount,
+      'currency': 'CAD',
+      'fromAccountID': CHEQUING_ACCOUNT_ID,
+      'toAccountID': SAVINGS_ACCOUNT_ID
+    }
+    let config = {
+      headers: {
+        'Authorization': AUTH_KEY,
+        'Content-Type': 'application/json'
+      }
+    }
+
+    let res
+    try {
+      res = await axios.post(url, data, config)
+    } catch (error) {
+      console.error(error)
+    }
+
+    return res.data
+  }
+
+  @action
   async getPurchasePreferences() {
     let res = await fetch(
       'https://gateway.watsonplatform.net/personality-insights/api/v3/profile?version=2017-10-13&consumption_preferences=true&raw_scores=true',
@@ -208,39 +261,6 @@ class LevelUpStore {
     let preferences = data.consumption_preferences[0].consumption_preferences
 
     this.purchasingPreferences = _.dropRight(_.drop(_.reverse(preferences)), 5)
-  }
-
-  @action
-  async depositMoneyToAccount(amount, date) {
-    const SMART_SAVE_DEPOSIT_TEXT = "SmartSave Goal Deposit"
-
-    let response
-
-    let payload = [{
-      "type": "DepositAccountTransaction",
-      "merchantName": SMART_SAVE_DEPOSIT_TEXT ,
-      "currencyAmount": amount,
-      "postDate": date,
-      "accountId": ACCOUNT1_ID
-    }]
-
-    console.log(payload)
-    
-    try {
-      response = await axios.post(`${API_URL}/simulants/${CUSTOMER_ID}/simulatedtransactions`,  
-        payload,
-        { 
-          headers: {
-            'Authorization': AUTH_KEY,
-            'Content-Type': 'application/json'
-          }
-        }
-      )
-    } catch (error) {
-      console.error(error)
-    }
-
-    return response.data
   }
 
   @action
