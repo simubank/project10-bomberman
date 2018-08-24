@@ -5,7 +5,8 @@ import _ from 'lodash'
 import TWITTER_CONTENT from '../Containers/Core/Twitter'
 
 const API_URL = 'https://botsfinancial.com/api'
-const BACKEND_URL = 'http://localhost:4527/'
+// const BACKEND_URL = 'http://localhost:4527/'
+const BACKEND_URL = 'http://137.116.77.71:4527/'
 
 const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
 const CHEQUING_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
