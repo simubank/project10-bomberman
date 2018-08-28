@@ -45,6 +45,7 @@ export default class Home extends Component {
     this.generateSampleGoal()
     this.props.levelUpStore.getCustomerProfile()
     this.props.levelUpStore.getAccountInformation()
+    this.props.levelUpStore.getCurrentLocation()
   }
 
   generateSampleGoal() {
