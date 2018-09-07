@@ -82,7 +82,7 @@ router.get('/customers/:customerId/spending/category/:category', function(req, r
 		// If the category tag is included
 
 		// Filter for dates
-		var transaction_date = Date.parse(transaction.originationDate); // TODO: Change to postDate
+		var transaction_date = Date.parse(transaction.originationDate);
 
 		var date_difference = now_date - transaction_date;
 		date_difference = date_difference / (1000 * 60 * 60 * 24); // Get the difference in actual days
