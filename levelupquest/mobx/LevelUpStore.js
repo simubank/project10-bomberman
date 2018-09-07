@@ -6,12 +6,13 @@ import TWITTER_CONTENT from '../Containers/Core/Twitter'
 
 const API_URL = 'https://botsfinancial.com/api'
 // const BACKEND_URL = 'http://localhost:4527/'
-const BACKEND_URL = 'http://137.116.77.71:4527/'
+const BACKEND_URL = 'http://52.167.0.206:4527/'
 
 const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
 const CHEQUING_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
 const SAVINGS_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_384d8493-b9f8-46a4-863f-218a3900e884'
-const AUTH_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
+const AUTH_KEY =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
 
 const FILTERS = [
   {
@@ -78,9 +79,10 @@ class LevelUpStore {
   @observable userCategories = []
   @observable populationCategories = []
   @observable filters = FILTERS
-  
+
   @observable goal
   @observable customer
+  @observable location
 
   @observable settingsIsInitialized = false
   @observable purchasingPreferences = []
@@ -88,14 +90,14 @@ class LevelUpStore {
 
   @observable chequingAccount
   @observable savingsAccount
-  
+
   @action
   async getCustomerProfile() {
     const url = `${API_URL}/customers/${CUSTOMER_ID}`
 
     let res
     try {
-      res = await axios.get(url, { headers: { 'Authorization': AUTH_KEY } })
+      res = await axios.get(url, { headers: { Authorization: AUTH_KEY } })
     } catch (error) {
       console.error(error)
     }
@@ -122,8 +124,8 @@ class LevelUpStore {
     let res1
     let res2
     try {
-      res1 = await axios.get(url1, { headers: { 'Authorization': AUTH_KEY } })
-      res2 = await axios.get(url2, { headers: { 'Authorization': AUTH_KEY } })
+      res1 = await axios.get(url1, { headers: { Authorization: AUTH_KEY } })
+      res2 = await axios.get(url2, { headers: { Authorization: AUTH_KEY } })
     } catch (error) {
       console.error(error)
     }
@@ -193,7 +195,8 @@ class LevelUpStore {
 
   @action
   async getPopulationCategory(categoryName, age, gender, occupation) {
-    const url = BACKEND_URL + 'metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
+    const url =
+      BACKEND_URL + 'metrics/' + categoryName + '?age=' + age + '&gender=' + gender + '&occupation=' + occupation
 
     let res
     try {
@@ -227,14 +230,14 @@ class LevelUpStore {
   async transferMoneyFromChequingToSavings(amount) {
     let url = `${API_URL}/transfers`
     let data = {
-      'amount': amount,
-      'currency': 'CAD',
-      'fromAccountID': CHEQUING_ACCOUNT_ID,
-      'toAccountID': SAVINGS_ACCOUNT_ID
+      amount: amount,
+      currency: 'CAD',
+      fromAccountID: CHEQUING_ACCOUNT_ID,
+      toAccountID: SAVINGS_ACCOUNT_ID
     }
     let config = {
       headers: {
-        'Authorization': AUTH_KEY,
+        Authorization: AUTH_KEY,
         'Content-Type': 'application/json'
       }
     }
@@ -247,6 +250,22 @@ class LevelUpStore {
     }
 
     return res.data
+  }
+
+  @action
+  async getCurrentLocation() {
+    await navigator.geolocation.getCurrentPosition(
+      position => {
+        this.location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+      },
+      error => {
+        console.warn(`ERROR(${error.code}): ${error.message}`)
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    )
   }
 
   @action
