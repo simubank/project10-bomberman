@@ -1,11 +1,11 @@
 // Common functions
 
 module.exports = {
-    'convert_age': function(age) {
+  'convert_age': function(age) {
 
-	return age - (age % 5);
+    return age - (age % 5);
 
-    }
+  }
 
 
 };
