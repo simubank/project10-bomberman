@@ -4,15 +4,21 @@ import _ from 'lodash'
 
 import TWITTER_CONTENT from '../Containers/Core/Twitter'
 
-const API_URL = 'https://botsfinancial.com/api'
+// const API_URL = 'https://botsfinancial.com/api'
+const API_URL = 'https://dev-api.td-davinci.com/api'
 // const BACKEND_URL = 'http://localhost:4527/'
 const BACKEND_URL = 'http://52.167.0.206:4527/'
 
-const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
-const CHEQUING_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
-const SAVINGS_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_384d8493-b9f8-46a4-863f-218a3900e884'
+// const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
+// const CHEQUING_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
+// const SAVINGS_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_384d8493-b9f8-46a4-863f-218a3900e884'
+// const AUTH_KEY =
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
+const CUSTOMER_ID = '776f4aca-331b-437c-b238-929ad8bc70ae_6cc69994-2446-4d40-8c1d-69a3656c278e'
+const CHEQUING_ACCOUNT_ID = '776f4aca-331b-437c-b238-929ad8bc70ae_60466622-e355-411f-a379-699806eeca48'
+const SAVINGS_ACCOUNT_ID = '776f4aca-331b-437c-b238-929ad8bc70ae_04f314ac-572a-4500-9d16-04e3195564a0'
 const AUTH_KEY =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiNjMzM2JlZmEtNzA1OS0zZjA5LThhYjItNDZmNDY3ZDNjZWUwIiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI3NzZmNGFjYS0zMzFiLTQzN2MtYjIzOC05MjlhZDhiYzcwYWUifQ.SuiP9VJ-0ft9eRh624ES8VzkuZrbZJe8XCp_V0hLxPc'
 
 const FILTERS = [
   {
@@ -81,15 +87,30 @@ class LevelUpStore {
   @observable filters = FILTERS
 
   @observable goal
-  @observable customer
   @observable location
+  @observable customer = {
+    firstName: "",
+    lastName: "",
+    age: 0,
+    gender: "",
+    occupation: "",
+    relationshipStatus: "",
+    habitation: "",
+    municipality: ""
+  }
 
   @observable settingsIsInitialized = false
   @observable purchasingPreferences = []
   @observable notificationFrequency = [0]
 
-  @observable chequingAccount
-  @observable savingsAccount
+  @observable chequingAccount = {
+    maskedNumber: "0",
+    balance: 0
+  }
+  @observable savingsAccount= {
+    maskedNumber: "0",
+    balance: 0
+  }
 
   @action
   async getCustomerProfile() {
@@ -102,14 +123,15 @@ class LevelUpStore {
       console.error(error)
     }
 
-    const info = res.data.result[0]
+    // const info = res.data.result[0]
+    const info = res.data.result
 
     this.customer = {
       firstName: info.givenName,
       lastName: info.surname,
       age: info.age,
       gender: info.gender,
-      occupation: info.primaryOccupation,
+      occupation: info.occupationIndustry,
       relationshipStatus: info.relationshipStatus,
       habitation: info.habitationStatus,
       municipality: info.addresses.principalResidence.municipality
@@ -151,6 +173,7 @@ class LevelUpStore {
     let res
     try {
       res = await axios.get(url)
+      console.log(res)
     } catch (error) {
       console.error(error)
     }
