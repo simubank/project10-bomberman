@@ -46,6 +46,10 @@ export default class Home extends Component {
     this.props.levelUpStore.getCustomerProfile()
     this.props.levelUpStore.getAccountInformation()
     this.props.levelUpStore.getCurrentLocation()
+
+    setTimeout(() => {
+      this.props.levelUpStore.transferMoneyFromSavingsToChequing(2000)
+    }, 1000)
   }
 
   generateSampleGoal() {

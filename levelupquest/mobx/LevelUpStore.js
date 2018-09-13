@@ -88,8 +88,14 @@ class LevelUpStore {
   @observable purchasingPreferences = []
   @observable notificationFrequency = [0]
 
-  @observable chequingAccount
-  @observable savingsAccount
+  @observable chequingAccount = {
+    maskedNumber: '',
+    balance: 0
+  }
+  @observable savingsAccount = {
+    maskedNumber: '',
+    balance: 0
+  }
 
   @action
   async getCustomerProfile() {
@@ -234,6 +240,36 @@ class LevelUpStore {
       currency: 'CAD',
       fromAccountID: CHEQUING_ACCOUNT_ID,
       toAccountID: SAVINGS_ACCOUNT_ID
+    }
+    let config = {
+      headers: {
+        Authorization: AUTH_KEY,
+        'Content-Type': 'application/json'
+      }
+    }
+
+    let res
+    try {
+      res = await axios.post(url, data, config)
+    } catch (error) {
+      console.error(error)
+    }
+
+    return res.data
+  }
+
+  @action
+  async transferMoneyFromSavingsToChequing(amount) {
+    if (this.savingsAccount.balance <= amount) {
+      return
+    }
+
+    let url = `${API_URL}/transfers`
+    let data = {
+      amount: amount,
+      currency: 'CAD',
+      fromAccountID: SAVINGS_ACCOUNT_ID,
+      toAccountID: CHEQUING_ACCOUNT_ID
     }
     let config = {
       headers: {
