@@ -533,7 +533,7 @@ router.get('/customers', function(req, res, next) {
 });
 
 
-router.get('/transactions', function(req, res, next) {
+router.post('/transactions', function(req, res, next) {
   // Returns all the transactions
 
   // All the transactions of all the customers
@@ -607,6 +607,113 @@ router.get('/transactions', function(req, res, next) {
 
   }); // End response
 
+});
+
+
+// Pull transaction data from the API for a sample size of customers
+router.get('/transactionsNewApi', function(req, res, next) {
+
+  // All the transactions of all the customers
+  var all_transactions = [];
+
+  // A list of promises each representing a list of transactions for each user
+  var customer_promises = [];
+
+  // Token used for pagination
+  var continuationToken = ""
+
+
+  // Loop to retrieve all IDs
+  for (var i = 0; i < 200; i+=10) {
+
+    /*
+    * Since there are too many IDs to retrieve with one call (>1 million), we use
+    * the paginated ID retrieval call to get the first 200 IDs in groups of 10.
+    */
+    console.log('called')
+    let opt = {
+      url: "https://dev-api.td-davinci.com/api/simulants/page",
+      headers: {
+        'Authorization': auth_key,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "continuationToken": continuationToken,
+        "minAge": null,
+        "maxAge": null,
+        "gender": null,
+        "workActivity": null
+      })
+    };
+
+    // Execute the HTTP call
+    request.post(opt, function(error, response, body) {
+      // console.log('hi', opt)
+      // Response will be the customers information and transactions
+      // the first element of the list will be their personal info
+      let parsed_body = JSON.parse(response.body);
+
+      // Update the token used for paginating the IDs
+      continuationToken = parsed_body.result.continuationToken
+
+      console.log('CT', continuationToken)
+
+      /**
+      *  This function get a list of transactions for a specific customer ID.
+      *  The return is a promise whose value is the list of transactions.
+      */
+      function getCustomerTransactions(customerId) {
+
+        // API call to get the list of transactions for a single customer ID
+        let transOpt = {
+          url: "https://botsfinancial.com/api/simulants/" + customerId + "/simulatedtransactions",
+          headers: {
+            'Authorization': auth_key
+          }
+        };
+
+        return new Promise((resolve, reject) => {
+          // Execute the HTTP call
+          request(transOpt, function(inerror, inresponse, inbody) {
+
+            if (inresponse == null || inresponse == undefined || inerror != null) {
+              resolve([]);
+              return;
+            }
+
+            let inparsed_body = JSON.parse(inresponse.body);
+
+            // Set the promise's value to the list of transactions for the customer
+            resolve(inparsed_body.result);
+          });
+        });
+      }
+
+      // Loop through the list of customer IDs and call the function for getting their transactions
+      for (var i = 0; i < parsed_body.result.customers.length; i++) {
+        var customer = parsed_body.result.customers[i];
+
+        // Add the promise representing
+        // all the transactions of the customer
+        customer_promises.push(getCustomerTransactions(customer.id));
+
+        // Sample mode, comment out for full results (warning, insanely large)
+        // if (i == conf['sample_size']) {
+        //   break;
+        // }
+      }
+    });
+  }
+
+  // Wait for all the Promises to finish processing then send them
+  Promise.all(customer_promises).then(function(values) {
+    res.send({
+      "result": values,
+      "errorDetails" : null,
+      "errorMsg": null,
+      "statusCode" : 200
+    });
+  });// End response
 });
 
 router.get('/transactions/withinDays/:days', function(req, res, next) {
