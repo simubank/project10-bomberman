@@ -1,4 +1,3 @@
-
 var conf = require('./config');
 const PORT = conf['PORT'];
 
@@ -7,6 +6,7 @@ var router = express.Router();
 
 const request = require('request');
 const auth_key = require('./authkey');
+const axios = require('axios');
 
 // Get the averages data
 var averages;
@@ -704,6 +704,101 @@ router.get('/transactionsNewApi', function(req, res, next) {
       }
     });
   }
+
+  // Wait for all the Promises to finish processing then send them
+  Promise.all(customer_promises).then(function(values) {
+    res.send({
+      "result": values,
+      "errorDetails" : null,
+      "errorMsg": null,
+      "statusCode" : 200
+    });
+  });// End response
+});
+
+// Pull transaction data from the API for a sample size of customers
+router.get('/transactionsAxios', function(req, res, next) {
+
+  // All the transactions of all the customers
+  var allTransactions = [];
+
+  // Token used for pagination
+  var continuationToken = ""
+
+  /**
+  *  This function get a list of transactions for a specific customer ID.
+  *  The return is a promise whose value is the list of transactions.
+  */
+  async function getCustomerTransactions(customerId) {
+
+    let url = "https://dev-api.td-davinci.com/api/simulants/" + customerId + "/simulatedtransactions"
+    let config = {
+      headers: {
+        'Authorization': auth_key
+      }
+    }
+
+    let res
+    try {
+      res = await axios.get(url, config)
+
+      console.log(res.data)
+    } catch (error) {
+      console.error(error)
+    }
+
+    // Push transactions onto the object
+    allTransactions.push(res.data);
+
+  }
+
+  /*
+  * Since there are too many IDs to retrieve with one call (>1 million), we use
+  * the paginated ID retrieval call to get the first 200 IDs in groups of 10.
+  */
+  async function getSimulantsByPage() {
+
+    // Loop to retrieve all IDs
+    for (var i = 0; i < 20; i+=10) {
+      console.log('called')
+
+      let url = "https://dev-api.td-davinci.com/api/simulants/page"
+      let data = {
+        continuationToken: continuationToken,
+        minAge: null,
+        maxAge: null,
+        gender: null,
+        workActivity: null
+      }
+      let config = {
+        headers: {
+          'Authorization': auth_key,
+          'Content-Type': 'application/json'
+        }
+      }
+
+      let res
+      try {
+        res = await axios.post(url, data, config)
+
+        // Update the token used for paginating the IDs
+        continuationToken = res.data.result.continuationToken
+        console.log(res.data.result.customers)
+        // console.log(res.data)
+      } catch (error) {
+        console.error(error)
+      }
+
+      res.data.result.customers.map(customer) => {
+        getCustomerTransactions(customer.id)
+      }
+
+    } // end loop
+
+    return res.data
+  }
+
+  getSimulantsByPage()
 
   // Wait for all the Promises to finish processing then send them
   Promise.all(customer_promises).then(function(values) {
