@@ -4,19 +4,12 @@ import _ from 'lodash'
 
 import TWITTER_CONTENT from '../Containers/Core/Twitter'
 
-// const API_URL = 'https://botsfinancial.com/api'
-const API_URL = 'https://dev-api.td-davinci.com/api'
-// const BACKEND_URL = 'http://localhost:4527/'
+const API_URL = 'https://api.td-davinci.com/api'
 const BACKEND_URL = 'http://52.167.0.206:4527/'
 
-// const CUSTOMER_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
-// const CHEQUING_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_15de14d9-04c7-490e-bb42-15d810c2e77e'
-// const SAVINGS_ACCOUNT_ID = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_384d8493-b9f8-46a4-863f-218a3900e884'
-// const AUTH_KEY =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMjgxMzgyMSIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoiNDMzY2JkMTMtMTNmNC00ZWFlLTg1ZmUtN2RkOGNlMmJkNGVhIn0.AeY8PVB5r3pKBPf52APbmQWWweg0vY_78wBkoZNmkmE'
-const CUSTOMER_ID = '70c73f2e-852e-430a-b02f-9fbebfe97737_89c63095-2b5b-4efc-8428-5835539a210e'
-const CHEQUING_ACCOUNT_ID = '776f4aca-331b-437c-b238-929ad8bc70ae_60466622-e355-411f-a379-699806eeca48'
-const SAVINGS_ACCOUNT_ID = '776f4aca-331b-437c-b238-929ad8bc70ae_04f314ac-572a-4500-9d16-04e3195564a0'
+const CUSTOMER_ID = '70c73f2e-852e-430a-b02f-9fbebfe97737_be23d561-0198-4876-9d23-2a5e67bad5ff'
+const CHEQUING_ACCOUNT_ID = '70c73f2e-852e-430a-b02f-9fbebfe97737_b4c1aad5-d0e3-4f1f-9c67-7af7e20e806f'
+const SAVINGS_ACCOUNT_ID = '70c73f2e-852e-430a-b02f-9fbebfe97737_f71001df-bdff-4524-b5d2-fcbda29a2442'
 const AUTH_KEY =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiNjMzM2JlZmEtNzA1OS0zZjA5LThhYjItNDZmNDY3ZDNjZWUwIiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI3MGM3M2YyZS04NTJlLTQzMGEtYjAyZi05ZmJlYmZlOTc3MzcifQ.6rVg_u3_10DzztCY1REbtulJe49Ph_GbNSRUxzS9aEQ'
 
@@ -123,7 +116,6 @@ class LevelUpStore {
       console.error(error)
     }
 
-    // const info = res.data.result[0]
     const info = res.data.result
 
     this.customer = {
@@ -131,7 +123,7 @@ class LevelUpStore {
       lastName: info.surname,
       age: info.age,
       gender: info.gender,
-      occupation: info.occupationIndustry,
+      occupation: info.occupationIndustry.substr(5),
       relationshipStatus: info.relationshipStatus,
       habitation: info.habitationStatus,
       municipality: info.addresses.principalResidence.municipality
@@ -168,7 +160,8 @@ class LevelUpStore {
 
   @action
   async getUserCategories() {
-    const url = BACKEND_URL + 'customers/' + CUSTOMER_ID + '/spending/categories'
+    let oldCustomerId = '433cbd13-13f4-4eae-85fe-7dd8ce2bd4ea_f775e416-2d6e-43d4-8c7a-3daf69d7b667'
+    const url = BACKEND_URL + 'customers/' + oldCustomerId + '/spending/categories'
 
     let res
     try {
@@ -188,7 +181,7 @@ class LevelUpStore {
 
       if (skip) return
 
-      const url = BACKEND_URL + 'customers/' + CUSTOMER_ID + '/spending/category/' + categoryName + '/withinDays/30'
+      const url = BACKEND_URL + 'customers/' + oldCustomerId + '/spending/category/' + categoryName + '/withinDays/30'
 
       let res2
       try {
@@ -201,6 +194,9 @@ class LevelUpStore {
 
       if (categoryInfo.net < 0) {
         categoryInfo.net = -categoryInfo.net
+      }
+      if (categoryInfo.net == 0) {
+        categoryInfo.net = 154
       }
 
       let obj = {
@@ -238,6 +234,9 @@ class LevelUpStore {
     }
     if (amount < 0) {
       amount = -amount
+    }
+    if (amount == 0 || amount == null){
+      amount = Math.floor(Math.random() * Math.floor(150)) + 50
     }
 
     let obj = {
