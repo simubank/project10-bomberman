@@ -11,7 +11,6 @@ import HeaderComponent from '../../Components/HeaderComponent'
 export default class Map extends Component {
   constructor(props) {
     super(props)
-
     this.state = {}
   }
 

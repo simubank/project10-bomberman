@@ -25,20 +25,30 @@ export default class CategoryFilter extends Component {
     }
   }
 
+  /**
+   * Record the user's selected spending categories and population filters
+   * and call the backend APIs to retrieve the population spending data.
+   */
   async setPopulationCategories() {
+    const { age, gender, occupation } = this.state.customer
+
+    // Record the categories that were checked off
     let selectedCategories = _.filter(this.state.categories, category => {
       return category.selected
     })
+
+    // Record the population filters that were checked off
     let selectedFilters = _.filter(this.state.filters, filter => {
       return filter.selected
     })
 
     this.state.selectedCategories = selectedCategories
 
-    const { age, gender, occupation } = this.state.customer
-
+    // Make sure that the object list is empty before working with it
     this.props.levelUpStore.resetPopulationCategories()
 
+    // For each savings category selected, call the backend to retrieve the
+    // population's average spending amount to be used in the graph later
     for (let category of selectedCategories) {
       let categoryName = category.name
 
@@ -48,6 +58,11 @@ export default class CategoryFilter extends Component {
         console.error(error)
       }
     }
+  }
+
+  async displayResults() {
+    await this.setPopulationCategories()
+    this.goNext()
   }
 
   goNext() {
@@ -62,11 +77,6 @@ export default class CategoryFilter extends Component {
       routeName: 'Graph',
       params: params
     })
-  }
-
-  async displayResults() {
-    await this.setPopulationCategories()
-    this.goNext()
   }
 
   render() {
@@ -100,9 +110,7 @@ export default class CategoryFilter extends Component {
                       this.setState({ categories: modified })
                     }}/>
                   <Body>
-                    <Text>
-                      {index + 1}. {category.name}
-                    </Text>
+                    <Text>{index + 1}. {category.name}</Text>
                   </Body>
                   <Right style={{ flex: 1 }}>
                     <Text>${category.average.toFixed(2)}</Text>

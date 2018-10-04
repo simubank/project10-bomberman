@@ -48,6 +48,10 @@ export default class Home extends Component {
     this.props.levelUpStore.getCurrentLocation()
   }
 
+  /**
+   * Used to create a sample goal so that the user can directly view the Progress
+   * page from the Home screen on start up without actually creating a goal first.
+   */
   generateSampleGoal() {
     let averages = []
     let labels = []

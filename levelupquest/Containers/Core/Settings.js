@@ -20,6 +20,9 @@ export default class Settings extends Component {
     }
   }
 
+  /**
+   * Call IBM Watson API to analyze tweets to determine personality traits
+   */
   async analyzePersonality() {
     this.setState({
       showSpinner: true
@@ -34,6 +37,9 @@ export default class Settings extends Component {
     })
   }
 
+  /**
+   * Update the frequency value when the slider is moved
+   */
   onSliderChange(values) {
     let newValues = []
     newValues[0] = Math.floor(values)

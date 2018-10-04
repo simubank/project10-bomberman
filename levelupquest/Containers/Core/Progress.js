@@ -24,11 +24,16 @@ export default class Progress extends Component {
     }
   }
 
+  /**
+   * Used for demos to mimic fast fowarding a month and the app user having
+   * generated a month of transactions.
+   */
   onFastForwardClicked() {
-    // randomly generate monthly spendings
+    // Randomly generate monthly spendings
     const min = 50
     const max = 200
 
+    // Map the spending amount into the category object
     let modified = this.state.categories.map(category => {
       let amountIncrease = Math.floor(Math.random() * (max - min + 1)) + min
       category.current = amountIncrease
@@ -36,26 +41,34 @@ export default class Progress extends Component {
       return category
     })
 
+    // Update the state so that the new amounts show
     this.setState({ categories: modified })
   }
 
+  /**
+   * Deposit the amount of money saved this month by calling the API and transferring
+   * the money from the user's chequeings to the savings account. Run animation if
+   * the savings goal has been achieved.
+   */
   onDepositSavingsClicked(amount) {
-    // get amount difference for each category
     let sum = 0
 
+    // Get the amount difference for each category between spending goal and
+    // actual amount spent
     this.state.categories.forEach(category => {
       let diff = this.calculateDifference(category)
       sum += parseFloat(diff)
     })
 
-    // update cash back amount
+    // Update cash back amount
     let cashBackAmount = sum * 0.01
 
-    // check if goal has been reached
-    let newAmount = this.state.saved + sum
-
+    // Call API to transfer the amount of money from the chequeings to savings accounts
     this.depositToAccount(sum)
 
+    let newAmount = this.state.saved + sum
+
+    // Check if goal has been reached. If yes, make cash rain!! (animation)
     if (newAmount >= amount) {
       this.setState({
         saved: this.props.levelUpStore.goal.amount,
@@ -65,13 +78,13 @@ export default class Progress extends Component {
       return
     }
 
-    // goal has not been reached
+    // If the goal has not been reached...
     this.setState(prevState => ({
       saved: prevState.saved + sum + cashBackAmount,
       cashBack: prevState.cashBack + cashBackAmount
     }))
 
-    // reset current spendings for each category
+    // Reset current spendings for each category in preparation for next month
     let modified = this.state.categories.map(category => {
       category.current = 0
 
@@ -81,6 +94,11 @@ export default class Progress extends Component {
     this.setState({ categories: modified })
   }
 
+  /**
+   * Used when rendering the spending amounts in each category. Display the amount
+   * as green if it was under the target spending amount. Display the amount as red
+   * if it was above the target.
+   */
   renderAmountSpentPerCategory(currentAmount, goal) {
     if (currentAmount > goal) {
       return <Text style={{ marginBottom: 4, color: 'red' }}>${currentAmount.toFixed(2)}</Text>
@@ -89,6 +107,9 @@ export default class Progress extends Component {
     }
   }
 
+  /**
+   * Render the category icon based on name
+   */
   getCategoryIcon(name) {
     let icon = 'pricetags'
 
@@ -107,6 +128,9 @@ export default class Progress extends Component {
     return icon
   }
 
+  /**
+   * Used to update the progress bar percentage
+   */
   calculatePercentage(amount) {
     if (this.state.saved === 0) {
       return 0
@@ -115,6 +139,9 @@ export default class Progress extends Component {
     }
   }
 
+  /**
+   * Used to calculate the difference between actual spending and the goal
+   */
   calculateDifference(category) {
     if (category.average.value >= category.current) {
       return (category.average.value - category.current).toFixed(2)
@@ -123,6 +150,9 @@ export default class Progress extends Component {
     }
   }
 
+  /**
+   * API call to deposit money between accounts
+   */
   async depositToAccount(amount) {
     let result = await this.props.levelUpStore.transferMoneyFromChequingToSavings(amount)
 
