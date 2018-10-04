@@ -7,6 +7,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider'
 import { NavigationActions, StackActions } from 'react-navigation'
 
 import HeaderComponent from '../../Components/HeaderComponent'
+import styles from './Styles/GraphStyle'
 import footerStyles from './Styles/FooterStyle'
 
 const randomColor = () => ('#' + ((Math.random() * 0xFFFFFF) << 0).toString(16) + '000000').slice(0, 7)
@@ -211,34 +212,34 @@ export default class Graph extends Component {
       <Container>
         <HeaderComponent goBack={goBack} title="Monthly Goal Graph" />
 
-        <Content style={{ backgroundColor: 'white' }}>
-          <View style={{ paddingVertical: 10 }}>
+        <Content style={styles.content}>
+          <View style={styles.contentView}>
             <List>
               <ListItem>
-                <Text style={{ fontSize: 16 }}>Total Spending:</Text>
+                <Text style={styles.metricsText}>Total Spending:</Text>
                 <Right style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16 }}>${parseFloat(this.state.currentTotalSpending).toFixed(2)}</Text>
+                  <Text style={styles.metricsText}>${parseFloat(this.state.currentTotalSpending).toFixed(2)}</Text>
                 </Right>
               </ListItem>
 
               <ListItem>
-                <Text style={{ fontSize: 16 }}>Total Savings:</Text>
+                <Text style={styles.metricsText}>Total Savings:</Text>
                 <Right style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16 }}>${this.state.totalSaving.toFixed(2)}</Text>
+                  <Text style={styles.metricsText}>${this.state.totalSaving.toFixed(2)}</Text>
                 </Right>
               </ListItem>
 
-              <ListItem style={{ borderBottomColor: 'transparent' }}>
-                <Text style={{ fontSize: 16 }}>Recommended Savings:</Text>
+              <ListItem style={styles.listItem}>
+                <Text style={styles.metricsText}>Recommended Savings:</Text>
                 <Right style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16 }}>${this.state.recommendedSaving.toFixed(2)}</Text>
+                  <Text style={styles.metricsText}>${this.state.recommendedSaving.toFixed(2)}</Text>
                 </Right>
               </ListItem>
             </List>
           </View>
 
-          { this.state.barData[0] && 
-            <View style={{ padding: 20, backgroundColor: '#f3f2f7' }}>
+          { this.state.barData[0] &&
+            <View style={styles.graphView}>
               <View style={{ flexDirection: 'row' }}>
                 <YAxis
                   data={[this.state.graphMin, this.state.graphMax]}
@@ -274,9 +275,9 @@ export default class Graph extends Component {
           }
 
           { this.state.showSlider &&
-            <View style={{ alignItems: 'center', marginTop: 25 }}>
-              <Text style={{ fontSize: 18, marginBottom: 5 }}>{this.state.sliderLabel}</Text>
-              <Text style={{ fontSize: 18, marginBottom: 5 }}>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
+            <View style={styles.sliderView}>
+              <Text style={styles.sliderText}>{this.state.sliderLabel}</Text>
+              <Text style={styles.sliderText}>${parseFloat(this.state.selectedCategoryValue[0]).toFixed(2)}</Text>
               <View style={{ paddingVertical: 10 }} />
 
               <MultiSlider

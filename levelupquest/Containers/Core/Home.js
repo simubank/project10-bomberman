@@ -4,7 +4,7 @@ import { inject } from 'mobx-react'
 import { Body, Container, Content, Left, List, ListItem, Text } from 'native-base'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-import styles from './Styles/HomeScreenStyle'
+import styles from './Styles/HomeStyle'
 import HeaderComponent from '../../Components/HeaderComponent'
 
 const menuOptions = [
@@ -68,21 +68,22 @@ export default class Home extends Component {
           <StatusBar translucent={true} backgroundColor="transparent" />
         </HeaderComponent>
 
-        <Content style={{ backgroundColor: '#f3f2f7' }}>
+        <Content style={styles.content}>
           <List>
             {menuOptions.map((option, index) => (
               <ListItem
                 last
                 key={index}
-                style={{ flexDirection: 'column', backgroundColor: '#fff' }}
-                onPress={() => this.props.navigation.navigate(option.screen)}
-              >
+                style={styles.listItem}
+                onPress={() => this.props.navigation.navigate(option.screen)}>
+
                 <Left style={styles.iconWrapper}>
                   <View style={styles.iconWrapper}>{this._renderIcon(option)}</View>
                 </Left>
                 <Body>
-                  <Text style={{ color: '#333333' }}>{option.name}</Text>
+                  <Text style={styles.listItemText}>{option.name}</Text>
                 </Body>
+
               </ListItem>
             ))}
             <ListItem itemDivider />

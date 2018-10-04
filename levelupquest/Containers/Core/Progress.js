@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { Container, Content, Card, CardItem, Text, Button, Icon, Left, Body, Right, List, ListItem, Fab, Root } from 'native-base'
+import { Container, Content, Card, CardItem, Text, Button, Icon, Left, Body,
+  Right, List, ListItem, Fab, Root } from 'native-base'
 import * as ProgressTracker from 'react-native-progress'
 
+import styles from './Styles/ProgressStyle'
 import MakeItRainComponent from '../../Components/MakeItRainComponent'
 import HeaderComponent from '../../Components/HeaderComponent'
 
@@ -141,12 +143,12 @@ export default class Progress extends Component {
           <Content padder>
             <Card>
               <CardItem header bordered>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={styles.cardItemHeader}>
                   <View>
-                    <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'green' }}>{goal.title}</Text>
+                    <Text style={styles.cardItemHeaderText}>{goal.title}</Text>
                   </View>
                   <View>
-                    <Text note style={{ marginTop: 5, marginBottom: 5, color: 'black' }}>
+                    <Text note style={styles.cardItemHeaderNote}>
                       Target Date: {goal.deadline.toString().substr(4, 12)}
                     </Text>
                   </View>
@@ -154,16 +156,20 @@ export default class Progress extends Component {
               </CardItem>
 
               <CardItem bordered>
-                <Text style={{ marginRight: 20 }}>Progress: {this.calculatePercentage(goal.amount)}%</Text>
-                <ProgressTracker.Bar progress={this.calculatePercentage(goal.amount) / 100} width={180} height={10} color={'green'} />
+                <Text style={styles.progressBarText}>Progress: {this.calculatePercentage(goal.amount)}%</Text>
+                <ProgressTracker.Bar
+                  progress={this.calculatePercentage(goal.amount) / 100}
+                  width={180}
+                  height={10}
+                  color={'green'}/>
               </CardItem>
 
               <CardItem bordered>
                 <Body>
                   {this.state.rain && <MakeItRainComponent />}
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Goal Amount: ${goal.amount.toFixed(2)}</Text>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>Total Savings: ${this.state.saved.toFixed(2)}</Text>
-                  <Text style={{ marginTop: 5, marginBottom: 5 }}>
+                  <Text style={styles.bodyText}>Goal Amount: ${goal.amount.toFixed(2)}</Text>
+                  <Text style={styles.bodyText}>Total Savings: ${this.state.saved.toFixed(2)}</Text>
+                  <Text style={styles.bodyText}>
                     Cash Back Earned: ${this.state.cashBack.toFixed(2)}
                   </Text>
                 </Body>
@@ -173,7 +179,7 @@ export default class Progress extends Component {
                 {goal.categories.map((category, index) => (
                   <ListItem avatar key={index}>
                     <Left>
-                      <Button iconLeft transparent style={{ width: 50 }}>
+                      <Button iconLeft transparent style={styles.icon}>
                         <Icon
                           name={this.getCategoryIcon(category.name)}
                           style={{ color: category.average.value >= category.current ? 'green' : 'red', fontSize: 30 }}
@@ -200,8 +206,8 @@ export default class Progress extends Component {
             containerStyle={{}}
             style={{ backgroundColor: 'turquoise' }}
             position="bottomRight"
-            onPress={() => this.setState({ active: !this.state.active })}
-          >
+            onPress={() => this.setState({ active: !this.state.active })}>
+
             <Icon name="md-add" />
             <Button style={{ backgroundColor: 'green' }} onPress={() => this.onDepositSavingsClicked(goal.amount)}>
               <Icon name="logo-usd" />
@@ -209,11 +215,10 @@ export default class Progress extends Component {
             <Button style={{ backgroundColor: 'orange' }} onPress={() => this.onFastForwardClicked()}>
               <Icon name="ios-fastforward" />
             </Button>
+
           </Fab>
         </Container>
       </Root>
     )
   }
 }
-
-const styles = StyleSheet.create({})

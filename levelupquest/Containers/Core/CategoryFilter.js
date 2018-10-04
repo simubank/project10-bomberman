@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import { Container, Content, Text, Button, Body, Right, List, ListItem, CheckBox, Footer } from 'native-base'
 import _ from 'lodash'
 
 import HeaderComponent from '../../Components/HeaderComponent'
+import styles from './Styles/CategoryFilterStyle'
 import footerStyles from './Styles/FooterStyle'
 
 @inject('levelUpStore')
@@ -22,7 +22,7 @@ export default class CategoryFilter extends Component {
       selectedCategories: [],
       filters: this.props.levelUpStore.filters,
       customer: this.props.levelUpStore.customer
-    } 
+    }
   }
 
   async setPopulationCategories() {
@@ -34,7 +34,7 @@ export default class CategoryFilter extends Component {
     })
 
     this.state.selectedCategories = selectedCategories
-    
+
     const { age, gender, occupation } = this.state.customer
 
     this.props.levelUpStore.resetPopulationCategories()
@@ -77,9 +77,9 @@ export default class CategoryFilter extends Component {
         <HeaderComponent goBack={goBack} title="Category Filter" />
 
         <Content>
-          <Text style={{ margin: 16, marginBottom: 8, fontSize: 18 }}>Choose categories to focus on:</Text>
+          <Text style={styles.title}>Choose categories to focus on:</Text>
 
-          <List style={{ marginBottom: 32 }}>
+          <List style={styles.list}>
             {this.state.categories.map((category, index) => {
               return (
                 <ListItem
@@ -90,8 +90,7 @@ export default class CategoryFilter extends Component {
                     modified[index].selected = !modified[index].selected
 
                     this.setState({ categories: modified })
-                  }}
-                >
+                  }}>
                   <CheckBox
                     checked={category.selected}
                     onPress={() => {
@@ -99,8 +98,7 @@ export default class CategoryFilter extends Component {
                       modified[index].selected = !modified[index].selected
 
                       this.setState({ categories: modified })
-                    }}
-                  />
+                    }}/>
                   <Body>
                     <Text>
                       {index + 1}. {category.name}
@@ -114,9 +112,9 @@ export default class CategoryFilter extends Component {
             })}
           </List>
 
-          <Text style={{ margin: 16, marginBottom: 8, fontSize: 18 }}>Choose filters to apply:</Text>
+          <Text style={styles.title}>Choose filters to apply:</Text>
 
-          <List style={{ marginBottom: 32 }}>
+          <List style={styles.list}>
             {this.state.filters.map((filter, index) => {
               return (
                 <ListItem
@@ -127,8 +125,7 @@ export default class CategoryFilter extends Component {
                     modified[index].selected = !modified[index].selected
 
                     this.setState({ filters: modified })
-                  }}
-                >
+                  }}>
                   <CheckBox
                     checked={filter.selected}
                     onPress={() => {
@@ -136,8 +133,7 @@ export default class CategoryFilter extends Component {
                       modified[index].selected = !modified[index].selected
 
                       this.setState({ filters: modified })
-                    }}
-                  />
+                    }}/>
                   <Body>
                     <Text>{filter.name}</Text>
                   </Body>
@@ -156,5 +152,3 @@ export default class CategoryFilter extends Component {
     )
   }
 }
-
-const styles = StyleSheet.create({})

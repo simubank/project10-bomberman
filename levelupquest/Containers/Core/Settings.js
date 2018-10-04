@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import { Container, Content, Text, Button, Body, Right, List, ListItem, Root, Spinner, Separator, Icon } from 'native-base'
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
 
+import styles from './Styles/SettingsStyle'
 import HeaderComponent from '../../Components/HeaderComponent'
 
 @inject('levelUpStore')
@@ -77,13 +78,13 @@ export default class Settings extends Component {
           <HeaderComponent goBack={goBack} title="Settings" />
 
           <Content>
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
-              <Text style={{ margin: 16, fontSize: 18 }}>
+            <View style={styles.titleView}>
+              <Text style={styles.title}>
                 Notification Frequency: {this.frequencyNumToText()}
               </Text>
             </View>
 
-            <View style={{ margin: 16, marginBottom: 0, alignItems: 'center' }}>
+            <View style={styles.sliderView}>
               <MultiSlider
                 selectedStyle={{ backgroundColor: 'green' }}
                 unselectedStyle={{ backgroundColor: 'silver' }}
@@ -96,15 +97,14 @@ export default class Settings extends Component {
               />
             </View>
 
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={styles.buttonView}>
               <Button
                 iconLeft
                 style={[
-                  { marginLeft: 16, marginRight: 16, marginTop: -16, marginBottom: 24 },
+                  styles.button,
                   this.state.showSpinner ? { backgroundColor: 'gray' } : { backgroundColor: 'green' }
                 ]}
-                onPress={() => this.analyzePersonality()}
-              >
+                onPress={() => this.analyzePersonality()}>
                 <Icon name="bulb" />
                 <Text>Analyze Personality</Text>
               </Button>
@@ -138,5 +138,3 @@ export default class Settings extends Component {
     )
   }
 }
-
-const styles = StyleSheet.create({})
